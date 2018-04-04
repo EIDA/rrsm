@@ -19,7 +19,7 @@
   {% block body %}
   <nav class="navbar sticky-top navbar-expand-sm navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'home' %}">Station Book</a>
+      <a class="navbar-brand" href="{% url 'home' %}">RRSM</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false"
         aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -31,11 +31,7 @@
               Menu
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-              <a class="dropdown-item" href="{% url 'nodes' %}">View all nodes</a>
-              <a class="dropdown-item" href="{% url 'networks' %}">View all networks</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'links' %}">Quick links</a>
-              <a class="dropdown-item" href="{% url 'recent_changes' %}">Recent changes</a>
             </div>
           </li>
           {% block menu_injection %}
@@ -59,20 +55,8 @@
           </li>
         </ul>
         {% endif %}
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item p-1">
-            <div class="input-group">
-              <form class="form-inline" action="{% url 'search' %}" method="get" accept-charset="utf-8">
-                <input name="search_text" type="text" class="form-control" placeholder="Station code or name">
-                <span class="input-group-btn">
-                  <button class="btn btn-outline-success" type="submit">Find</button>
-                </span>
-              </form>
-            </div>
-          </li>
-        </ul>
         {% if not user.is_authenticated %}
-        <ul class="navbar-nav">
+        <ul class="navbar-nav ml-auto">
             <li class="nav-item p-1"><a href="{% url 'login' %}" class="btn btn-outline-secondary">Log in</a></li>
             <li class="nav-item p-1"><a href="{% url 'signup' %}" class="btn btn-primary">Sign up</a></li>
         </ul>
