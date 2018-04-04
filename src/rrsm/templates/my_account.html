@@ -9,19 +9,6 @@
 {% endblock %}
 
 {% block content %}
-<p>
-Networks assigned: (<a href="" data-toggle="collapse" data-target="#editable_networks">Toggle show networks</a>)
-<div id="editable_networks" class="collapse">
-  {% if user_profile.fdsn_networks.count > 0 %}
-  {% for net in user_profile.fdsn_networks.all %}
-  <a href="{% url 'network_details' net.pk %}">Node: {{ net.fdsn_node.code }}, Network: {{ net.get_code_year }}</a><br>
-  {% endfor %}
-  {% else %}
-  None
-  {% endif %}
-</div>
-</p>
-
   <div class="row">
     <div class="col-lg-6 col-md-8 col-sm-10">
       <form method="post" novalidate>

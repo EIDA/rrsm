@@ -25,16 +25,6 @@
     <p><b>Telephone: </b>{{ user_data.profile.telephone }}</p>
     <p><b>Skype: </b>{{ user_data.profile.skype }}</p>
     <p><b>Birthdate: </b>{{ user_data.profile.birth_date }}</p>
-    <p><b>Can edit stations in networks: </b>(<a href="" data-toggle="collapse" data-target="#editable_networks">Toggle show networks</a>)
-    <div id="editable_networks" class="collapse">
-      {% if user_data.profile.fdsn_networks.count > 0 %}
-      {% for net in user_data.profile.fdsn_networks.all %}
-      <a href="{% url 'network_details' net.pk %}">Node: {{ net.fdsn_node.code }}, Network: {{ net.get_code_year }}</a><br>
-      {% endfor %}
-      {% else %}
-      None
-      {% endif %}
-    </div>
     </p>
     <p><b>Last login: </b>{{ user_data.last_login }}</p>
     <p><b>Superuser: </b>{{ user_data.is_superuser }}</p>
