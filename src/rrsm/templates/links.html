@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+<li class="breadcrumb-item active">Links</li>
+{% endblock %}
+
+{% block content %}
+
+{% if links %}
+    {% for link in links %}
+    <p><b>Link: </b><a href="{{ link.url }}">{{ link.url }}</a></p>
+    <p><b>Description: </b>{{ link.description }}</p>
+    <hr>
+    {% endfor %}
+{% else %}
+    <p>No links defined!</p>
+{% endif %}
+
+{% endblock %}

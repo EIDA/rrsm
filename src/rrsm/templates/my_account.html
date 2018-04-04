@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% load form_tags widget_tweaks %}
+
+{% block title %}My account{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">My account</li>
+{% endblock %}
+
+{% block content %}
+<p>
+Networks assigned: (<a href="" data-toggle="collapse" data-target="#editable_networks">Toggle show networks</a>)
+<div id="editable_networks" class="collapse">
+  {% if user_profile.fdsn_networks.count > 0 %}
+  {% for net in user_profile.fdsn_networks.all %}
+  <a href="{% url 'network_details' net.pk %}">Node: {{ net.fdsn_node.code }}, Network: {{ net.get_code_year }}</a><br>
+  {% endfor %}
+  {% else %}
+  None
+  {% endif %}
+</div>
+</p>
+
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        
+        {% if user_form.non_field_errors %}
+          <div class="alert alert-danger" role="alert">
+            {% for error in user_form.non_field_errors %}
+              <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% for field in user_form %}
+          <div class="form-group">
+            {{ field.label_tag }}
+            {% if user_form.is_bound %}
+              {% render_field field class=field|input_class %}
+              {% for error in field.errors %}
+                <div class="invalid-feedback">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            {% else %}
+              {% render_field field class=field|input_class %}
+            {% endif %}
+            {% if field.help_text %}
+              <small class="form-text text-muted">
+                {{ field.help_text|safe }}
+              </small>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        {% if profile_form.non_field_errors %}
+          <div class="alert alert-danger" role="alert">
+            {% for error in profile_form.non_field_errors %}
+              <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% for field in profile_form %}
+          <div class="form-group">
+            {{ field.label_tag }}
+            {% if profile_form.is_bound %}
+              {% render_field field class=field|input_class %}
+              {% for error in field.errors %}
+                <div class="invalid-feedback">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            {% else %}
+              {% render_field field class=field|input_class %}
+            {% endif %}
+            {% if field.help_text %}
+              <small class="form-text text-muted">
+                {{ field.help_text|safe }}
+              </small>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success">Save changes</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

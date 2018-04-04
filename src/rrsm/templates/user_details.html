@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load form_tags widget_tweaks %}
+
+{% block title %}My account{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">{{ user_data.username }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+    <h1>User details:</h1>
+    <p><b>Username: </b>{{ user_data.username }}</p>
+    <p><b>First name: </b>{{ user_data.first_name }}</p>
+    <p><b>Last name: </b>{{ user_data.last_name }}</p>
+    <p><b>Email: </b>{{ user_data.email }}</p>
+    <p><b>About me: </b>{{ user_data.profile.about }}</p>
+    <p><b>Location: </b>{{ user_data.profile.location }}</p>
+    <p><b>Agency: </b>{{ user_data.profile.agency }}</p>
+    <p><b>Department: </b>{{ user_data.profile.department }}</p>
+    <p><b>Telephone: </b>{{ user_data.profile.telephone }}</p>
+    <p><b>Skype: </b>{{ user_data.profile.skype }}</p>
+    <p><b>Birthdate: </b>{{ user_data.profile.birth_date }}</p>
+    <p><b>Can edit stations in networks: </b>(<a href="" data-toggle="collapse" data-target="#editable_networks">Toggle show networks</a>)
+    <div id="editable_networks" class="collapse">
+      {% if user_data.profile.fdsn_networks.count > 0 %}
+      {% for net in user_data.profile.fdsn_networks.all %}
+      <a href="{% url 'network_details' net.pk %}">Node: {{ net.fdsn_node.code }}, Network: {{ net.get_code_year }}</a><br>
+      {% endfor %}
+      {% else %}
+      None
+      {% endif %}
+    </div>
+    </p>
+    <p><b>Last login: </b>{{ user_data.last_login }}</p>
+    <p><b>Superuser: </b>{{ user_data.is_superuser }}</p>
+    <p><b>Staff team member: </b>{{ user_data.is_staff }}</p>
+    <p><b>Active: </b>{{ user_data.is_active }}</p>
+  </div>
+  <div class="col">
+      <h1>Activity:</h1>
+      {% for access in activity %}
+      <p><b>{{ access.updated_at|naturaltime }}:</b> <br> {{ access.description }}<br> 
+      Station <a href="{% url 'station_details' access.fdsn_station.fdsn_network.pk access.fdsn_station.pk %}">
+          {{ access.fdsn_station.code }} ({{ access.fdsn_station.site_name }})</a>
+      in network <a href="{% url 'network_details' access.fdsn_station.fdsn_network.pk %}">{{ access.fdsn_station.fdsn_network.code }}</a></p>
+      {% endfor %}
+  </div>
+  </div>
+</div>
+{% endblock %}
