@@ -29,3 +29,21 @@ class Profile(models.Model):
 
     def __str__(self):
         return 'Profile of: {0}'.format(self.user)
+
+
+class Link(models.Model):
+    url = models.CharField(
+        max_length=STRING_LENGTH_MEDIUM, null=True, blank=True
+    )
+    category = models.CharField(
+        max_length=STRING_LENGTH_MEDIUM, null=True, blank=True
+    )
+    description = models.CharField(
+        max_length=STRING_LENGTH_MEDIUM, null=True, blank=True
+    )
+
+    def __str__(self):
+        return '{0} - {1}'.format(
+            self.url,
+            self.description
+        )
