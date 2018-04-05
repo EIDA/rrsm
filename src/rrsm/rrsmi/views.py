@@ -15,6 +15,8 @@ from django.views.generic import ListView, DetailView
 from django.db import transaction
 from django.db.models import Q, Count
 
+from .forms import \
+UserForm, ProfileForm
 
 class HomeListView(ListView):
     model = None
