@@ -6,7 +6,7 @@ from functools import reduce
 
 from django.http import Http404
 from django.shortcuts import \
-get_object_or_404, redirect, render, render_to_response
+    get_object_or_404, redirect, render, render_to_response
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
@@ -16,7 +16,8 @@ from django.db import transaction
 from django.db.models import Q, Count
 
 from .forms import \
-UserForm, ProfileForm
+    UserForm, ProfileForm
+
 
 class HomeListView(ListView):
     model = None
@@ -41,13 +42,6 @@ class UserDetailsListView(ListView):
             raise Http404("User does not exist!")
         return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['activity'] = \
-            ExtAccessData.objects.order_by('-updated_at').filter(
-                updated_by__username=self.kwargs.get('username'))[:25]
-        return context
-
 
 @login_required
 @transaction.atomic
@@ -67,7 +61,7 @@ def update_profile(request):
         user_form = UserForm(instance=request.user)
         profile_form = ProfileForm(instance=request.user.profile)
         return render(request, 'my_account.html', {
-            'user_profile' : request.user.profile,
+            'user_profile': request.user.profile,
             'user_form': user_form,
             'profile_form': profile_form
             })
