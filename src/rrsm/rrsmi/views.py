@@ -18,6 +18,8 @@ from django.db.models import Q, Count
 from .forms import \
     UserForm, ProfileForm
 
+from .fdsn.fdsn_manager import FdsnEventManager
+
 
 class HomeListView(ListView):
     model = None
@@ -25,6 +27,7 @@ class HomeListView(ListView):
     template_name = 'home.html'
 
     def get_queryset(self):
+        x = FdsnEventManager().get_last_week_events()
         queryset = None
         return queryset
 

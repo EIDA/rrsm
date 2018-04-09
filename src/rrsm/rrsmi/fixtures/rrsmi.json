@@ -1,0 +1,12 @@
+[
+{
+    "model": "rrsmi.fdsnnode",
+    "pk": 1,
+    "fields": {
+        "code": "ODC",
+        "description": "ORFEUS Data Center - Koninklijk Nederlands Meterologisch Instituut",
+        "url_event": "http://www.orfeus-eu.org/fdsnws/event/1/query"
+    }
+}
+]
+    
