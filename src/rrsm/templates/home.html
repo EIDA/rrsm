@@ -19,10 +19,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#events_table').DataTable({
-          sort: false,
-          filter: false
-        });
+        $('#events_table').DataTable();
     });
 </script>
 
@@ -51,24 +48,11 @@
     <script type="text/javascript">
       var getEventColor=function(value){if(value<2.0){return'#75FF33'}else if(value<4.0){return'#DBFF33'}else if(value<6.0){return'#FFBD33'}else{return'#FF5733'}}
       var latitude=parseFloat("{{ e.origin_latitude }}"),longitude=parseFloat("{{ e.origin_longitude }}"),depth=parseFloat("{{ e.origin_depth }}"),magnitude=parseFloat("{{ e.magnitude_value }}");if(!isNaN(latitude)&&!isNaN(longitude)){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([longitude,latitude])),name:`<b>Time:</b> {{ e.origin_time }}<br><b>Latitude:</b> ${latitude}<br><b>Longitude:</b> ${longitude}<br><b>Depth:</b> ${depth}<br><b>Magnitude:</b> ${magnitude}`});point.setStyle(new ol.style.Style({image:new ol.style.Circle({radius:1.5*magnitude,fill:new ol.style.Fill({color:getEventColor(magnitude)}),stroke:new ol.style.Stroke({color:'#000000',width:1})})})),vectorSource.addFeature(point)}
-
-      var zoomEvent=function(lat, lon) {
-        // Make sure the info popup is disposed to prevent showing information from previous event
-        $(element).popover('dispose');
-        map.getView().animate({
-          center: ol.proj.fromLonLat([lon, lat]),
-          duration: 1000,
-          zoom: 8
-        });
-      }
+      var zoomEvent=function(lat,lon){$(element).popover('dispose');map.getView().animate({center:ol.proj.fromLonLat([lon,lat]),duration:1000,zoom:10})}
     </script>
     {% endfor %}
   </tbody>
 </table>
-
-<script type="text/javascript">
-var latitude=parseFloat("{{ events.0.origin_latitude }}"),longitude=parseFloat("{{ events.0.origin_longitude }}");map.getView().setCenter(ol.proj.transform([longitude,latitude],"EPSG:4326","EPSG:3857")),map.getView().setZoom(2);
-</script>
 
 {% block javascript %}
 <script src="{% static 'js/datatable/jquery.dataTables.min.js' %}"></script>
