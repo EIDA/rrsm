@@ -23,12 +23,14 @@ from .fdsn.fdsn_manager import FdsnEventManager
 
 class HomeListView(ListView):
     model = None
-    context_object_name = 'data'
+    context_object_name = 'events'
     template_name = 'home.html'
 
     def get_queryset(self):
-        x = FdsnEventManager().get_last_week_events()
-        queryset = None
+        try:
+            queryset = FdsnEventManager().get_last_week_events().events
+        except:
+            raise
         return queryset
 
 

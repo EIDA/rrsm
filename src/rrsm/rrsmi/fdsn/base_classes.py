@@ -23,6 +23,11 @@ class NodeWrapper(object):
             )
 
 
+class Events(object):
+    def __init__(self):
+        self.events = []
+
+
 class EventWrapper(object):
     def __init__(self):
         self.public_id = NO_FDSNWS_DATA
@@ -32,8 +37,8 @@ class EventWrapper(object):
         self.magnitude_type = NO_FDSNWS_DATA
         self.origin_public_id = NO_FDSNWS_DATA
         self.origin_time = NO_FDSNWS_DATA
-        self.origin_latitude = NO_FDSNWS_DATA
         self.origin_longitude = NO_FDSNWS_DATA
+        self.origin_latitude = NO_FDSNWS_DATA
         self.origin_depth = 0
         self.preferred_origin_id = NO_FDSNWS_DATA
         self.preferred_magnitude_id = NO_FDSNWS_DATA
