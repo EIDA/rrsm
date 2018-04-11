@@ -43,10 +43,10 @@ class FdsnEventManager(FdsnHttpBase):
         super(FdsnEventManager, self).__init__()
         self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
 
-    def get_last_week_events(self):
+    def get_recent_events(self, days_back):
         try:
             response = self.fdsn_request(
-                self.node_wrapper.build_url_events_starttime(180)
+                self.node_wrapper.build_url_events_starttime(days_back)
             )
 
             if not response:
