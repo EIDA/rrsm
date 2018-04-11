@@ -42,3 +42,17 @@ class EventWrapper(object):
         self.origin_depth = 0
         self.preferred_origin_id = NO_FDSNWS_DATA
         self.preferred_magnitude_id = NO_FDSNWS_DATA
+    
+    def parse_origin_time(self):
+        try:
+            date = parse_datetime(self.origin_time)
+            return '{0}-{1}-{2} {3}:{4}:{5}'.format(
+                date.year,
+                f'{date.month:02}',
+                f'{date.day:02}',
+                f'{date.hour:02}',
+                f'{date.minute:02}',
+                f'{date.second:02}'
+            )
+        except:
+            pass

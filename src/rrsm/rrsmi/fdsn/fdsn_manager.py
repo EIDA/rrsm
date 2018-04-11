@@ -46,7 +46,7 @@ class FdsnEventManager(FdsnHttpBase):
     def get_last_week_events(self):
         try:
             response = self.fdsn_request(
-                self.node_wrapper.build_url_events_starttime(7)
+                self.node_wrapper.build_url_events_starttime(90)
             )
 
             if not response:
