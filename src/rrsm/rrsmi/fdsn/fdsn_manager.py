@@ -5,9 +5,6 @@ import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ParseError
 from urllib.request import Request, urlopen
 
-from django.db import transaction
-from django.shortcuts import get_object_or_404
-
 from .base_classes import NSMAP, NO_FDSNWS_DATA, \
     NodeWrapper, Events, EventWrapper, \
     MotionData, MotionDataStation, MotionDataStationChannel
@@ -107,9 +104,9 @@ class FdsnEventManager(FdsnHttpBase):
                     ew.preferred_magnitude_id = self.validate_string(tmp.text)
 
                 event_graph.events.append(ew)
-
             return event_graph
         except:
+            self.log_exception()
             raise
 
 
@@ -166,6 +163,7 @@ class FdsnMotionManager(FdsnHttpBase):
                 result.stations.append(station_data)
             return result
         except:
+            self.log_exception()
             raise
 
 
