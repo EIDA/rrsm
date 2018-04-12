@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'django_cleanup',
     'widget_tweaks',
     
-    'accounts',
     'rrsmi',
 ]
 

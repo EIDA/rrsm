@@ -111,6 +111,18 @@ class FdsnEventManager(FdsnHttpBase):
             raise
 
 
+class FdsnMotionManager(FdsnHttpBase):
+    def __init__(self):
+        super(FdsnMotionManager, self).__init__()
+        self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
+
+    def get_event_details(self, event_public_id):
+        try:
+            pass
+        except:
+            raise
+
+
 class FdsnManager(RrsmLoggerMixin):
     def __init__(self):
         super(FdsnManager, self).__init__()

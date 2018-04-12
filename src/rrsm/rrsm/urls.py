@@ -4,11 +4,9 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.views.generic import RedirectView
 from django.urls import path, re_path
-from django.contrib.auth import views as auth_views
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from accounts import views as accounts_views
 from rrsmi import views as rrsmi_view
 
 urlpatterns = [
@@ -17,17 +15,7 @@ urlpatterns = [
         rrsmi_view.RecentEventsListView.as_view(), name='recent_events'),
     re_path(r'^event/(?P<public_id>\w+)/$',
         rrsmi_view.EventDetailsListView.as_view(), name='event_details'),
-    path('login/', auth_views.LoginView.as_view(
-        template_name='login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('admin/', admin.site.urls),
-    re_path(r'^settings/account/$', rrsmi_view.update_profile, name='my_account'),
-    path('settings/password/', auth_views.PasswordChangeView
-        .as_view(template_name='password_change.html'),
-        name='password_change'),
-    path('settings/password/done/', auth_views.PasswordChangeDoneView
-        .as_view(template_name='password_change_done.html'),
-        name='password_change_done'),
 ]
 
 if settings.DEBUG:

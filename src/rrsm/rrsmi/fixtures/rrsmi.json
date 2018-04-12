@@ -5,7 +5,8 @@
     "fields": {
         "code": "ODC",
         "description": "ORFEUS Data Center - Koninklijk Nederlands Meterologisch Instituut",
-        "url_event": "http://www.orfeus-eu.org/fdsnws/event/1/query"
+        "url_event": "http://www.orfeus-eu.org/fdsnws/event/1/query",
+        "url_motion": "http://www.orfeus-eu.org/odcws/rrsm/1/motion"
     }
 }
 ]

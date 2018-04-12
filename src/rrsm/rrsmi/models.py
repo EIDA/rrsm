@@ -23,24 +23,11 @@ class FdsnNode(models.Model):
         max_length=STRING_LENGTH_SHORT, default='', blank=True)
     url_event = models.CharField(
         max_length=STRING_LENGTH_MEDIUM, default='', blank=True)
+    url_motion = models.CharField(
+        max_length=STRING_LENGTH_MEDIUM, default='', blank=True)
 
     def __str__(self):
         return self.code
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(
-        User, related_name='profile', on_delete=models.CASCADE)
-    about = models.CharField(max_length=STRING_LENGTH_MEDIUM, blank=True)
-    location = models.CharField(max_length=STRING_LENGTH_MEDIUM, blank=True)
-    agency = models.CharField(max_length=STRING_LENGTH_MEDIUM, blank=True)
-    department = models.CharField(max_length=STRING_LENGTH_MEDIUM, blank=True)
-    telephone = models.CharField(max_length=STRING_LENGTH_MEDIUM, blank=True)
-    skype = models.CharField(max_length=STRING_LENGTH_MEDIUM, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
-
-    def __str__(self):
-        return 'Profile of: {0}'.format(self.user)
 
 
 class Link(models.Model):

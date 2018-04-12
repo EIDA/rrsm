@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import FdsnNode, Link, Profile
+from .models import FdsnNode, Link
 
 class FdsnNodeAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -9,6 +9,7 @@ class FdsnNodeAdmin(admin.ModelAdmin):
                     'code',
                     'description',
                     'url_event',
+                    'url_motion',
                 ]
             }
         ),
@@ -18,6 +19,7 @@ class FdsnNodeAdmin(admin.ModelAdmin):
         'code',
         'description',
         'url_event',
+        'url_motion',
     )
 
     list_filter = [
@@ -28,32 +30,6 @@ class FdsnNodeAdmin(admin.ModelAdmin):
     search_fields = [
         'code',
     ]
-
-
-class ProfileAdmin(admin.ModelAdmin):
-    fieldsets = [
-        (
-            'Change profile details', {
-                'fields': [
-                    'about',
-                    'location',
-                    'agency',
-                    'department',
-                    'telephone',
-                    'skype',
-                    'birth_date',
-                ]
-            }
-        ),
-    ]
-
-    list_display = (
-        '__str__',
-        'user',
-        'about',
-        'location',
-        'birth_date',
-    )
 
 
 class LinkAdmin(admin.ModelAdmin):
@@ -77,4 +53,3 @@ class LinkAdmin(admin.ModelAdmin):
 
 admin.site.register(FdsnNode, FdsnNodeAdmin)
 admin.site.register(Link, LinkAdmin)
-admin.site.register(Profile, ProfileAdmin)
