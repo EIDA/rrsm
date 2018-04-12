@@ -6,6 +6,7 @@ from django.views.generic import RedirectView
 from django.urls import path, re_path
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.contrib.auth import views as auth_views
 
 from rrsmi import views as rrsmi_view
 
@@ -16,6 +17,7 @@ urlpatterns = [
     re_path(r'^event/(?P<public_id>\w+)/$',
         rrsmi_view.EventDetailsListView.as_view(), name='event_details'),
     path('admin/', admin.site.urls),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 if settings.DEBUG:
