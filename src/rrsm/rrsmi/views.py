@@ -57,6 +57,23 @@ class RecentEventsListView(ListView):
         return context
 
 
+class EventDetailsListView(ListView):
+    model = None
+    context_object_name = 'event'
+    template_name = 'event_details.html'
+
+    def get_queryset(self):
+        try:
+            queryset = None
+        except:
+            raise
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
 class UserDetailsListView(ListView):
     model = User
     context_object_name = 'user_data'

@@ -1,6 +1,7 @@
 from django.utils.dateparse import parse_datetime
 from datetime import datetime, timedelta
 
+from obspy.geodetics.flinnengdahl import FlinnEngdahl
 
 NO_FDSNWS_DATA = 'n/a'
 NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
@@ -56,3 +57,11 @@ class EventWrapper(object):
             )
         except:
             pass
+
+    def get_flinn_engdahl(self):
+        try:
+            fe = FlinnEngdahl()
+            result = fe.get_region(float(self.origin_longitude), float(self.origin_latitude)).title()
+            return result
+        except:
+            return 'unknown'
