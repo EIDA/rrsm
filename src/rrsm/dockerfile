@@ -1,0 +1,20 @@
+FROM alpine
+
+# Initialize
+RUN mkdir -p /data/rrsm
+WORKDIR /data/rrsm
+COPY requirements.txt /data/rrsm/
+
+# Setup
+RUN apk update
+RUN apk upgrade
+RUN apk add --update python3 python3-dev postgresql-client postgresql-dev build-base gettext jpeg-dev zlib-dev
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
+
+# Clean
+RUN apk del -r python3-dev
+
+# Prepare
+COPY . /data/rrsm/
+RUN python3 manage.py collectstatic

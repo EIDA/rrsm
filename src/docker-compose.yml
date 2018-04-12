@@ -1,0 +1,30 @@
+version: '2'
+services:
+  rrsmweb:
+    restart: always
+    build: ./rrsm/
+    expose:
+      - "8080"
+    env_file: .env
+    volumes:
+      - /data/rrsm/rrsm/static
+    networks:
+      - rrsm_net
+    command: gunicorn rrsm.wsgi:application -w 2 -b :8080
+    
+  rrsmnginx:
+    restart: always
+    build: ./nginx/
+    depends_on:
+      - rrsmweb
+    ports:
+      - "8080:8080"
+    volumes_from:
+      - rrsmweb
+    links:
+      - rrsmweb:rrsmweb
+    networks:
+      - rrsm_net
+
+networks:
+  rrsm_net:
