@@ -86,27 +86,9 @@ WSGI_APPLICATION = 'rrsm.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'not-default': {
-        'ENGINE': config('DATABASE_ENGINE'),
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASS'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
-    },
     'default': dj_database_url.config(
-        default=config('DATABASE_URL')	
+        default=config('DATABASE_URL')
     )
-}
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "sbredis://sbredis:6379/0",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
 }
 
 # Password validation
@@ -186,7 +168,7 @@ LOGGING = {
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'simple',
-            'maxBytes': 1024*1024*5, # 5 Megabytes
+            'maxBytes': 1024*1024*5,    # 5 Megabytes
             'backupCount': 25,
             'filename': os.path.join(BASE_DIR, 'logs', 'rrsm.log'),
             'filters': ['require_debug_true'],
@@ -198,7 +180,7 @@ LOGGING = {
             'level': "INFO",
         },
         'book': {
-            'handlers': ['file',],
+            'handlers': ['file', ],
             'propagate': True,
             'level': "INFO",
         },

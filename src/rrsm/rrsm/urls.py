@@ -15,7 +15,7 @@ urlpatterns = [
     path('', rrsmi_view.HomeListView.as_view(), name='home'),
     re_path(r'^recent/(?P<days>\w+)/$',
         rrsmi_view.RecentEventsListView.as_view(), name='recent_events'),
-    re_path(r'^event/(?P<id>\w+)/$',
+    re_path(r'^event/(?P<public_id>\w+)/$',
         rrsmi_view.EventDetailsListView.as_view(), name='event_details'),
     path('login/', auth_views.LoginView.as_view(
         template_name='login.html'), name='login'),

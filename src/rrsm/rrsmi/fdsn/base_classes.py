@@ -58,6 +58,12 @@ class EventWrapper(object):
         except:
             pass
 
+    def get_public_id(self):
+        try:
+            return self.public_id.split('/')[2]
+        except:
+            return 0
+
     def get_flinn_engdahl(self):
         try:
             fe = FlinnEngdahl()
