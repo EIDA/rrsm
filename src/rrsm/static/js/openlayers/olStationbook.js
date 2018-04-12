@@ -14,8 +14,8 @@ var map = new ol.Map({
   ],
   target: document.getElementById('map'),
   view: new ol.View({
-      center: ol.proj.fromLonLat([5.178029, 52.101568]),
-      zoom: 3
+      center: ol.proj.fromLonLat([5, 52]),
+      zoom: 2
   })
 });
 
@@ -62,3 +62,33 @@ map.on('pointermove', function(e) {
   var hit = map.hasFeatureAtPixel(pixel);
   map.getTarget().style.cursor = hit ? 'pointer' : '';
 });
+
+var getEventColor = function(value) {
+    if (value < 2.0) {
+        return '#75FF33'
+    } else if (value < 4.0) {
+        return '#DBFF33'
+    } else if (value < 6.0) {
+        return '#FFBD33'
+    } else {
+        return '#FF5733'
+    }
+}
+
+var zoomReset = function() {
+    $(element).popover('dispose');
+    map.getView().animate({
+        center: ol.proj.fromLonLat([5, 52]),
+        duration: 1000,
+        zoom: 2
+    })
+}
+
+var zoomEvent = function(lat, lon) {
+    $(element).popover('dispose');
+    map.getView().animate({
+        center: ol.proj.fromLonLat([lon, lat]),
+        duration: 1000,
+        zoom: 8
+    })
+}
