@@ -14,7 +14,7 @@ urlpatterns = [
     path('', rrsmi_view.HomeListView.as_view(), name='home'),
     re_path(r'^recent/(?P<days>\w+)/$',
         rrsmi_view.RecentEventsListView.as_view(), name='recent_events'),
-    re_path(r'^event/(?P<public_id>\w+)/$',
+    re_path(r'^event/(?P<event_public_id>\w+)/$',
         rrsmi_view.EventDetailsListView.as_view(), name='event_details'),
     path('admin/', admin.site.urls),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),

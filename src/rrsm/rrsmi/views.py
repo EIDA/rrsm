@@ -15,7 +15,7 @@ from django.views.generic import ListView, DetailView
 from django.db import transaction
 from django.db.models import Q, Count
 
-from .fdsn.fdsn_manager import FdsnEventManager
+from .fdsn.fdsn_manager import FdsnEventManager, FdsnMotionManager
 
 
 class HomeListView(ListView):
@@ -56,7 +56,7 @@ class RecentEventsListView(ListView):
 
 class EventDetailsListView(ListView):
     model = None
-    context_object_name = 'event'
+    context_object_name = None
     template_name = 'event_details.html'
 
     def get_queryset(self):
@@ -68,45 +68,10 @@ class EventDetailsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['motion_data'] = FdsnMotionManager().get_event_details(
+            self.kwargs.get('event_public_id')
+        )
         return context
-
-
-class UserDetailsListView(ListView):
-    model = User
-    context_object_name = 'user_data'
-    template_name = 'user_details.html'
-
-    def get_queryset(self):
-        try:
-            queryset = User.objects.\
-                get(username=self.kwargs.get('username'))
-        except User.DoesNotExist:
-            raise Http404("User does not exist!")
-        return queryset
-
-
-@login_required
-@transaction.atomic
-def update_profile(request):
-    if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            return redirect('my_account')
-        else:
-            return render(request, 'my_account.html', {
-                'user_form': user_form, 'profile_form': profile_form
-                })
-    else:
-        user_form = UserForm(instance=request.user)
-        profile_form = ProfileForm(instance=request.user.profile)
-        return render(request, 'my_account.html', {
-            'user_profile': request.user.profile,
-            'user_form': user_form,
-            'profile_form': profile_form
-            })
 
 
 def custom_404(request, exception=None):

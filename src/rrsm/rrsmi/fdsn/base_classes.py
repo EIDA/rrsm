@@ -1,3 +1,4 @@
+import json
 from django.utils.dateparse import parse_datetime
 from datetime import datetime, timedelta
 
@@ -14,6 +15,7 @@ class NodeWrapper(object):
         self.code = node.code
         self.description = node.description
         self.url_event = node.url_event
+        self.url_motion = node.url_motion
 
     def build_url_events_starttime(self, days):
         date_then = datetime.now() - timedelta(days=days)
@@ -22,6 +24,9 @@ class NodeWrapper(object):
             date_then.month,
             date_then.day,
             )
+
+    def build_url_motion(self, event_public_id):
+        return self.url_motion + '?eventid={}'.format(event_public_id)
 
 
 class Events(object):
@@ -71,3 +76,40 @@ class EventWrapper(object):
             return result
         except:
             return 'unknown'
+
+
+class MotionData(object):
+    def __init__(self):
+        self.stations = []
+
+class MotionDataStation(object):
+    def __init__(self):
+        self.event_id = NO_FDSNWS_DATA
+        self.event_time = NO_FDSNWS_DATA
+        self.event_magnitude = NO_FDSNWS_DATA
+        self.event_type = NO_FDSNWS_DATA
+        self.event_depth = NO_FDSNWS_DATA
+        self.event_latitude = NO_FDSNWS_DATA
+        self.event_longitude = NO_FDSNWS_DATA
+        self.network_code = NO_FDSNWS_DATA
+        self.station_code = NO_FDSNWS_DATA
+        self.location_code = NO_FDSNWS_DATA
+        self.station_latitude = NO_FDSNWS_DATA
+        self.station_longitude = NO_FDSNWS_DATA
+        self.station_elevation = NO_FDSNWS_DATA
+        self.epicentral_distance = NO_FDSNWS_DATA
+        self.event_reference = NO_FDSNWS_DATA
+        self.sensor_channels = []
+
+
+class MotionDataStationChannel(object):
+    def __init__(self):
+        self.channel_code = NO_FDSNWS_DATA
+        self.pga_value = NO_FDSNWS_DATA
+        self.pgv_value = NO_FDSNWS_DATA
+        self.sensor_azimuth = NO_FDSNWS_DATA
+        self.sensor_dip = NO_FDSNWS_DATA
+        self.sensor_depth = NO_FDSNWS_DATA
+        self.sensor_unit = NO_FDSNWS_DATA
+        self.corner_freq_lower = NO_FDSNWS_DATA
+        self.corner_freq_upper = NO_FDSNWS_DATA

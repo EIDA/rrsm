@@ -13,6 +13,8 @@
 
 {% block content %}
 <div id="event_details" class="table-responsive">
-Event details
+{% for s in motion_data.stations %}
+    {{ s.network_code }}
+{% endfor %}
 </div>
 {% endblock %}

@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
+import gzip
+import json
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ParseError
 from urllib.request import Request, urlopen
-import gzip
 
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
 from .base_classes import NSMAP, NO_FDSNWS_DATA, \
-    NodeWrapper, Events, EventWrapper
+    NodeWrapper, Events, EventWrapper, \
+    MotionData, MotionDataStation, MotionDataStationChannel
 from ..logger import RrsmLoggerMixin
 from ..models import FdsnNode
 
@@ -118,7 +120,51 @@ class FdsnMotionManager(FdsnHttpBase):
 
     def get_event_details(self, event_public_id):
         try:
-            pass
+            odc_ws_link = self.node_wrapper.build_url_motion(event_public_id)
+            self.log_information(
+                'Trying to get motion data for event {}'.format(odc_ws_link)
+            )
+
+            response = self.fdsn_request(odc_ws_link)
+
+            if not response:
+                return
+
+            result = MotionData()
+            data = json.loads(response.decode('utf-8'))
+
+            for s in data:
+                station_data = MotionDataStation()
+                station_data.event_id = s['event-id']
+                station_data.event_time = s['event-time']
+                station_data.event_magnitude = s['event-magnitude']
+                station_data.event_type = s['event-type']
+                station_data.event_depth = s['event-depth']
+                station_data.event_latitude = s['event-latitude']
+                station_data.event_longitude = s['event-longitude']
+                station_data.network_code = s['network-code']
+                station_data.station_code = s['station-code']
+                station_data.location_code = s['location-code']
+                station_data.station_latitude = s['station-latitude']
+                station_data.station_longitude = s['station-longitude']
+                station_data.station_elevation = s['station-elevation']
+                station_data.epicentral_distance = s['epicentral-distance']
+                station_data.event_reference = s['event-reference']
+
+                for d in s['sensor-channels']:
+                    ch = MotionDataStationChannel()
+                    ch.channel_code = d['channel-code']
+                    ch.pga_value = d['pga-value']
+                    ch.pgv_value = d['pgv-value']
+                    ch.sensor_azimuth = d['sensor-azimuth']
+                    ch.sensor_dip = d['sensor-dip']
+                    ch.sensor_depth = d['sensor-depth']
+                    ch.sensor_unit = d['sensor-unit']
+                    ch.corner_freq_lower = d['corner-freq-lower']
+                    ch.corner_freq_upper = d['corner-freq-upper']
+                    station_data.sensor_channels.append(ch)
+                result.stations.append(station_data)
+            return result
         except:
             raise
 
