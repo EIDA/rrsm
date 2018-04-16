@@ -29,7 +29,7 @@ class HomeListView(ListView):
         except:
             raise
         return queryset
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['breadcrumb'] = 'Home'
@@ -43,7 +43,9 @@ class RecentEventsListView(ListView):
 
     def get_queryset(self):
         try:
-            queryset = FdsnEventManager().get_recent_events(int(self.kwargs.get('days'))).events
+            queryset = FdsnEventManager().get_recent_events(
+                int(self.kwargs.get('days'))
+            ).events
         except:
             raise
         return queryset
@@ -68,9 +70,10 @@ class EventDetailsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['motion_data'] = FdsnMotionManager().get_event_details(
-            self.kwargs.get('event_public_id')
-        )
+        context['motion_data'], context['odc_ws_link'] = \
+            FdsnMotionManager().get_event_details(
+                self.kwargs.get('event_public_id')
+                )
         return context
 
 

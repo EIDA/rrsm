@@ -67,39 +67,124 @@ class FdsnEventManager(FdsnHttpBase):
                 if tmp is not None:
                     ew.author = self.validate_string(tmp.text)
 
-                tmp = event.find('.//mw:magnitude', namespaces=NSMAP).get('publicID')
+                tmp = event.find(
+                    './/mw:magnitude', namespaces=NSMAP).get('publicID')
                 if tmp is not None:
                     ew.magnitude_public_id = self.validate_string(tmp)
 
-                tmp = event.find('.//mw:magnitude//mw:mag//mw:value', namespaces=NSMAP)
+                tmp = event.find(
+                    './/mw:magnitude//mw:mag//mw:value', namespaces=NSMAP)
                 if tmp is not None:
                     ew.magnitude_value = self.validate_string(tmp.text)
 
-                tmp = event.find('.//mw:origin', namespaces=NSMAP).get('publicID')
+                tmp = event.find(
+                    './/mw:origin', namespaces=NSMAP).get('publicID')
                 if tmp is not None:
                     ew.origin_public_id = self.validate_string(tmp)
 
-                tmp = event.find('.//mw:origin//mw:time//mw:value', namespaces=NSMAP)
+                tmp = event.find(
+                    './/mw:origin//mw:time//mw:value', namespaces=NSMAP)
                 if tmp is not None:
                     ew.origin_time = self.validate_string(tmp.text)
 
-                tmp = event.find('.//mw:origin//mw:longitude//mw:value', namespaces=NSMAP)
+                tmp = event.find(
+                    './/mw:origin//mw:longitude//mw:value', namespaces=NSMAP)
                 if tmp is not None:
                     ew.origin_longitude = self.validate_string(tmp.text)
 
-                tmp = event.find('.//mw:origin//mw:latitude//mw:value', namespaces=NSMAP)
+                tmp = event.find(
+                    './/mw:origin//mw:latitude//mw:value', namespaces=NSMAP)
                 if tmp is not None:
                     ew.origin_latitude = self.validate_string(tmp.text)
 
-                tmp = event.find('.//mw:origin//mw:depth//mw:value', namespaces=NSMAP)
+                tmp = event.find(
+                    './/mw:origin//mw:depth//mw:value', namespaces=NSMAP)
                 if tmp is not None:
                     ew.origin_depth = self.validate_string(tmp.text)
 
-                tmp = event.find('.//mw:preferredOriginID', namespaces=NSMAP)
+                tmp = event.find(
+                    './/mw:preferredOriginID', namespaces=NSMAP)
                 if tmp is not None:
                     ew.preferred_origin_id = self.validate_string(tmp.text)
 
-                tmp = event.find('.//mw:preferredMagnitudeID', namespaces=NSMAP)
+                tmp = event.find(
+                    './/mw:preferredMagnitudeID', namespaces=NSMAP)
+                if tmp is not None:
+                    ew.preferred_magnitude_id = self.validate_string(tmp.text)
+
+                event_graph.events.append(ew)
+            return event_graph
+        except:
+            self.log_exception()
+            raise
+
+    def get_event_by_id(self, id):
+        try:
+            response = self.fdsn_request(
+                self.node_wrapper.build_url_event_by_id(id)
+            )
+
+            if not response:
+                return
+
+            root = ET.fromstring(response)
+            event_graph = Events()
+
+            for event in root.findall('.//mw:event', namespaces=NSMAP):
+                ew = EventWrapper()
+
+                tmp = event.get('publicID')
+                if tmp is not None:
+                    ew.public_id = self.validate_string(tmp)
+
+                tmp = event.find(
+                    './/mw:creationInfo//mw:author', namespaces=NSMAP
+                )
+                if tmp is not None:
+                    ew.author = self.validate_string(tmp.text)
+
+                tmp = event.find(
+                    './/mw:magnitude', namespaces=NSMAP).get('publicID')
+                if tmp is not None:
+                    ew.magnitude_public_id = self.validate_string(tmp)
+
+                tmp = event.find(
+                    './/mw:magnitude//mw:mag//mw:value', namespaces=NSMAP)
+                if tmp is not None:
+                    ew.magnitude_value = self.validate_string(tmp.text)
+
+                tmp = event.find(
+                    './/mw:origin', namespaces=NSMAP).get('publicID')
+                if tmp is not None:
+                    ew.origin_public_id = self.validate_string(tmp)
+
+                tmp = event.find(
+                    './/mw:origin//mw:time//mw:value', namespaces=NSMAP)
+                if tmp is not None:
+                    ew.origin_time = self.validate_string(tmp.text)
+
+                tmp = event.find(
+                    './/mw:origin//mw:longitude//mw:value', namespaces=NSMAP)
+                if tmp is not None:
+                    ew.origin_longitude = self.validate_string(tmp.text)
+
+                tmp = event.find(
+                    './/mw:origin//mw:latitude//mw:value', namespaces=NSMAP)
+                if tmp is not None:
+                    ew.origin_latitude = self.validate_string(tmp.text)
+
+                tmp = event.find(
+                    './/mw:origin//mw:depth//mw:value', namespaces=NSMAP)
+                if tmp is not None:
+                    ew.origin_depth = self.validate_string(tmp.text)
+
+                tmp = event.find(
+                    './/mw:preferredOriginID', namespaces=NSMAP)
+                if tmp is not None:
+                    ew.preferred_origin_id = self.validate_string(tmp.text)
+
+                tmp = event.find(
+                    './/mw:preferredMagnitudeID', namespaces=NSMAP)
                 if tmp is not None:
                     ew.preferred_magnitude_id = self.validate_string(tmp.text)
 
@@ -125,7 +210,7 @@ class FdsnMotionManager(FdsnHttpBase):
             response = self.fdsn_request(odc_ws_link)
 
             if not response:
-                return
+                return None, odc_ws_link
 
             result = MotionData()
             data = json.loads(response.decode('utf-8'))
@@ -161,10 +246,10 @@ class FdsnMotionManager(FdsnHttpBase):
                     ch.corner_freq_upper = d['corner-freq-upper']
                     station_data.sensor_channels.append(ch)
                 result.stations.append(station_data)
-            return result
+            return result, odc_ws_link
         except:
             self.log_exception()
-            raise
+            return None, odc_ws_link
 
 
 class FdsnManager(RrsmLoggerMixin):

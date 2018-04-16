@@ -25,6 +25,9 @@ class NodeWrapper(object):
             date_then.day,
             )
 
+    def build_url_event_by_id(self, id):
+        return self.url_event + '?id={}'.format(id)
+
     def build_url_motion(self, event_public_id):
         return self.url_motion + '?eventid={}'.format(event_public_id)
 
@@ -48,7 +51,7 @@ class EventWrapper(object):
         self.origin_depth = 0
         self.preferred_origin_id = NO_FDSNWS_DATA
         self.preferred_magnitude_id = NO_FDSNWS_DATA
-    
+
     def parse_origin_time(self):
         try:
             date = parse_datetime(self.origin_time)
@@ -72,7 +75,9 @@ class EventWrapper(object):
     def get_flinn_engdahl(self):
         try:
             fe = FlinnEngdahl()
-            result = fe.get_region(float(self.origin_longitude), float(self.origin_latitude)).title()
+            result = fe.get_region(
+                float(self.origin_longitude), float(self.origin_latitude)
+                ).title()
             return result
         except:
             return 'unknown'
@@ -81,6 +86,7 @@ class EventWrapper(object):
 class MotionData(object):
     def __init__(self):
         self.stations = []
+
 
 class MotionDataStation(object):
     def __init__(self):
@@ -100,6 +106,20 @@ class MotionDataStation(object):
         self.epicentral_distance = NO_FDSNWS_DATA
         self.event_reference = NO_FDSNWS_DATA
         self.sensor_channels = []
+
+    def parse_origin_time(self):
+        try:
+            date = parse_datetime(self.event_time)
+            return '{0}-{1}-{2} {3}:{4}:{5}'.format(
+                date.year,
+                f'{date.month:02}',
+                f'{date.day:02}',
+                f'{date.hour:02}',
+                f'{date.minute:02}',
+                f'{date.second:02}'
+            )
+        except:
+            pass
 
 
 class MotionDataStationChannel(object):
