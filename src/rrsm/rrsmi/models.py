@@ -8,8 +8,6 @@ from django.utils import timezone
 from django.utils.html import mark_safe
 from django.contrib.auth.models import User
 
-from markdown import markdown
-
 
 STRING_LENGTH_SHORT = 256
 STRING_LENGTH_MEDIUM = 1024

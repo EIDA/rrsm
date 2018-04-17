@@ -93,12 +93,12 @@ class EventWrapper(object):
         try:
             date = parse_datetime(self.origin_time)
             return '{0}-{1}-{2} {3}:{4}:{5}'.format(
-                date.year,
-                f'{date.month:02}',
-                f'{date.day:02}',
-                f'{date.hour:02}',
-                f'{date.minute:02}',
-                f'{date.second:02}'
+                str(date.year),
+                str(date.month).zfill(2),
+                str(date.day).zfill(2),
+                str(date.hour).zfill(2),
+                str(date.minute).zfill(2),
+                str(date.second).zfill(2)
             )
         except:
             pass
@@ -148,12 +148,12 @@ class MotionDataStation(object):
         try:
             date = parse_datetime(self.event_time)
             return '{0}-{1}-{2} {3}:{4}:{5}'.format(
-                date.year,
-                f'{date.month:02}',
-                f'{date.day:02}',
-                f'{date.hour:02}',
-                f'{date.minute:02}',
-                f'{date.second:02}'
+                str(date.year),
+                str(date.month).zfill(2),
+                str(date.day).zfill(2),
+                str(date.hour).zfill(2),
+                str(date.minute).zfill(2),
+                str(date.second).zfill(2)
             )
         except:
             pass

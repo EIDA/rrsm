@@ -6,8 +6,8 @@ from xml.etree.ElementTree import ParseError
 from urllib.request import Request, urlopen
 
 from .base_classes import NSMAP, NO_FDSNWS_DATA, \
-    NodeWrapper, Events, EventWrapper, \
-    MotionData, MotionDataStation, MotionDataStationChannel
+NodeWrapper, Events, EventWrapper, \
+MotionData, MotionDataStation, MotionDataStationChannel
 from ..logger import RrsmLoggerMixin
 from ..models import FdsnNode
 
