@@ -46,3 +46,26 @@ class Link(models.Model):
             self.url,
             self.description
         )
+
+
+class SearchEvent(models.Model):
+    event_id = models.CharField(
+        max_length=STRING_LENGTH_SHORT, blank=True
+    )
+    date_start = models.DateField(default='', blank=True)
+    date_end = models.DateField(default='', blank=True)
+    magnitude_min = models.DecimalField(
+        max_digits=3, decimal_places=1, blank=True
+    )
+    network_code = models.CharField(
+        max_length=STRING_LENGTH_SHORT, blank=True
+    )
+    station_code = models.CharField(
+        max_length=STRING_LENGTH_SHORT, blank=True
+    )
+    level = models.CharField(
+        max_length=STRING_LENGTH_SHORT, blank=True
+    )
+
+    class Meta:
+        managed = False

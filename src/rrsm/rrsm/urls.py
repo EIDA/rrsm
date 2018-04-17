@@ -16,7 +16,9 @@ urlpatterns = [
     re_path(r'^recent/(?P<days>\w+)/$',
         cache_page(60*60)(rrsmi_view.RecentEventsListView.as_view()), name='recent_events'),
     re_path(r'^event/(?P<event_public_id>\w+)/$',
-        rrsmi_view.EventDetailsListView.as_view(), name='event_details'),
+        cache_page(60*60)(rrsmi_view.EventDetailsListView.as_view()), name='event_details'),
+    path('search_events/', rrsmi_view.search_events, name='search_events'),
+    path('links/', rrsmi_view.LinksListView.as_view(), name='links'),
     path('admin/', admin.site.urls),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]

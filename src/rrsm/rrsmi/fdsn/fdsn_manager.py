@@ -42,14 +42,22 @@ class FdsnEventManager(FdsnHttpBase):
         super(FdsnEventManager, self).__init__()
         self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
 
-    def get_recent_events(self, days_back):
+    def get_events(
+        self, days_back=None, event_id=None, date_start=None, date_end=None,
+            magnitude_min=None, network_code=None,
+            station_code=None, level=None):
         try:
-            response = self.fdsn_request(
-                self.node_wrapper.build_url_events_starttime(days_back)
-            )
+            ws_url = self.node_wrapper.build_url_events(
+                days_back, event_id, date_start, date_end,
+                magnitude_min, network_code,
+                station_code, level)
+
+            self.log_information(ws_url)
+
+            response = self.fdsn_request(ws_url)
 
             if not response:
-                return
+                return None, ws_url
 
             root = ET.fromstring(response)
             event_graph = Events()
@@ -113,86 +121,10 @@ class FdsnEventManager(FdsnHttpBase):
                     ew.preferred_magnitude_id = self.validate_string(tmp.text)
 
                 event_graph.events.append(ew)
-            return event_graph
+            return event_graph, ws_url
         except:
             self.log_exception()
-            raise
-
-    def get_event_by_id(self, id):
-        try:
-            response = self.fdsn_request(
-                self.node_wrapper.build_url_event_by_id(id)
-            )
-
-            if not response:
-                return
-
-            root = ET.fromstring(response)
-            event_graph = Events()
-
-            for event in root.findall('.//mw:event', namespaces=NSMAP):
-                ew = EventWrapper()
-
-                tmp = event.get('publicID')
-                if tmp is not None:
-                    ew.public_id = self.validate_string(tmp)
-
-                tmp = event.find(
-                    './/mw:creationInfo//mw:author', namespaces=NSMAP
-                )
-                if tmp is not None:
-                    ew.author = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:magnitude', namespaces=NSMAP).get('publicID')
-                if tmp is not None:
-                    ew.magnitude_public_id = self.validate_string(tmp)
-
-                tmp = event.find(
-                    './/mw:magnitude//mw:mag//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.magnitude_value = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:origin', namespaces=NSMAP).get('publicID')
-                if tmp is not None:
-                    ew.origin_public_id = self.validate_string(tmp)
-
-                tmp = event.find(
-                    './/mw:origin//mw:time//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.origin_time = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:origin//mw:longitude//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.origin_longitude = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:origin//mw:latitude//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.origin_latitude = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:origin//mw:depth//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.origin_depth = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:preferredOriginID', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.preferred_origin_id = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:preferredMagnitudeID', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.preferred_magnitude_id = self.validate_string(tmp.text)
-
-                event_graph.events.append(ew)
-            return event_graph
-        except:
-            self.log_exception()
-            raise
+            return None, ws_url
 
 
 class FdsnMotionManager(FdsnHttpBase):
@@ -202,15 +134,15 @@ class FdsnMotionManager(FdsnHttpBase):
 
     def get_event_details(self, event_public_id):
         try:
-            odc_ws_link = self.node_wrapper.build_url_motion(event_public_id)
+            ws_url = self.node_wrapper.build_url_motion(event_public_id)
             self.log_information(
-                'Trying to get motion data for event {}'.format(odc_ws_link)
+                'Trying to get motion data for event {}'.format(ws_url)
             )
 
-            response = self.fdsn_request(odc_ws_link)
+            response = self.fdsn_request(ws_url)
 
             if not response:
-                return None, odc_ws_link
+                return None, ws_url
 
             result = MotionData()
             data = json.loads(response.decode('utf-8'))
@@ -246,10 +178,10 @@ class FdsnMotionManager(FdsnHttpBase):
                     ch.corner_freq_upper = d['corner-freq-upper']
                     station_data.sensor_channels.append(ch)
                 result.stations.append(station_data)
-            return result, odc_ws_link
+            return result, ws_url
         except:
             self.log_exception()
-            return None, odc_ws_link
+            return None, ws_url
 
 
 class FdsnManager(RrsmLoggerMixin):

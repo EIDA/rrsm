@@ -23,7 +23,7 @@
 
 {% if motion_data %}
 <div class="mt-2">
-<h1 class="bg-dark text-white">Earthquake data</h1>
+<h1 class="bg-dark text-white pl-2">Earthquake data</h1>
 <div class="container">
     <div class="row">
         <div class="col">
@@ -42,7 +42,7 @@
 </div>
 {% for s in motion_data.stations %}
 <div class="table-responsive">
-<h2 id="{{ s.network_code }}-{{ s.station_code }}" class="bg-dark text-white">Network {{ s.network_code }}, Station {{ s.station_code }} </h2>
+<h2 id="{{ s.network_code }}-{{ s.station_code }}" class="bg-dark text-white pl-2">Network {{ s.network_code }}, Station {{ s.station_code }} </h2>
 </div>
 <div class="container">
     <div class="row">
@@ -101,7 +101,7 @@ var latitude=parseFloat("{{ s.station_latitude }}"),longitude=parseFloat("{{ s.s
     <div class="alert alert-warning" role="alert">
         <h4 class="alert-heading">No data</h4>
         <p>Event details not available for given event:</p>
-        <a href="{{ odc_ws_link }}" class="alert-link">{{ odc_ws_link }}</a>
+        <a href="{{ ws_url }}" class="alert-link">{{ ws_url }}</a>
     </div>
 </p>
 {% endif %}
