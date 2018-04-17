@@ -90,6 +90,13 @@ DATABASES = {
     )
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': config('CACHE_BACKEND'),
+        'LOCATION': 'rrsm_cache',
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 

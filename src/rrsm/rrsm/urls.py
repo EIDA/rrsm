@@ -7,13 +7,14 @@ from django.urls import path, re_path
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth import views as auth_views
+from django.views.decorators.cache import cache_page
 
 from rrsmi import views as rrsmi_view
 
 urlpatterns = [
-    path('', rrsmi_view.HomeListView.as_view(), name='home'),
+    path('', cache_page(60*15)(rrsmi_view.HomeListView.as_view()), name='home'),
     re_path(r'^recent/(?P<days>\w+)/$',
-        rrsmi_view.RecentEventsListView.as_view(), name='recent_events'),
+        cache_page(60*60)(rrsmi_view.RecentEventsListView.as_view()), name='recent_events'),
     re_path(r'^event/(?P<event_public_id>\w+)/$',
         rrsmi_view.EventDetailsListView.as_view(), name='event_details'),
     path('admin/', admin.site.urls),
