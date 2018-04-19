@@ -64,14 +64,12 @@ map.on('pointermove', function (e) {
 });
 
 var getEventColor = function (value) {
-    if (value < 2.0) {
-        return '#75FF33'
-    } else if (value < 4.0) {
-        return '#DBFF33'
+    if (value < 4.0) {
+        return '#17A2B8' // Bootstrap info
     } else if (value < 6.0) {
-        return '#FFBD33'
+        return '#FFC107' // Bootstrap warning
     } else {
-        return '#FF5733'
+        return '#DC3545' // Bootstrap danger
     }
 }
 
