@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import operator
-from functools import reduce
+from collections import defaultdict
 
 from django.http import Http404
 from django.shortcuts import \
@@ -14,6 +14,11 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from django.db import transaction
 from django.db.models import Q, Count
+
+import plotly.plotly as py
+import plotly.offline as opy
+import plotly.graph_objs as go
+import numpy as np
 
 from .fdsn.fdsn_manager import FdsnEventManager, FdsnMotionManager
 from .models import Link, SearchEvent
@@ -70,11 +75,56 @@ class EventDetailsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['motion_data'], context['ws_url'] = \
-            FdsnMotionManager().get_event_details(
-                self.kwargs.get('event_public_id')
-                )
+        motion_data, ws_url = FdsnMotionManager().get_event_details(
+            self.kwargs.get('event_public_id')
+            )
+        context['motion_data'] = motion_data
+        context['ws_url'] = ws_url
+        context['graph'] = self.get_sensor_channels_graph(motion_data)
         return context
+
+    def get_sensor_channels_graph(self, motion_data):
+        try:
+            if not motion_data:
+                return
+
+            lot = []  # List of traces
+            channels_pga = defaultdict(list)
+            channels_pgv = defaultdict(list)
+
+            epicentral_distances = []
+            for s in motion_data.stations:
+                epicentral_distances.append(s.epicentral_distance)
+                for sc in s.sensor_channels:
+                    channels_pga[sc.channel_code].append(sc.pga_value)
+                    channels_pgv[sc.channel_code].append(sc.pgv_value)
+
+            for key in channels_pga:
+                lot.append(go.Scatter(
+                    x = epicentral_distances,
+                    y = channels_pga[key],
+                    mode = 'lines+markers',
+                    name='{} Channel PGA'.format(key)
+                ))
+
+            for key in channels_pgv:
+                lot.append(go.Scatter(
+                    x = epicentral_distances,
+                    y = channels_pgv[key],
+                    mode = 'lines+markers',
+                    name='{} Channel PGV'.format(key)
+                ))
+
+            layout=go.Layout(
+                title="PGA & PGV vs Epicentral distance",
+                xaxis={'title':'Epicentral distance [km]'},
+                yaxis={'title':'Value'}
+            )
+
+            figure=go.Figure(data=lot,layout=layout)
+            return opy.plot(figure, auto_open=False, output_type='div')
+        except:
+            raise
 
 
 class LinksListView(ListView):
