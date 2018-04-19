@@ -103,7 +103,7 @@ class EventDetailsListView(ListView):
                 lot.append(go.Scatter(
                     x = epicentral_distances,
                     y = channels_pga[key],
-                    mode = 'lines+markers',
+                    mode = 'markers',
                     name='{} Channel PGA'.format(key)
                 ))
 
@@ -111,7 +111,7 @@ class EventDetailsListView(ListView):
                 lot.append(go.Scatter(
                     x = epicentral_distances,
                     y = channels_pgv[key],
-                    mode = 'lines+markers',
+                    mode = 'markers',
                     name='{} Channel PGV'.format(key)
                 ))
 
