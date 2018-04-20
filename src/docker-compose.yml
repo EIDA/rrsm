@@ -4,13 +4,13 @@ services:
     restart: always
     build: ./rrsm/
     expose:
-      - "8080"
+      - "8000"
     env_file: .env
     volumes:
       - /data/rrsm/rrsm/static
     networks:
       - rrsm_net
-    command: gunicorn rrsm.wsgi:application -w 2 -b :8080
+    command: gunicorn rrsm.wsgi:application --timeout 300 -w 2 -b :8000
     
   rrsmnginx:
     restart: always
@@ -18,7 +18,7 @@ services:
     depends_on:
       - rrsmweb
     ports:
-      - "8080:8080"
+      - "8000:8000"
     volumes_from:
       - rrsmweb
     links:
