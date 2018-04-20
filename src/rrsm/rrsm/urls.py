@@ -10,9 +10,9 @@ from django.contrib.auth import views as auth_views
 from django.views.decorators.cache import cache_page
 from rrsmi import views as rrsmi_view
 
-CACHE_TIME_SHORT = getattr(settings, "CACHE_TIME_SHORT", 0)
-CACHE_TIME_MEDIUM = getattr(settings, "CACHE_TIME_MEDIUM", 0)
-CACHE_TIME_LONG = getattr(settings, "CACHE_TIME_LONG", 0)
+CACHE_TIME_SHORT = int(getattr(settings, "CACHE_TIME_SHORT", 0))
+CACHE_TIME_MEDIUM = int(getattr(settings, "CACHE_TIME_MEDIUM", 0))
+CACHE_TIME_LONG = int(getattr(settings, "CACHE_TIME_LONG", 0))
 
 urlpatterns = [
     path('', cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.HomeListView.as_view()), name='home'),
