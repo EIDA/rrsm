@@ -103,19 +103,19 @@ class EventDetailsListView(ListView):
 
             lot_pga = []  # List of traces PGA
             lot_pgv = []  # List of traces PGV
-            epicentral_distances = []
+            distances = defaultdict(list)
             channels_pga = defaultdict(list)
             channels_pgv = defaultdict(list)
 
             for s in motion_data.stations:
-                epicentral_distances.append(s.epicentral_distance)
                 for sc in s.sensor_channels:
+                    distances[sc.channel_code].append(s.epicentral_distance)
                     channels_pga[sc.channel_code].append(sc.pga_value)
                     channels_pgv[sc.channel_code].append(sc.pgv_value)
 
             for key in channels_pga:
                 lot_pga.append(go.Scatter(
-                    x = epicentral_distances,
+                    x = distances[key],
                     y = channels_pga[key],
                     mode = 'markers',
                     marker = dict(
@@ -126,7 +126,7 @@ class EventDetailsListView(ListView):
 
             for key in channels_pgv:
                 lot_pgv.append(go.Scatter(
-                    x = epicentral_distances,
+                    x = distances[key],
                     y = channels_pgv[key],
                     mode = 'markers',
                     marker = dict(
