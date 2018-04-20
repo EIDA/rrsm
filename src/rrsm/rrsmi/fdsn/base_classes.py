@@ -27,48 +27,56 @@ class NodeWrapper(object):
 
         if days_back is not None and len(str(days_back)) > 0:
             date_then = datetime.now() - timedelta(days=days_back)
-            query += 'starttime={}-{}-{}'.format(
+            query += 'starttime={}-{}-{}&'.format(
                 date_then.year,
                 date_then.month,
                 date_then.day
                 )
 
         if event_id is not None and len(str(event_id)) > 0:
-            query += '&eventid={}'.format(event_id)
+            query += 'eventid={}&'.format(event_id)
 
         if date_start is not None and len(str(date_start)) > 0:
-            query += '&starttime={}-{}-{}'.format(
+            query += 'starttime={}-{}-{}&'.format(
                 date_start.year,
                 date_start.month,
                 date_start.day
                 )
 
         if date_end is not None and len(str(date_end)) > 0:
-            query += '&endttime={}-{}-{}'.format(
+            query += 'endttime={}-{}-{}&'.format(
                 date_end.year,
                 date_end.month,
                 date_end.day
                 )
 
         if magnitude_min is not None and len(str(magnitude_min)) > 0:
-            query += '&minmagnitude={}'.format(magnitude_min)
+            query += 'minmagnitude={}&'.format(magnitude_min)
 
         if network_code is not None and len(str(network_code)) > 0:
-            query += '&network={}'.format(network_code)
+            query += 'network={}&'.format(network_code)
 
         if station_code is not None and len(str(station_code)) > 0:
-            query += '&station={}'.format(station_code)
+            query += 'station={}&'.format(station_code)
 
         if level is not None and len(str(level)) > 0:
-            query += '&level={}'.format(level)
+            query += 'level={}&'.format(level)
 
         return self.url_event + query
 
     def build_url_event_by_id(self, id):
         return self.url_event + '?eventid={}'.format(id)
 
-    def build_url_motion(self, event_public_id):
-        return self.url_motion + '?eventid={}'.format(event_public_id)
+    def build_url_motion(self, event_public_id, network=None, station=None):
+        query = '?eventid={}'.format(event_public_id)
+
+        if network is not None and len(str(network)) > 0:
+            query += '&network={}'.format(network)
+
+        if station is not None and len(str(station)) > 0:
+            query += '&station={}'.format(station)
+
+        return self.url_motion + query
 
     def build_url_shakemap_by_id(self, id):
         return self.url_shakemap + '?id={}'.format(id)
@@ -165,6 +173,20 @@ class MotionDataStation(object):
             )
         except:
             pass
+
+    def get_max_pga(self):
+        try:
+            result = max(sc.pga_value for sc in self.sensor_channels)
+            return result
+        except:
+            return 0
+
+    def get_max_pgv(self):
+        try:
+            result = max(sc.pgv_value for sc in self.sensor_channels)
+            return result
+        except:
+            return 0
 
 
 class MotionDataStationChannel(object):

@@ -132,9 +132,12 @@ class FdsnMotionManager(FdsnHttpBase):
         super(FdsnMotionManager, self).__init__()
         self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
 
-    def get_event_details(self, event_public_id):
+    def get_event_details(self, event_public_id, network=None, station=None):
         try:
-            ws_url = self.node_wrapper.build_url_motion(event_public_id)
+            ws_url = self.node_wrapper.build_url_motion(
+                event_public_id, network, station
+            )
+
             self.log_information(
                 'Trying to get motion data for event {}'.format(ws_url)
             )

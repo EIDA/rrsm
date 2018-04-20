@@ -88,12 +88,16 @@
             <p><b>Station code: </b>{{ s.station_code }}</p>
         </div>
         <div class="col">
-            <p><b>Station latitude: </b>{{ s.station_latitude }}</p>
-            <p><b>Station longitude: </b>{{ s.station_longitude }}</p>
+            <p><b>Station latitude [°]: </b>{{ s.station_latitude }}</p>
+            <p><b>Station longitude [°]: </b>{{ s.station_longitude }}</p>
         </div>
         <div class="col">
-            <p><b>Station elevation: </b>{{ s.station_elevation }}</p>
-            <p><b>Epicentral distance: </b>{{ s.epicentral_distance }}</p>
+            <p><b>Station elevation [m]: </b>{{ s.station_elevation }}</p>
+            <p><b>Epicentral distance [km]: </b>{{ s.epicentral_distance }}</p>
+        </div>
+        <div class="col">
+            <p><b>Max PGA [cm/s^2]: </b>{{ s.get_max_pga }}</p>
+            <p><b>Max PGV [cm/s]: </b>{{ s.get_max_pgv }}</p>
         </div>
     </div>
 </div>

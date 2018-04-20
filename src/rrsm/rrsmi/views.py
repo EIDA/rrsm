@@ -155,7 +155,35 @@ class EventDetailsListView(ListView):
 
             return plot_pga, plot_pgv
         except:
+            return None, None
+
+
+class StationStreamsListView(ListView):
+    model = None
+    context_object_name = None
+    template_name = 'station_streams.html'
+
+    def get_queryset(self):
+        try:
+            queryset = None
+        except:
             raise
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        event_id = self.kwargs.get('event_public_id')
+        network_code = self.kwargs.get('network_code')
+        station_code = self.kwargs.get('station_code')
+        fdsn_motion_man = FdsnMotionManager()
+
+        motion_data, ws_url = fdsn_motion_man.get_event_details(
+            event_id, network_code, station_code
+        )
+
+        context['motion_data'] = motion_data
+        context['ws_url'] = ws_url
+        return context
 
 
 class LinksListView(ListView):
