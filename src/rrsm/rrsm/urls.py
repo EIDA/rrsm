@@ -8,15 +8,18 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth import views as auth_views
 from django.views.decorators.cache import cache_page
-
 from rrsmi import views as rrsmi_view
 
+CACHE_TIME_SHORT = getattr(settings, "CACHE_TIME_SHORT", 0)
+CACHE_TIME_MEDIUM = getattr(settings, "CACHE_TIME_MEDIUM", 0)
+CACHE_TIME_LONG = getattr(settings, "CACHE_TIME_LONG", 0)
+
 urlpatterns = [
-    path('', cache_page(60*15)(rrsmi_view.HomeListView.as_view()), name='home'),
+    path('', cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.HomeListView.as_view()), name='home'),
     re_path(r'^recent/(?P<days>\w+)/$',
-        cache_page(60*60)(rrsmi_view.RecentEventsListView.as_view()), name='recent_events'),
+        cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.RecentEventsListView.as_view()), name='recent_events'),
     re_path(r'^event/(?P<event_public_id>\w+)/$',
-        cache_page(60*60)(rrsmi_view.EventDetailsListView.as_view()), name='event_details'),
+        cache_page(CACHE_TIME_LONG)(rrsmi_view.EventDetailsListView.as_view()), name='event_details'),
     path('search_events/', rrsmi_view.search_events, name='search_events'),
     path('links/', rrsmi_view.LinksListView.as_view(), name='links'),
     path('admin/', admin.site.urls),

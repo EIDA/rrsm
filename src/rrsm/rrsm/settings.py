@@ -196,3 +196,9 @@ LOGGING = {
         },
     },
 }
+
+CACHE_TIME_SHORT = config('CACHE_TIME_SHORT')
+
+CACHE_TIME_MEDIUM = config('CACHE_TIME_MEDIUM')
+
+CACHE_TIME_LONG = config('CACHE_TIME_LONG')
