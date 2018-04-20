@@ -23,6 +23,10 @@ class FdsnNode(models.Model):
         max_length=STRING_LENGTH_MEDIUM, default='', blank=True)
     url_motion = models.CharField(
         max_length=STRING_LENGTH_MEDIUM, default='', blank=True)
+    url_shakemap = models.CharField(
+        max_length=STRING_LENGTH_MEDIUM, default='', blank=True)
+    url_waveform = models.CharField(
+        max_length=STRING_LENGTH_MEDIUM, default='', blank=True)
 
     def __str__(self):
         return self.code

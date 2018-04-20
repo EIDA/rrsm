@@ -20,7 +20,10 @@ import plotly.offline as opy
 import plotly.graph_objs as go
 import numpy as np
 
-from .fdsn.fdsn_manager import FdsnEventManager, FdsnMotionManager
+from .fdsn.fdsn_manager import \
+    FdsnEventManager, FdsnMotionManager, \
+    FdsnShakemapManager, FdsnWaveformManager
+
 from .models import Link, SearchEvent
 from .forms import SearchEventsForm
 
@@ -75,24 +78,35 @@ class EventDetailsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        motion_data, ws_url = FdsnMotionManager().get_event_details(
-            self.kwargs.get('event_public_id')
-            )
+        event_id = self.kwargs.get('event_public_id')
+        fdsn_motion_man = FdsnMotionManager()
+        fdsn_shakemap_man = FdsnShakemapManager()
+        fdsn_waveform_man = FdsnWaveformManager()
+
+        motion_data, ws_url = fdsn_motion_man.get_event_details(event_id)
+        graph_pga, graph_pgv = self.get_sensor_channels_graphs(motion_data)
+        shakemap_url = fdsn_shakemap_man.get_shakemap_url(event_id)
+        waveform_url = fdsn_waveform_man.get_waveform_url(event_id)
+
         context['motion_data'] = motion_data
         context['ws_url'] = ws_url
-        context['graph'] = self.get_sensor_channels_graph(motion_data)
+        context['graph_pga'] = graph_pga
+        context['graph_pgv'] = graph_pgv
+        context['shakemap_url'] = shakemap_url
+        context['waveform_url'] = waveform_url
         return context
 
-    def get_sensor_channels_graph(self, motion_data):
+    def get_sensor_channels_graphs(self, motion_data):
         try:
             if not motion_data:
-                return
+                return None, None
 
-            lot = []  # List of traces
+            lot_pga = []  # List of traces PGA
+            lot_pgv = []  # List of traces PGV
+            epicentral_distances = []
             channels_pga = defaultdict(list)
             channels_pgv = defaultdict(list)
 
-            epicentral_distances = []
             for s in motion_data.stations:
                 epicentral_distances.append(s.epicentral_distance)
                 for sc in s.sensor_channels:
@@ -100,29 +114,46 @@ class EventDetailsListView(ListView):
                     channels_pgv[sc.channel_code].append(sc.pgv_value)
 
             for key in channels_pga:
-                lot.append(go.Scatter(
+                lot_pga.append(go.Scatter(
                     x = epicentral_distances,
                     y = channels_pga[key],
                     mode = 'markers',
-                    name='{} Channel PGA'.format(key)
+                    marker = dict(
+                        size = 10,
+                    ),
+                    name='{} PGA'.format(key)
                 ))
 
             for key in channels_pgv:
-                lot.append(go.Scatter(
+                lot_pgv.append(go.Scatter(
                     x = epicentral_distances,
                     y = channels_pgv[key],
                     mode = 'markers',
-                    name='{} Channel PGV'.format(key)
+                    marker = dict(
+                        size = 10,
+                    ),
+                    name='{} PGV'.format(key)
                 ))
 
-            layout=go.Layout(
-                title="PGA & PGV vs Epicentral distance",
+            layout_pga=go.Layout(
+                title="PGA vs Epicentral distance",
                 xaxis={'title':'Epicentral distance [km]'},
                 yaxis={'title':'Value'}
             )
 
-            figure=go.Figure(data=lot,layout=layout)
-            return opy.plot(figure, auto_open=False, output_type='div')
+            layout_pgv=go.Layout(
+                title="PGV vs Epicentral distance",
+                xaxis={'title':'Epicentral distance [km]'},
+                yaxis={'title':'Value'}
+            )
+
+            figure_pga=go.Figure(data=lot_pga,layout=layout_pga)
+            figure_pgv=go.Figure(data=lot_pgv,layout=layout_pgv)
+
+            plot_pga = opy.plot(figure_pga, auto_open=False, output_type='div')
+            plot_pgv = opy.plot(figure_pgv, auto_open=False, output_type='div')
+
+            return plot_pga, plot_pgv
         except:
             raise
 

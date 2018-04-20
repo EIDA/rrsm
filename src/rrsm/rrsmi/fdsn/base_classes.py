@@ -16,6 +16,8 @@ class NodeWrapper(object):
         self.description = node.description
         self.url_event = node.url_event
         self.url_motion = node.url_motion
+        self.url_shakemap = node.url_shakemap
+        self.url_waveform = node.url_waveform
 
     def build_url_events(
         self, days_back, event_id, date_start, date_end, magnitude_min,
@@ -67,6 +69,12 @@ class NodeWrapper(object):
 
     def build_url_motion(self, event_public_id):
         return self.url_motion + '?eventid={}'.format(event_public_id)
+
+    def build_url_shakemap_by_id(self, id):
+        return self.url_shakemap + '?id={}'.format(id)
+
+    def build_url_waveform_by_id(self, id):
+        return self.url_waveform + '?id={}'.format(id)
 
 
 class Events(object):

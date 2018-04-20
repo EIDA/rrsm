@@ -10,6 +10,8 @@ class FdsnNodeAdmin(admin.ModelAdmin):
                     'description',
                     'url_event',
                     'url_motion',
+                    'url_shakemap',
+                    'url_waveform'
                 ]
             }
         ),
@@ -20,6 +22,8 @@ class FdsnNodeAdmin(admin.ModelAdmin):
         'description',
         'url_event',
         'url_motion',
+        'url_shakemap',
+        'url_waveform'
     )
 
     list_filter = [

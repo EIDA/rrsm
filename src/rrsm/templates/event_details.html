@@ -14,28 +14,51 @@
 {% block content %}
 {% if motion_data %}
 <div id="map" class="map">
-  <div id="popup"></div>
+    <div id="popup"></div>
 </div>
-{% endif %}
-
 <script src="{% static 'js/openlayers/ol.js' %}"></script>
 <script src="{% static 'js/openlayers/olStationbook.js' %}"></script>
 
-{% if motion_data %}
 <div class="mt-2">
-<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    Click
-    <a href="{{ ws_url }}" target="_blank" class="alert-link">here</a> to see raw data used to generate this page.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+<div class="container">
+    <div class="row">
+        <div class="btn-group" role="group">
+            <div class="btn-group" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Download data</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ ws_url }}" target="_blank">Motion data (this page source)</a>
+                    <a class="dropdown-item" href="{{ shakemap_url }}" target="_blank">ShakeMap XML</a>
+                    <a class="dropdown-item" href="{{ waveform_url }}" target="_blank">Processed Waveforms</a>
+                </div>
+            </div>
+            <div class="btn-group" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">External links</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="http://orfeus-eu.org/webdc3/" target="_blank">Go to WebDC3</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-{% if graph %}
-<div>
-{{ graph|safe }}
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            {% if graph_pga %}
+            <div>
+                {{ graph_pga|safe }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-6">
+            {% if graph_pgv %}
+            <div>
+                {{ graph_pgv|safe }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
-{% endif %}
 
 <h1 class="bg-dark text-white pl-2">Earthquake data</h1>
 <div class="container">
@@ -121,13 +144,14 @@ var latitude=parseFloat("{{ s.station_latitude }}"),longitude=parseFloat("{{ s.s
 {% endif %}
 </div>
 
+<script type="text/javascript">
+var event_latitude=parseFloat("{{ motion_data.stations.0.event_latitude }}"),event_longitude=parseFloat("{{ motion_data.stations.0.event_longitude }}"),event_depth=parseFloat("{{ motion_data.stations.0.event_depth }}"),event_magnitude=parseFloat("{{ motion_data.stations.0.event_magnitude }}");if(!isNaN(event_latitude)&&!isNaN(event_longitude)){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([event_longitude,event_latitude]))});point.setStyle(new ol.style.Style({image:new ol.style.Circle({radius:event_magnitude**2/2,fill:new ol.style.Fill({color:getEventColor(event_magnitude)}),stroke:new ol.style.Stroke({color:'#000000',width:1})})})),vectorSource.addFeature(point)}
+var latitude=parseFloat("{{ motion_data.stations.0.event_latitude }}"),longitude=parseFloat("{{ motion_data.stations.0.event_longitude }}");map.getView().setCenter(ol.proj.transform([longitude,latitude],"EPSG:4326","EPSG:3857")),map.getView().setZoom(8);
+</script>
+
 {% block javascript %}
 <script src="{% static 'js/datatable/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'js/datatable/dataTables.bootstrap4.min.js' %}"></script>
 {% endblock %}
 
-<script type="text/javascript">
-var event_latitude=parseFloat("{{ motion_data.stations.0.event_latitude }}"),event_longitude=parseFloat("{{ motion_data.stations.0.event_longitude }}"),event_depth=parseFloat("{{ motion_data.stations.0.event_depth }}"),event_magnitude=parseFloat("{{ motion_data.stations.0.event_magnitude }}");if(!isNaN(event_latitude)&&!isNaN(event_longitude)){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([event_longitude,event_latitude]))});point.setStyle(new ol.style.Style({image:new ol.style.Circle({radius:event_magnitude**2/2,fill:new ol.style.Fill({color:getEventColor(event_magnitude)}),stroke:new ol.style.Stroke({color:'#000000',width:1})})})),vectorSource.addFeature(point)}
-var latitude=parseFloat("{{ motion_data.stations.0.event_latitude }}"),longitude=parseFloat("{{ motion_data.stations.0.event_longitude }}");map.getView().setCenter(ol.proj.transform([longitude,latitude],"EPSG:4326","EPSG:3857")),map.getView().setZoom(8);
-</script>
 {% endblock %}

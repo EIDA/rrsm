@@ -184,6 +184,26 @@ class FdsnMotionManager(FdsnHttpBase):
             return None, ws_url
 
 
+class FdsnShakemapManager(object):
+    def __init__(self):
+        super(FdsnShakemapManager, self).__init__()
+        self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
+
+    def get_shakemap_url(self, id):
+        ws_url = self.node_wrapper.build_url_shakemap_by_id(id)
+        return ws_url
+
+
+class FdsnWaveformManager(object):
+    def __init__(self):
+        super(FdsnWaveformManager, self).__init__()
+        self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
+
+    def get_waveform_url(self, id):
+        ws_url = self.node_wrapper.build_url_waveform_by_id(id)
+        return ws_url
+
+
 class FdsnManager(RrsmLoggerMixin):
     def __init__(self):
         super(FdsnManager, self).__init__()
