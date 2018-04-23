@@ -48,6 +48,8 @@
             <p><b>Network code: </b>{{ station_data.network_code }}</p>
             <p><b>Station code: </b>{{ station_data.station_code }}</p>
             <p><b>Location code: </b>{{ station_data.location_code }}</p>
+            <p><b>Station max PGA [cm/s<sup>2</sup>]: </b>{{ station_data.get_max_pga }}</p>
+            <p><b>Station max PGV [cm/s]: </b>{{ station_data.get_max_pgv }}</p>
             <p><b>Station epicentral distance [km]: </b>{{ station_data.epicentral_distance }}</p>
             <p><b>Station latitude [°]: </b>{{ station_data.station_latitude }}</p>
             <p><b>Station longitude [°]: </b>{{ station_data.station_longitude }}</p>
@@ -69,7 +71,7 @@
     <thead>
         <tr>
             <th>Channel code</th>
-            <th>PGA [cm/s^2]</th>
+            <th>PGA [cm/s<sup>2</sup>]</th>
             <th>PGV [cm/s]</th>
             <th>Azimuth</th>
             <th>Dip</th>
