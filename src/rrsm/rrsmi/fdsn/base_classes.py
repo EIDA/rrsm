@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from obspy.geodetics.flinnengdahl import FlinnEngdahl
 
-NO_FDSNWS_DATA = 'n/a'
+NO_FDSNWS_DATA = None
 NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
 
 
@@ -176,17 +176,21 @@ class MotionDataStation(object):
 
     def get_max_pga(self):
         try:
-            result = max(sc.pga_value for sc in self.sensor_channels)
-            return result
+            self.sensor_channels.sort(key=lambda x: x.pga_value, reverse=True)
+            cha = self.sensor_channels[0].channel_code
+            val = self.sensor_channels[0].pga_value
+            return val, cha
         except:
-            return 0
+            return '', 0
 
     def get_max_pgv(self):
         try:
-            result = max(sc.pgv_value for sc in self.sensor_channels)
-            return result
+            self.sensor_channels.sort(key=lambda x: x.pgv_value, reverse=True)
+            cha = self.sensor_channels[0].channel_code
+            val = self.sensor_channels[0].pgv_value
+            return val, cha
         except:
-            return 0
+            return '', 0
 
 
 class MotionDataStationChannel(object):

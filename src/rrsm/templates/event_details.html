@@ -109,8 +109,14 @@
                 <small class="text-muted d-block">Lat: {{ s.station_latitude }}, Lon: {{ s.station_longitude }}</small>
             </td>
             <td>{{ s.location_code }}</td>
-            <td>{{ s.get_max_pga }}</td>
-            <td>{{ s.get_max_pgv }}</td>
+            <td>
+                {{ s.get_max_pga.0 }}
+                <small class="text-muted d-block">Channel: {{ s.get_max_pga.1 }}</small>
+            </td>
+            <td>
+                {{ s.get_max_pgv.0 }}
+                <small class="text-muted d-block">Channel: {{ s.get_max_pgv.1 }}</small>
+            </td>
             <td>{{ s.epicentral_distance }}</td>
             <td>{{ s.station_elevation }}</td>
         </tr>
