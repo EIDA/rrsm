@@ -15,7 +15,7 @@ CACHE_TIME_MEDIUM = int(getattr(settings, "CACHE_TIME_MEDIUM", 0))
 CACHE_TIME_LONG = int(getattr(settings, "CACHE_TIME_LONG", 0))
 
 urlpatterns = [
-    path('', cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.HomeListView.as_view()), name='home'),
+    path('', cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.HomeListView.as_view()),name='home'),
     re_path(r'^recent/(?P<days>\w+)/$',
         cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.RecentEventsListView.as_view()), name='recent_events'),
     re_path(r'^event/(?P<event_public_id>\w+)/$',

@@ -58,7 +58,7 @@
     <td><a href="{% url 'event_details' e.get_public_id %}">{{ e.parse_origin_time }}</a></td>
     <td>
       <a href="#" onclick="focusEvent(parseFloat('{{ e.origin_latitude }}'),parseFloat('{{ e.origin_longitude }}'));">{{ e.get_flinn_engdahl }}</a>
-      <small class="text-muted d-block">Latitude: {{ e.origin_latitude }}, Longitude: {{ e.origin_longitude }}</small>
+      <small class="text-muted d-block">Lat: {{ e.origin_latitude }}, Lon: {{ e.origin_longitude }}</small>
     </td>
     <td><span id="mag_label-{{ e.get_public_id }}" class="badge">{{ e.magnitude_value }}</span></td>
     <td>{{ e.origin_depth }}</td>

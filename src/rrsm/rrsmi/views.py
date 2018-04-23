@@ -181,7 +181,10 @@ class StationStreamsListView(ListView):
             event_id, network_code, station_code
         )
 
-        context['motion_data'] = motion_data
+        if motion_data:
+            context['station_data'] = motion_data.stations[0]
+        else:
+            context['motion_data'] = None
         context['ws_url'] = ws_url
         return context
 

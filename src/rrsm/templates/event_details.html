@@ -8,11 +8,17 @@
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-<li class="breadcrumb-item active">Event details</li>
+{% if motion_data %}
+<li class="breadcrumb-item active">Event details ({{ motion_data.stations.0.event_id }})</li>
+{% else %}
+<li class="breadcrumb-item active">No data</li>
+{% endif %}
 {% endblock %}
 
 {% block content %}
+
 {% if motion_data %}
+
 <div id="map" class="map">
     <div id="popup"></div>
 </div>
@@ -60,7 +66,7 @@
     </div>
 </div>
 
-<h1 class="bg-dark text-white pl-2">Earthquake data</h1>
+<h1 class="bg-dark text-white pl-2">Earthquake information</h1>
 <div class="container">
     <div class="row">
         <div class="col">
@@ -77,67 +83,54 @@
         </div>
     </div>
 </div>
-{% for s in motion_data.stations %}
-<div class="table-responsive">
-<h2 id="{{ s.network_code }}-{{ s.station_code }}" class="bg-dark text-white pl-2">Network {{ s.network_code }}, Station {{ s.station_code }} </h2>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <p><b>Network code: </b>{{ s.network_code }}</p>
-            <p><b>Station code: </b>{{ s.station_code }}</p>
-        </div>
-        <div class="col">
-            <p><b>Station latitude [°]: </b>{{ s.station_latitude }}</p>
-            <p><b>Station longitude [°]: </b>{{ s.station_longitude }}</p>
-        </div>
-        <div class="col">
-            <p><b>Station elevation [m]: </b>{{ s.station_elevation }}</p>
-            <p><b>Epicentral distance [km]: </b>{{ s.epicentral_distance }}</p>
-        </div>
-        <div class="col">
-            <p><b>Max PGA [cm/s^2]: </b>{{ s.get_max_pga }}</p>
-            <p><b>Max PGV [cm/s]: </b>{{ s.get_max_pgv }}</p>
-        </div>
-    </div>
-</div>
-<table class="table-sm mb-5" cellspacing="0" width="100%">
+
+<h1 class="bg-dark text-white pl-2">List of stations</h1>
+<table id="stations_table" class="table" cellspacing="0" width="100%">
     <thead>
         <tr>
-            <th>Channel</th>
-            <th>PGA [cm/s2]</th>
-            <th>PGV [cm/s]</th>
-            <th>Azimuth</th>
-            <th>Dip</th>
-            <th>Depth</th>
-            <th>Sensor unit</th>
-            <th>Lower frequency</th>
-            <th>Upper frequency</th>
+            <th>
+                Network / Station
+                <small class="text-muted d-block">(click for streams)</small>
+            </th>
+            <th>Location code</th>
+            <th>Max. PGA [cm/s^2]</th>
+            <th>Max. PGV [cm/s]</th>
+            <th>Epicentral distance [km]</th>
+            <th>Elevation [m]</th>
         </tr>
     </thead>
     <tbody>
-        {% for sc in s.sensor_channels %}
+        {% for s in motion_data.stations %}
         <tr>
-            <td>{{ sc.channel_code }}</td>
-            <td>{{ sc.pga_value }}</td>
-            <td>{{ sc.pgv_value }}</td>
-            <td>{{ sc.sensor_azimuth }}</td>
-            <td>{{ sc.sensor_dip }}</td>
-            <td>{{ sc.sensor_depth }}</td>
-            <td>{{ sc.sensor_unit }}</td>
-            <td>{{ sc.corner_freq_lower }}</td>
-            <td>{{ sc.corner_freq_upper }}</td>
+            <td>
+                <a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">
+                    {{ s.network_code }} / {{ s.station_code }}
+                </a>
+                <small class="text-muted d-block">Lat: {{ s.station_latitude }}, Lon: {{ s.station_longitude }}</small>
+            </td>
+            <td>{{ s.location_code }}</td>
+            <td>{{ s.get_max_pga }}</td>
+            <td>{{ s.get_max_pgv }}</td>
+            <td>{{ s.epicentral_distance }}</td>
+            <td>{{ s.station_elevation }}</td>
         </tr>
+        <script type="text/javascript">
+        var latitude=parseFloat("{{ s.station_latitude }}"),longitude=parseFloat("{{ s.station_longitude }}"),stationCode="{{ s.station_code }}",networkCode="{{ s.network_code }}",markerPath="{% static 'img/markers/marker-red.png' %}";if(!isNaN(latitude)&&!isNaN(longitude)){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([longitude,latitude])),name:`<b>Network code: </b>${networkCode}<br><b>Station code: </b>${stationCode}\n<br><b>Latitude: </b>${latitude}\n<br><b>Longitude: </b>${longitude}\n<br><a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">Go to station streams</a>`});point.setStyle(new ol.style.Style({image:new ol.style.Icon({anchor:[0.5,0],anchorXUnits:"fraction",anchorYUnits:"pixels",src:markerPath})})),vectorSource.addFeature(point)}
+        </script>
         {% endfor %}
     </tbody>
 </table>
-<a href="#" class="float-right mb-2">Top of the page</a>
 
 <script type="text/javascript">
-var latitude=parseFloat("{{ s.station_latitude }}"),longitude=parseFloat("{{ s.station_longitude }}"),stationCode="{{ s.station_code }}",networkCode="{{ s.network_code }}",markerPath="{% static 'img/markers/marker-red.png' %}";if(!isNaN(latitude)&&!isNaN(longitude)){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([longitude,latitude])),name:`<b>Network code: </b>${networkCode}<br><b>Station code: </b>${stationCode}\n<br><b>Latitude: </b>${latitude}\n<br><b>Longitude: </b>${longitude}\n<br><a href="#${networkCode}-${stationCode}">Scroll to this station</a>`});point.setStyle(new ol.style.Style({image:new ol.style.Icon({anchor:[0.5,0],anchorXUnits:"fraction",anchorYUnits:"pixels",src:markerPath})})),vectorSource.addFeature(point)}
+  $(document).ready(function() {
+      $('#stations_table').DataTable({
+        stateSave: true
+      });
+  });
 </script>
-{% endfor %}
+
 {% else %}
+
 <p>
     <div class="alert alert-warning" role="alert">
         <h4 class="alert-heading">No data</h4>
@@ -145,7 +138,9 @@ var latitude=parseFloat("{{ s.station_latitude }}"),longitude=parseFloat("{{ s.s
         <a href="{{ ws_url }}" class="alert-link">{{ ws_url }}</a>
     </div>
 </p>
+
 {% endif %}
+
 </div>
 
 <script type="text/javascript">
