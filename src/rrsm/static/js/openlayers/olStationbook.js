@@ -12,6 +12,7 @@ var map = new ol.Map({
             source: new ol.source.OSM()
         }), vectorLayer
     ],
+    interactions: ol.interaction.defaults({mouseWheelZoom:false}),
     target: document.getElementById('map'),
     view: new ol.View({
         center: ol.proj.fromLonLat([5, 52]),
