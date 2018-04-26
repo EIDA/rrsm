@@ -103,52 +103,50 @@ class EventDetailsListView(ListView):
 
             lot_pga = []  # List of traces PGA
             lot_pgv = []  # List of traces PGV
-            distances = defaultdict(list)
-            channels_pga = defaultdict(list)
-            channels_pgv = defaultdict(list)
+            pga_data = defaultdict(dict)
+            pgv_data = defaultdict(dict)
 
             for s in motion_data.stations:
                 for sc in s.sensor_channels:
-                    distances[sc.channel_code].append(s.epicentral_distance)
-                    channels_pga[sc.channel_code].append(sc.pga_value)
-                    channels_pgv[sc.channel_code].append(sc.pgv_value)
+                    pga_data[sc.channel_code][s.epicentral_distance] = sc.pga_value or 0
+                    pgv_data[sc.channel_code][s.epicentral_distance] = sc.pgv_value or 0
 
-            for key in channels_pga:
+            for key in pga_data:
                 lot_pga.append(go.Scatter(
-                    x = distances[key],
-                    y = channels_pga[key],
-                    mode = 'markers',
-                    marker = dict(
-                        size = 10,
+                    x=list(pga_data[key].keys()),
+                    y=list(pga_data[key].values()),
+                    mode='markers',
+                    marker=dict(
+                        size=10,
                     ),
                     name='{} PGA'.format(key)
                 ))
 
-            for key in channels_pgv:
+            for key in pgv_data:
                 lot_pgv.append(go.Scatter(
-                    x = distances[key],
-                    y = channels_pgv[key],
-                    mode = 'markers',
-                    marker = dict(
-                        size = 10,
+                    x=list(pgv_data[key].keys()),
+                    y=list(pgv_data[key].values()),
+                    mode='markers',
+                    marker=dict(
+                        size=10,
                     ),
                     name='{} PGV'.format(key)
                 ))
 
-            layout_pga=go.Layout(
+            layout_pga = go.Layout(
                 title="PGA vs Epicentral distance",
-                xaxis={'title':'Epicentral distance [km]'},
-                yaxis={'title':'Value'}
+                xaxis={'title': 'Epicentral distance [km]'},
+                yaxis={'title': 'Value'}
             )
 
-            layout_pgv=go.Layout(
+            layout_pgv = go.Layout(
                 title="PGV vs Epicentral distance",
-                xaxis={'title':'Epicentral distance [km]'},
-                yaxis={'title':'Value'}
+                xaxis={'title': 'Epicentral distance [km]'},
+                yaxis={'title': 'Value'}
             )
 
-            figure_pga=go.Figure(data=lot_pga,layout=layout_pga)
-            figure_pgv=go.Figure(data=lot_pgv,layout=layout_pgv)
+            figure_pga = go.Figure(data=lot_pga, layout=layout_pga)
+            figure_pgv = go.Figure(data=lot_pgv, layout=layout_pgv)
 
             plot_pga = opy.plot(figure_pga, auto_open=False, output_type='div')
             plot_pgv = opy.plot(figure_pgv, auto_open=False, output_type='div')
@@ -178,15 +176,51 @@ class StationStreamsListView(ListView):
         fdsn_motion_man = FdsnMotionManager()
 
         motion_data, ws_url = fdsn_motion_man.get_event_details(
-            event_id, network_code, station_code
+            event_id, network_code, station_code, True
         )
+        graph = self.get_spectra_graph(motion_data.stations[0])
 
         if motion_data:
             context['station_data'] = motion_data.stations[0]
         else:
             context['motion_data'] = None
+        context['graph'] = graph
         context['ws_url'] = ws_url
         return context
+
+    def get_spectra_graph(self, station_data):
+        try:
+            if not station_data:
+                return None
+
+            lot = []  # List of traces
+            data = defaultdict(dict)
+
+            for sc in station_data.sensor_channels:
+                for sa in sc.spectral_amplitudes:
+                    data[sc.channel_code][sa.period] = sa.amplitude
+
+            for key in data:
+                lot.append(go.Scatter(
+                    x=list(data[key].keys()),
+                    y=list(data[key].values()),
+                    mode='markers+lines',
+                    marker=dict(
+                        size=5,
+                    ),
+                    name='{}'.format(key)
+                ))
+
+            lay = go.Layout(
+                title="Period vs Amplitude",
+                xaxis={'title': 'Period'},
+                yaxis={'title': 'Amplitude'}
+            )
+            figure = go.Figure(data=lot, layout=lay)
+            plot = opy.plot(figure, auto_open=False, output_type='div')
+            return plot
+        except:
+            return None
 
 
 class LinksListView(ListView):

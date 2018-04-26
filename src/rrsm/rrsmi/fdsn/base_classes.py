@@ -67,7 +67,7 @@ class NodeWrapper(object):
     def build_url_event_by_id(self, id):
         return self.url_event + '?eventid={}'.format(id)
 
-    def build_url_motion(self, event_public_id, network=None, station=None):
+    def build_url_motion(self, event_public_id, network=None, station=None, spectra=False):
         query = '?eventid={}'.format(event_public_id)
 
         if network is not None and len(str(network)) > 0:
@@ -75,6 +75,9 @@ class NodeWrapper(object):
 
         if station is not None and len(str(station)) > 0:
             query += '&station={}'.format(station)
+
+        if spectra:
+            query += '&level=spectra'
 
         return self.url_motion + query
 
@@ -204,3 +207,10 @@ class MotionDataStationChannel(object):
         self.sensor_unit = NO_FDSNWS_DATA
         self.corner_freq_lower = NO_FDSNWS_DATA
         self.corner_freq_upper = NO_FDSNWS_DATA
+        self.spectral_amplitudes = []
+
+
+class SpectralAmplitude(object):
+    def __init__(self):
+        self.period = 0
+        self.amplitude = 0

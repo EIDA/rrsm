@@ -7,7 +7,7 @@ from urllib.request import Request, urlopen
 
 from .base_classes import NSMAP, NO_FDSNWS_DATA, \
 NodeWrapper, Events, EventWrapper, \
-MotionData, MotionDataStation, MotionDataStationChannel
+MotionData, MotionDataStation, MotionDataStationChannel, SpectralAmplitude
 from ..logger import RrsmLoggerMixin
 from ..models import FdsnNode
 
@@ -132,14 +132,10 @@ class FdsnMotionManager(FdsnHttpBase):
         super(FdsnMotionManager, self).__init__()
         self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
 
-    def get_event_details(self, event_public_id, network=None, station=None):
+    def get_event_details(self, event_public_id, network=None, station=None, spectra=False):
         try:
             ws_url = self.node_wrapper.build_url_motion(
-                event_public_id, network, station
-            )
-
-            self.log_information(
-                'Trying to get motion data for event {}'.format(ws_url)
+                event_public_id, network, station, spectra
             )
 
             response = self.fdsn_request(ws_url)
@@ -179,6 +175,14 @@ class FdsnMotionManager(FdsnHttpBase):
                     ch.sensor_unit = d['sensor-unit']
                     ch.corner_freq_lower = d['corner-freq-lower']
                     ch.corner_freq_upper = d['corner-freq-upper']
+
+                    if 'spectral-amplitudes' in d:
+                        for spa in d['spectral-amplitudes']:
+                            sa = SpectralAmplitude()
+                            sa.period = spa['period']
+                            sa.amplitude = spa['amplitude']
+                            ch.spectral_amplitudes.append(sa)
+
                     station_data.sensor_channels.append(ch)
                 result.stations.append(station_data)
             return result, ws_url
