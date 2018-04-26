@@ -7,13 +7,16 @@
   <title>{% block title %}RRSM{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/app/app.css' %}">
-  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Bangers'> {% block stylesheet %} {% endblock %}
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Bangers'>
+  {% block stylesheet %}
+  {% endblock %}
 </head>
 
 <body>
   <script src="{% static 'js/jquery/jquery-3.2.1.min.js' %}"></script>
   <script src="{% static 'js/popper/popper.min.js' %}"></script>
-  <script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script> {% block body %}
+  <script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
+  {% block body %}
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="{% url 'home' %}">RRSM</a>
@@ -56,7 +59,8 @@
               <a class="dropdown-item" href="{% url 'search_events' %}">Search events</a>
             </div>
           </li>
-          {% block menu_injection %} {% endblock menu_injection %}
+          {% block menu_injection %}
+          {% endblock menu_injection %}
         </ul>
         {% if user.is_authenticated %}
         <ul class="navbar-nav p-1">
@@ -80,18 +84,44 @@
 
   <div class="container mb-5">
     <ol class="breadcrumb my-3">
-      {% block breadcrumb %}{% endblock %}
+      {% block breadcrumb %}
+      {% endblock %}
     </ol>
-    {% block content %}{% endblock %}
+    {% block content %}
+    {% endblock %}
+
+    <!-- The Modal -->
+    <div class="modal fade" id="pageInfo">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Page information</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            {% block modal %}
+            {% endblock modal %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  {% endblock body %} {% block footer %}
+  {% endblock body %}
+
+  {% block footer %}
   <div id="footer-bottom">
     <div class="container">
       <p class="muted credit">Part of
         <a href="https://www.orfeus-eu.org/">ORFEUS</a> foundation.</p>
     </div>
   </div>
-  {% endblock footer %} {% block javascript %} {% endblock %}
+  {% endblock footer %}
+
+  {% block javascript %}
+  {% endblock %}
 </body>
 
 </html>

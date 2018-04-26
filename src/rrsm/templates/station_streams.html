@@ -12,6 +12,11 @@
 <li class="breadcrumb-item active">Event ID: {{ station_data.event_id }}, Network: {{ station_data.network_code }}, Station: {{ station_data.station_code }}</li>
 {% endblock %}
 
+{% block modal %}
+<h6>Plot manipulation</h6>
+<p>Click on <b>Export to plot.ly</b> link below a chart to edit it in an external editor.</p>
+{% endblock modal %}
+
 {% block content %}
 
 {% if station_data %}
@@ -36,6 +41,9 @@
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="http://orfeus-eu.org/webdc3/" target="_blank">Go to WebDC3</a>
                 </div>
+            </div>
+            <div class="btn-group" role="group">
+              <button class="btn btn-primary" data-toggle="modal" data-target="#pageInfo">Page information</button>
             </div>
         </div>
     </div>

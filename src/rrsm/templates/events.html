@@ -10,6 +10,16 @@
 <li class="breadcrumb-item active">{{ breadcrumb }}</li>
 {% endblock %}
 
+{% block modal %}
+<h6>Map zooming</h6>
+<ul>
+  <li>Using +/- buttons (top left corner of the map)</li>
+  <li>Select event on the map and click "Focus"</li>
+  <li>Click on event's Flinn-Engdahl Region in the events table below</li>
+  <li>Drawing a rectangle while holding SHIFT</li>
+</ul>
+{% endblock modal %}
+
 {% block content %}
 {% if events %}
 <div id="map" class="map">
@@ -40,6 +50,9 @@
         </div>
       </div>
       {% endif %}
+      <div class="btn-group" role="group">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#pageInfo">Page information</button>
+      </div>
       <div class="btn-group" role="group">
         <button class="btn btn-primary" onclick="zoomReset()">Reset map zoom</button>
       </div>
@@ -106,5 +119,5 @@
 {% block javascript %}
 <script src="{% static 'js/datatable/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'js/datatable/dataTables.bootstrap4.min.js' %}"></script>
-{% endblock %}
+{% endblock javascript %}
 {% endblock %}

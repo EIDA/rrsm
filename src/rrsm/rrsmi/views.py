@@ -260,7 +260,8 @@ def search_events(request):
                 {
                     'events': queryset,
                     'breadcrumb': 'Search result',
-                    'ws_url': ws_url
+                    'ws_url': ws_url,
+                    'is_homepage': True
                 }
             )
         else:
