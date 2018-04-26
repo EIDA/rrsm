@@ -28,6 +28,18 @@
           <a class="dropdown-item" href="{{ ws_url }}" target="_blank">Events data (this page source)</a>
         </div>
       </div>
+      {% if is_homepage %}
+      <div class="btn-group" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Go to country</button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" onclick="focusOnCountry('es');">Spain</a>
+          <a class="dropdown-item" onclick="focusOnCountry('it');">Italy</a>
+          <a class="dropdown-item" onclick="focusOnCountry('gr');">Greece</a>
+          <a class="dropdown-item" onclick="focusOnCountry('tr');">Turkey</a>
+          <a class="dropdown-item" onclick="focusOnCountry('ch');">Switzerland</a>
+        </div>
+      </div>
+      {% endif %}
       <div class="btn-group" role="group">
         <button class="btn btn-primary" onclick="zoomReset()">Reset map zoom</button>
       </div>

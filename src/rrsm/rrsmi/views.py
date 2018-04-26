@@ -39,9 +39,10 @@ class HomeListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         data, ws_url = FdsnEventManager().get_events(days_back=31)
-        context['breadcrumb'] = 'Home'
+        context['breadcrumb'] = 'Home (events from last 31 days)'
         context['events'] = data.events
         context['ws_url'] = ws_url
+        context['is_homepage'] = True
         return context
 
 
@@ -61,6 +62,7 @@ class RecentEventsListView(ListView):
         context['breadcrumb'] = 'Recent events'
         context['events'] = data.events
         context['ws_url'] = ws_url
+        context['is_homepage'] = True
         return context
 
 
