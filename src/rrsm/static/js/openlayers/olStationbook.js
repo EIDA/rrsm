@@ -103,6 +103,7 @@ var focusOnCountry = function(countryCode, zoom=6){
         case "it":
         lat = 41.87194;
         lon = 12.56738;
+        zoom=5;
         break;
         case "gr":
         lat = 39.074208;
@@ -115,7 +116,7 @@ var focusOnCountry = function(countryCode, zoom=6){
         case "ch":
         lat = 46.818188;
         lon = 8.227512;
-        zoom = 7
+        zoom = 7;
         break;
     }
 
