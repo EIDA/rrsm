@@ -206,7 +206,7 @@ class StationStreamsListView(ListView):
                 lot.append(go.Scatter(
                     x=list(data[key].keys()),
                     y=list(data[key].values()),
-                    mode='markers+lines',
+                    mode='markers',
                     marker=dict(
                         size=5,
                     ),
