@@ -96,29 +96,22 @@ var focusOnCountry = function(countryCode, zoom=6){
     let lat, lon = 0;
 
     switch (countryCode){
-        case "es":
-        lat = 40.463667;
-        lon = -3.74922;
-        zoom = 5.5;
-        break;
-        case "it":
-        lat = 41.87194;
-        lon = 12.56738;
-        zoom=5;
-        break;
+        case "de":
+        lat = 51.165691; lon = 10.451526; zoom = 5.5; break;
         case "gr":
-        lat = 39.074208;
-        lon = 21.824312;
-        break;
-        case "tr":
-        lat = 38.963745;
-        lon = 35.243322;
-        break;
+        lat = 39.074208; lon = 21.824312; break;
+        case "is":
+        lat = 64.963051; lon = -19.020835; zoom = 6; break;
+        case "it":
+        lat = 41.87194; lon = 12.56738; zoom=5; break;
+        case "nl":
+        lat = 52.132633; lon = 5.291266; zoom=7; break;
+        case "es":
+        lat = 40.463667; lon = -3.74922; zoom = 5.5; break;
         case "ch":
-        lat = 46.818188;
-        lon = 8.227512;
-        zoom = 7.5;
-        break;
+        lat = 46.818188; lon = 8.227512; zoom = 7.5; break;
+        case "tr":
+        lat = 38.963745; lon = 35.243322; break;
     }
 
     focusEvent(lat, lon, zoom);
