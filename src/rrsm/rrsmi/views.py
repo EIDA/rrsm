@@ -86,14 +86,14 @@ class EventDetailsListView(ListView):
         fdsn_waveform_man = FdsnWaveformManager()
 
         motion_data, ws_url = fdsn_motion_man.get_event_details(event_id)
-        graph_pga, graph_pgv = self.get_sensor_channels_graphs(motion_data)
+        chart_pga, chart_pgv = self.get_sensor_channels_graphs(motion_data)
         shakemap_url = fdsn_shakemap_man.get_shakemap_url(event_id)
         waveform_url = fdsn_waveform_man.get_waveform_url(event_id)
 
         context['motion_data'] = motion_data
         context['ws_url'] = ws_url
-        context['graph_pga'] = graph_pga
-        context['graph_pgv'] = graph_pgv
+        context['chart_pga'] = chart_pga
+        context['chart_pgv'] = chart_pgv
         context['shakemap_url'] = shakemap_url
         context['waveform_url'] = waveform_url
         return context
@@ -105,34 +105,42 @@ class EventDetailsListView(ListView):
 
             lot_pga = []  # List of traces PGA
             lot_pgv = []  # List of traces PGV
-            pga_data = defaultdict(dict)
-            pgv_data = defaultdict(dict)
+            data_pga = defaultdict(dict)
+            data_pgv = defaultdict(dict)
 
-            for s in motion_data.stations:
+            for s in sorted(motion_data.stations, key=lambda x: x.epicentral_distance):
                 for sc in s.sensor_channels:
-                    pga_data[sc.channel_code][s.epicentral_distance] = sc.pga_value or 0
-                    pgv_data[sc.channel_code][s.epicentral_distance] = sc.pgv_value or 0
+                    data_pga[sc.channel_code][s.epicentral_distance] = sc.pga_value or 0
+                    data_pgv[sc.channel_code][s.epicentral_distance] = sc.pgv_value or 0
 
-            for key in pga_data:
+            for key in data_pga:
                 lot_pga.append(go.Scatter(
-                    x=list(pga_data[key].keys()),
-                    y=list(pga_data[key].values()),
-                    mode='markers',
+                    x=list(data_pga[key].keys()),
+                    y=list(data_pga[key].values()),
+                    mode='markers+lines',
                     marker=dict(
-                        size=10,
+                        size=5,
                     ),
-                    name='{} PGA'.format(key)
+                    name='{} PGA'.format(key),
+                    line=dict(
+                        width=1,
+                        shape='spline'
+                    )
                 ))
 
-            for key in pgv_data:
+            for key in data_pgv:
                 lot_pgv.append(go.Scatter(
-                    x=list(pgv_data[key].keys()),
-                    y=list(pgv_data[key].values()),
-                    mode='markers',
+                    x=list(data_pgv[key].keys()),
+                    y=list(data_pgv[key].values()),
+                    mode='markers+lines',
                     marker=dict(
-                        size=10,
+                        size=5,
                     ),
-                    name='{} PGV'.format(key)
+                    name='{} PGV'.format(key),
+                    line=dict(
+                        width=1,
+                        shape='spline'
+                    )
                 ))
 
             layout_pga = go.Layout(
@@ -180,49 +188,84 @@ class StationStreamsListView(ListView):
         motion_data, ws_url = fdsn_motion_man.get_event_details(
             event_id, network_code, station_code, True
         )
-        graph = self.get_spectra_graph(motion_data.stations[0])
+        chart_psa, chart_drs = self.get_spectra_graphs(motion_data.stations[0])
 
         if motion_data:
             context['station_data'] = motion_data.stations[0]
         else:
             context['motion_data'] = None
-        context['graph'] = graph
+        context['chart_psa'] = chart_psa
+        context['chart_drs'] = chart_drs
         context['ws_url'] = ws_url
         return context
 
-    def get_spectra_graph(self, station_data):
+    def get_spectra_graphs(self, station_data):
         try:
             if not station_data:
-                return None
+                return None, None
 
-            lot = []  # List of traces
-            data = defaultdict(dict)
+            lot_psa = []  # List of traces Pseudo-Spectral Acceleration
+            lot_drs = []  # List of traces Displacement Response Data
+            data_psa = defaultdict(dict)
+            data_drs = defaultdict(dict)
 
             for sc in station_data.sensor_channels:
-                for sa in sc.spectral_amplitudes:
-                    data[sc.channel_code][sa.period] = sa.amplitude
+                for sa_psa in filter(lambda x: x.type.lower() == 'psa', sc.spectral_amplitudes):
+                    data_psa[sc.channel_code][sa_psa.period] = sa_psa.amplitude
+                for sa_drs in filter(lambda x: x.type.lower() == 'drs', sc.spectral_amplitudes):
+                    data_drs[sc.channel_code][sa_drs.period] = sa_drs.amplitude
 
-            for key in data:
-                lot.append(go.Scatter(
-                    x=list(data[key].keys()),
-                    y=list(data[key].values()),
-                    mode='markers',
+            for key in data_psa:
+                lot_psa.append(go.Scatter(
+                    x=list(data_psa[key].keys()),
+                    y=list(data_psa[key].values()),
+                    mode='markers+lines',
                     marker=dict(
                         size=5,
                     ),
-                    name='{}'.format(key)
+                    name='{}'.format(key),
+                    line=dict(
+                        width=1,
+                        shape='spline'
+                    )
                 ))
 
-            lay = go.Layout(
-                title="Period vs Amplitude",
-                xaxis={'title': 'Period'},
-                yaxis={'title': 'Amplitude'}
+            for key in data_drs:
+                lot_drs.append(go.Scatter(
+                    x=list(data_drs[key].keys()),
+                    y=list(data_drs[key].values()),
+                    mode='markers+lines',
+                    marker=dict(
+                        size=5,
+                    ),
+                    name='{}'.format(key),
+                    line=dict(
+                        width=1,
+                        shape='spline'
+                    )
+                ))
+
+            lay_psa = go.Layout(
+                title="Pseudo-Spectral Acceleration",
+                xaxis={'title': 'Time [s]'},
+                yaxis={'title': 'PSA [cm/s*s]'}
             )
-            figure = go.Figure(data=lot, layout=lay)
-            plot = opy.plot(figure, auto_open=False, output_type='div')
-            return plot
+
+            lay_drs = go.Layout(
+                title="Displacement Response Spectra",
+                xaxis={'title': 'Time [s]'},
+                yaxis={'title': 'DRS [cm]'}
+            )
+
+            figure_psa = go.Figure(data=lot_psa, layout=lay_psa)
+            figure_drs = go.Figure(data=lot_drs, layout=lay_drs)
+
+            plot_psa = opy.plot(figure_psa, auto_open=False, output_type='div')
+            plot_drs = opy.plot(figure_drs, auto_open=False, output_type='div')
+
+            return plot_psa, plot_drs
         except:
-            return None
+            return None, None
 
 
 def search_events(request):

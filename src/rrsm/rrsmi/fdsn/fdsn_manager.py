@@ -180,6 +180,7 @@ class FdsnMotionManager(FdsnHttpBase):
                             sa = SpectralAmplitude()
                             sa.period = spa['period']
                             sa.amplitude = spa['amplitude']
+                            sa.type = spa['type']
                             ch.spectral_amplitudes.append(sa)
 
                     station_data.sensor_channels.append(ch)

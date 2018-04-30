@@ -51,10 +51,17 @@
 
 <div class="container">
     <div class="row">
-        <div class="col">
-            {% if graph %}
+        <div class="col-6">
+            {% if chart_psa %}
             <div>
-                {{ graph|safe }}
+                {{ chart_psa|safe }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-6">
+            {% if chart_drs %}
+            <div>
+                {{ chart_drs|safe }}
             </div>
             {% endif %}
         </div>

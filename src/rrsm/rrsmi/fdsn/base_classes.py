@@ -217,3 +217,4 @@ class SpectralAmplitude(object):
     def __init__(self):
         self.period = 0
         self.amplitude = 0
+        self.type = NO_FDSNWS_DATA
