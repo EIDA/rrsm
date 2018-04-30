@@ -97,7 +97,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': config('CACHE_BACKEND'),
-        'LOCATION': 'rrsm_cache',
+        'LOCATION': config('CACHE_LOCATION'),
     }
 }
 
