@@ -24,7 +24,7 @@ from .fdsn.fdsn_manager import \
     FdsnEventManager, FdsnMotionManager, \
     FdsnShakemapManager, FdsnWaveformManager
 
-from .models import Link, SearchEvent
+from .models import SearchEvent
 from .forms import SearchEventsForm
 
 
@@ -223,16 +223,6 @@ class StationStreamsListView(ListView):
             return plot
         except:
             return None
-
-
-class LinksListView(ListView):
-    model = Link
-    context_object_name = 'links'
-    template_name = 'links.html'
-
-    def get_queryset(self):
-        queryset = Link.objects.order_by('category')
-        return queryset
 
 
 def search_events(request):

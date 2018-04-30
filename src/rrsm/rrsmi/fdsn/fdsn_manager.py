@@ -9,7 +9,6 @@ from .base_classes import NSMAP, NO_FDSNWS_DATA, \
 NodeWrapper, Events, EventWrapper, \
 MotionData, MotionDataStation, MotionDataStationChannel, SpectralAmplitude
 from ..logger import RrsmLoggerMixin
-from ..models import FdsnNode
 
 
 class FdsnHttpBase(RrsmLoggerMixin):
@@ -40,7 +39,7 @@ class FdsnHttpBase(RrsmLoggerMixin):
 class FdsnEventManager(FdsnHttpBase):
     def __init__(self):
         super(FdsnEventManager, self).__init__()
-        self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
+        self.node_wrapper = NodeWrapper()
 
     def get_events(
         self, days_back=None, event_id=None, date_start=None, date_end=None,
@@ -130,7 +129,7 @@ class FdsnEventManager(FdsnHttpBase):
 class FdsnMotionManager(FdsnHttpBase):
     def __init__(self):
         super(FdsnMotionManager, self).__init__()
-        self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
+        self.node_wrapper = NodeWrapper()
 
     def get_event_details(self, event_public_id, network=None, station=None, spectra=False):
         try:
@@ -194,7 +193,7 @@ class FdsnMotionManager(FdsnHttpBase):
 class FdsnShakemapManager(object):
     def __init__(self):
         super(FdsnShakemapManager, self).__init__()
-        self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
+        self.node_wrapper = NodeWrapper()
 
     def get_shakemap_url(self, id):
         ws_url = self.node_wrapper.build_url_shakemap_by_id(id)
@@ -204,7 +203,7 @@ class FdsnShakemapManager(object):
 class FdsnWaveformManager(object):
     def __init__(self):
         super(FdsnWaveformManager, self).__init__()
-        self.node_wrapper = NodeWrapper(FdsnNode.objects.get(pk='ODC'))
+        self.node_wrapper = NodeWrapper()
 
     def get_waveform_url(self, id):
         ws_url = self.node_wrapper.build_url_waveform_by_id(id)

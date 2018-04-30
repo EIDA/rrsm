@@ -23,7 +23,6 @@ urlpatterns = [
     re_path(r'^event/(?P<event_public_id>\w+)/(?P<network_code>\w+)/(?P<station_code>\w+)/$',
         cache_page(CACHE_TIME_LONG)(rrsmi_view.StationStreamsListView.as_view()), name='station_streams'),
     path('search_events/', rrsmi_view.search_events, name='search_events'),
-    path('links/', rrsmi_view.LinksListView.as_view(), name='links'),
     path('admin/', admin.site.urls),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]

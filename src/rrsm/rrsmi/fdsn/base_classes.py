@@ -1,8 +1,14 @@
 import json
+from django.conf import settings
 from django.utils.dateparse import parse_datetime
 from datetime import datetime, timedelta
 
 from obspy.geodetics.flinnengdahl import FlinnEngdahl
+
+URL_EVENT = getattr(settings, 'URL_EVENT', '')
+URL_MOTION = getattr(settings, 'URL_MOTION', '')
+URL_SHAKEMAP = getattr(settings, 'URL_SHAKEMAP', '')
+URL_WAVEFORM = getattr(settings, 'URL_WAVEFORM', '')
 
 NO_FDSNWS_DATA = None
 NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
@@ -10,14 +16,11 @@ NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
 
 # Single node instance wrapper
 class NodeWrapper(object):
-    def __init__(self, node):
-        self.pk = node.pk
-        self.code = node.code
-        self.description = node.description
-        self.url_event = node.url_event
-        self.url_motion = node.url_motion
-        self.url_shakemap = node.url_shakemap
-        self.url_waveform = node.url_waveform
+    def __init__(self):
+        self.url_event = URL_EVENT
+        self.url_motion = URL_MOTION
+        self.url_shakemap = URL_SHAKEMAP
+        self.url_waveform = URL_WAVEFORM
 
     def build_url_events(
         self, days_back, event_id, date_start, date_end, magnitude_min,

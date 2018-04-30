@@ -10,10 +10,9 @@
     DATABASE_USER='admin'
     DATABASE_PASS='passwd'
     EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
-    CACHE_BACKEND=django.core.cache.backends.db.DatabaseCache
+    CACHE_BACKEND=django.core.cache.backends.memcached.MemcachedCache
     ```
     SECRET_KEY should be a 50-characters long string of random characters from the following set: `abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)`
-1. Make sure SQLite is configured as the default database in `src/rrsm/rrsm/settings.py`
 1. Create the virtual environment:
     ```
     [usr@host src]$ python3 -m venv env
@@ -29,23 +28,6 @@
 1. Go to the root directory:
     ```
     (env) [usr@host src]$ cd rrsm/
-    ```
-1. Prepare the database migration and apply it:
-    ```
-    (env) [usr@host rrsm]$ python3 manage.py makemigrations
-    (env) [usr@host rrsm]$ python3 manage.py migrate
-    ```
-1. Create the super user:
-    ```
-    (env) [usr@host rrsm]$ python3 manage.py createsuperuser
-    ```
-1. Load the fixtures into the database:
-    ```
-    (env) [usr@host rrsm]$ python3 manage.py loaddata rrsmi.json
-    ```
-1. Create the cache table in the database
-    ```
-    (env) [usr@host rrsm]$ python3 manage.py createcachetable
     ```
 1. Run the test server:
     ```
