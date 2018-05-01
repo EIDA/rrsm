@@ -2,7 +2,7 @@
 .vscode/
 
 # Ignore the sqlite db file
-db.sqlite3
+rrsm.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

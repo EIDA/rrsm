@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 from django.conf import settings
 from django.utils.dateparse import parse_datetime
@@ -101,13 +102,13 @@ class EventWrapper(object):
         self.public_id = NO_FDSNWS_DATA
         self.author = NO_FDSNWS_DATA
         self.magnitude_public_id = NO_FDSNWS_DATA
-        self.magnitude_value = 0
+        self.magnitude_value = 0.0
         self.magnitude_type = NO_FDSNWS_DATA
         self.origin_public_id = NO_FDSNWS_DATA
         self.origin_time = NO_FDSNWS_DATA
-        self.origin_longitude = NO_FDSNWS_DATA
-        self.origin_latitude = NO_FDSNWS_DATA
-        self.origin_depth = 0
+        self.origin_longitude = 0.0
+        self.origin_latitude = 0.0
+        self.origin_depth = 0.0
         self.preferred_origin_id = NO_FDSNWS_DATA
         self.preferred_magnitude_id = NO_FDSNWS_DATA
 
@@ -146,23 +147,26 @@ class MotionData(object):
     def __init__(self):
         self.stations = []
 
+    def get_stations_order_by_epicentral_distance(self):
+        return sorted(self.stations, key=lambda x: x.epicentral_distance)
+
 
 class MotionDataStation(object):
     def __init__(self):
         self.event_id = NO_FDSNWS_DATA
         self.event_time = NO_FDSNWS_DATA
-        self.event_magnitude = NO_FDSNWS_DATA
+        self.event_magnitude = 0.0
         self.event_type = NO_FDSNWS_DATA
-        self.event_depth = NO_FDSNWS_DATA
-        self.event_latitude = NO_FDSNWS_DATA
-        self.event_longitude = NO_FDSNWS_DATA
+        self.event_depth = 0.0
+        self.event_latitude = 0.0
+        self.event_longitude = 0.0
         self.network_code = NO_FDSNWS_DATA
         self.station_code = NO_FDSNWS_DATA
         self.location_code = NO_FDSNWS_DATA
-        self.station_latitude = NO_FDSNWS_DATA
-        self.station_longitude = NO_FDSNWS_DATA
-        self.station_elevation = NO_FDSNWS_DATA
-        self.epicentral_distance = NO_FDSNWS_DATA
+        self.station_latitude = 0.0
+        self.station_longitude = 0.0
+        self.station_elevation = 0.0
+        self.epicentral_distance = 0.0
         self.event_reference = NO_FDSNWS_DATA
         self.sensor_channels = []
 
@@ -202,19 +206,24 @@ class MotionDataStation(object):
 class MotionDataStationChannel(object):
     def __init__(self):
         self.channel_code = NO_FDSNWS_DATA
-        self.pga_value = NO_FDSNWS_DATA
-        self.pgv_value = NO_FDSNWS_DATA
-        self.sensor_azimuth = NO_FDSNWS_DATA
-        self.sensor_dip = NO_FDSNWS_DATA
-        self.sensor_depth = NO_FDSNWS_DATA
+        self.pga_value = 0.0
+        self.pgv_value = 0.0
+        self.sensor_azimuth = 0.0
+        self.sensor_dip = 0.0
+        self.sensor_depth = 0.0
         self.sensor_unit = NO_FDSNWS_DATA
-        self.corner_freq_lower = NO_FDSNWS_DATA
-        self.corner_freq_upper = NO_FDSNWS_DATA
+        self.corner_freq_lower = 0.0
+        self.corner_freq_upper = 0.0
         self.spectral_amplitudes = []
+
+    def get_amplitudes_order_by_period(self):
+        return sorted(
+            self.spectral_amplitudes, key=lambda x: x.period
+        )
 
 
 class SpectralAmplitude(object):
     def __init__(self):
-        self.period = 0
-        self.amplitude = 0
+        self.period = 0.0
+        self.amplitude = 0.0
         self.type = NO_FDSNWS_DATA

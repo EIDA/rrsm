@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import operator
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 from django.http import Http404
 from django.shortcuts import \
@@ -18,7 +18,6 @@ from django.db.models import Q, Count
 import plotly.plotly as py
 import plotly.offline as opy
 import plotly.graph_objs as go
-import numpy as np
 
 from .fdsn.fdsn_manager import \
     FdsnEventManager, FdsnMotionManager, \
@@ -26,6 +25,7 @@ from .fdsn.fdsn_manager import \
 
 from .models import SearchEvent
 from .forms import SearchEventsForm
+from .logger import RrsmLoggerMixin
 
 
 class HomeListView(ListView):
@@ -66,10 +66,13 @@ class RecentEventsListView(ListView):
         return context
 
 
-class EventDetailsListView(ListView):
+class EventDetailsListView(ListView, RrsmLoggerMixin):
     model = None
     context_object_name = None
     template_name = 'event_details.html'
+
+    def __init__(self):
+        RrsmLoggerMixin.__init__(self)
 
     def get_queryset(self):
         try:
@@ -86,7 +89,7 @@ class EventDetailsListView(ListView):
         fdsn_waveform_man = FdsnWaveformManager()
 
         motion_data, ws_url = fdsn_motion_man.get_event_details(event_id)
-        chart_pga, chart_pgv = self.get_sensor_channels_graphs(motion_data)
+        chart_pga, chart_pgv = self.get_sensor_channels_charts(motion_data)
         shakemap_url = fdsn_shakemap_man.get_shakemap_url(event_id)
         waveform_url = fdsn_waveform_man.get_waveform_url(event_id)
 
@@ -98,7 +101,7 @@ class EventDetailsListView(ListView):
         context['waveform_url'] = waveform_url
         return context
 
-    def get_sensor_channels_graphs(self, motion_data):
+    def get_sensor_channels_charts(self, motion_data):
         try:
             if not motion_data:
                 return None, None
@@ -108,15 +111,16 @@ class EventDetailsListView(ListView):
             data_pga = defaultdict(dict)
             data_pgv = defaultdict(dict)
 
-            for s in sorted(motion_data.stations, key=lambda x: x.epicentral_distance):
+            for s in motion_data.stations:
                 for sc in s.sensor_channels:
                     data_pga[sc.channel_code][s.epicentral_distance] = sc.pga_value or 0
                     data_pgv[sc.channel_code][s.epicentral_distance] = sc.pgv_value or 0
 
             for key in data_pga:
+                _tmp = OrderedDict(sorted(data_pga[key].items()))
                 lot_pga.append(go.Scatter(
-                    x=list(data_pga[key].keys()),
-                    y=list(data_pga[key].values()),
+                    x=list(_tmp.keys()),
+                    y=list(_tmp.values()),
                     mode='markers+lines',
                     marker=dict(
                         size=5,
@@ -129,9 +133,10 @@ class EventDetailsListView(ListView):
                 ))
 
             for key in data_pgv:
+                _tmp = OrderedDict(sorted(data_pgv[key].items()))
                 lot_pgv.append(go.Scatter(
-                    x=list(data_pgv[key].keys()),
-                    y=list(data_pgv[key].values()),
+                    x=list(_tmp.keys()),
+                    y=list(_tmp.values()),
                     mode='markers+lines',
                     marker=dict(
                         size=5,
@@ -163,13 +168,17 @@ class EventDetailsListView(ListView):
 
             return plot_pga, plot_pgv
         except:
+            self.log_exception()
             return None, None
 
 
-class StationStreamsListView(ListView):
+class StationStreamsListView(ListView, RrsmLoggerMixin):
     model = None
     context_object_name = None
     template_name = 'station_streams.html'
+
+    def __init__(self):
+        RrsmLoggerMixin.__init__(self)
 
     def get_queryset(self):
         try:
@@ -188,7 +197,7 @@ class StationStreamsListView(ListView):
         motion_data, ws_url = fdsn_motion_man.get_event_details(
             event_id, network_code, station_code, True
         )
-        chart_psa, chart_drs = self.get_spectra_graphs(motion_data.stations[0])
+        chart_psa, chart_drs = self.get_spectra_charts(motion_data.stations[0])
 
         if motion_data:
             context['station_data'] = motion_data.stations[0]
@@ -199,7 +208,7 @@ class StationStreamsListView(ListView):
         context['ws_url'] = ws_url
         return context
 
-    def get_spectra_graphs(self, station_data):
+    def get_spectra_charts(self, station_data):
         try:
             if not station_data:
                 return None, None
@@ -216,9 +225,10 @@ class StationStreamsListView(ListView):
                     data_drs[sc.channel_code][sa_drs.period] = sa_drs.amplitude
 
             for key in data_psa:
+                _tmp = OrderedDict(sorted(data_psa[key].items()))
                 lot_psa.append(go.Scatter(
-                    x=list(data_psa[key].keys()),
-                    y=list(data_psa[key].values()),
+                    x=list(_tmp.keys()),
+                    y=list(_tmp.values()),
                     mode='markers+lines',
                     marker=dict(
                         size=5,
@@ -231,9 +241,10 @@ class StationStreamsListView(ListView):
                 ))
 
             for key in data_drs:
+                _tmp = OrderedDict(sorted(data_drs[key].items()))
                 lot_drs.append(go.Scatter(
-                    x=list(data_drs[key].keys()),
-                    y=list(data_drs[key].values()),
+                    x=list(_tmp.keys()),
+                    y=list(_tmp.values()),
                     mode='markers+lines',
                     marker=dict(
                         size=5,
@@ -265,6 +276,7 @@ class StationStreamsListView(ListView):
 
             return plot_psa, plot_drs
         except:
+            self.log_exception()
             return None, None
 
 
