@@ -9,9 +9,12 @@
     DATABASE_PASS='passwd'
     EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
     CACHE_BACKEND=django.core.cache.backends.memcached.MemcachedCache
-    # CACHE_BACKENDS
-    # django.core.cache.backends.dummy.DummyCache (dev)
-    # django.core.cache.backends.memcached.MemcachedCache
+    CACHE_LOCATION='127.0.0.1:11211'
     CACHE_TIME_SHORT=60
     CACHE_TIME_MEDIUM=300
     CACHE_TIME_LONG=1800
+
+# Cache backends
+* `django.core.cache.backends.dummy.DummyCache` (development)
+* `django.core.cache.backends.memcached.MemcachedCache`
+* `django.core.cache.backends.filebased.FileBasedCache`

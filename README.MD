@@ -15,7 +15,7 @@
     ```
     * SECRET_KEY should be a 50-characters long string of random characters from the following set: `abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)`
     * Only `SECRET_KEY`, `DEBUG` and `ALLOWED_HOSTS` settigns are meaningful. Rest of them can be left unchanged, they are here just to satisfy the Django Framework.
-    * `CACHE_BACKEND` must be set to `django.core.cache.backends.memcached.MemcachedCache` because the intention is not to use any database (`django.core.cache.backends.dummy.DummyCache` can be used during development). The default location for `python-memcached` is `127.0.0.1:11211`.
+    * `CACHE_BACKEND` can be set to `django.core.cache.backends.memcached.MemcachedCache` with location `127.0.0.1:11211` (default for python-memcached) or `django.core.cache.backends.filebased.FileBasedCache` with location e.g. `/data/rrsm_cache/` because the intention is not to use any database (`django.core.cache.backends.dummy.DummyCache` can be used during development). The default location for `python-memcached` is `127.0.0.1:11211`.
 1. Create the virtual environment:
     ```
     [usr@host src]$ python3 -m venv env
