@@ -53,22 +53,6 @@
           {% block menu_injection %}
           {% endblock menu_injection %}
         </ul>
-        {% if user.is_authenticated %}
-        <ul class="navbar-nav p-1">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Settings ({{ user.username }})
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-              {% if request.user.is_superuser %}
-              <a class="dropdown-item" href="{% url 'admin:index' %}">Admin panel</a>
-              {% endif %}
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
-            </div>
-          </li>
-        </ul>
-        {% endif %}
       </div>
     </div>
   </nav>
