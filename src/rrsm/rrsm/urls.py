@@ -31,5 +31,5 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Add custom handlers for the HTTP error codes
-handler404 = 'rrsmi_view.views.custom_404'
-handler500 = 'rrsmi_view.views.custom_500'
+handler404 = 'rrsmi.views.custom_404'
+handler500 = 'rrsmi.views.custom_500'
