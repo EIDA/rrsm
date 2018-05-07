@@ -58,3 +58,10 @@ Tail can be used to follow the app logs:
 ```
 [usr@host rrsm]$ tail -f logs/rrsm.log
 ```
+# Remarks
+* The WebService response times in some cases can get long resulting in `504 Gateway Timeout`. This can be prevented by modifying the `/etc/ninx/nginx.conf` on the Nginx container and adding following lines to the basic config:
+    ```
+    proxy_connect_timeout 300;
+    proxy_read_timeout 300;
+    proxy_send_timeout 300;
+    ```
