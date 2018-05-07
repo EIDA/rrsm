@@ -2,7 +2,7 @@
 1. Create the .env configuration file in `/src/rrsm/.env`. Example test server configuration:
     ```
     SECRET_KEY='abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
-    DEBUG=True
+    DEBUG=False
     ALLOWED_HOSTS=.localhost,127.0.0.1
     DATABASE_URL=sqlite:///db.sqlite3
     DATABASE_ENGINE = "sqlite3"
@@ -23,7 +23,7 @@
         * `django.core.cache.backends.filebased.FileBasedCache` with location e.g. `/data/rrsm_cache/`
         * `django.core.cache.backends.db.DatabaseCache` with location e.g. `rrsm_cache_table`
         * `django.core.cache.backends.dummy.DummyCache` can be used during development 
-    * `CACHE_TIME_SHORT`, `CACHE_TIME_MEDIUM` and `CACHE_TIME_LONG` are timers (in seconds) used for cache validation assigned to pages depending on how often their content changes.
+    * `CACHE_TIME_SHORT`, `CACHE_TIME_MEDIUM` and `CACHE_TIME_LONG` are timers (in seconds) used for cache validation assigned to pages depending on how often their content changes
 1. Create the virtual environment:
     ```
     [usr@host src]$ python3 -m venv env
