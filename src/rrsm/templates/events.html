@@ -27,7 +27,6 @@
 </div>
 <script src="{% static 'js/openlayers/ol.js' %}"></script>
 <script src="{% static 'js/openlayers/olStationbook.js' %}"></script>
-
 <div class="mt-2">
 <div class="container">
   <div class="row">
@@ -81,6 +80,9 @@
   </tr>
 </thead>
 <tbody>
+<script type="text/javascript">
+  var events = []
+</script>
   {% for e in events %}
   <tr>
     <td><a href="{% url 'event_details' e.get_public_id %}">{{ e.parse_origin_time }}</a></td>
@@ -92,8 +94,8 @@
     <td>{{ e.origin_depth }}</td>
   </tr>
   <script type="text/javascript">
-    var latitude=parseFloat("{{ e.origin_latitude }}"),longitude=parseFloat("{{ e.origin_longitude }}"),depth=parseFloat("{{ e.origin_depth }}"),magnitude=parseFloat("{{ e.magnitude_value }}");var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([longitude,latitude])),name:`<b>Time:</b> {{ e.parse_origin_time }}<br><b>Flinn Engdahl Region:</b> {{ e.get_flinn_engdahl }}<br><b>Latitude:</b> ${latitude}<br><b>Longitude:</b> ${longitude}<br><b>Magnitude:</b> ${magnitude}<br><b>Depth:</b> ${depth}<br><b><a href="#" onclick="focusEvent(parseFloat('{{ e.origin_latitude }}'),parseFloat('{{ e.origin_longitude }}'));">Focus</a> | <a href="{% url 'event_details' e.get_public_id %}">Show details</a></b>`});point.setStyle(new ol.style.Style({image:new ol.style.Circle({radius:magnitude**2/4,fill:new ol.style.Fill({color:getEventColor(magnitude)}),stroke:new ol.style.Stroke({color:'#000000',width:1})})})),vectorSource.addFeature(point);
-    var mag_label = $('#mag_label-{{ e.get_public_id }}');if(magnitude<4){mag_label.addClass("badge badge-info")}else if(magnitude<6){mag_label.addClass("badge badge-warning")}else{mag_label.addClass("badge badge-danger")}
+  var latitude=parseFloat("{{ e.origin_latitude }}"),longitude=parseFloat("{{ e.origin_longitude }}"),depth=parseFloat("{{ e.origin_depth }}"),magnitude=parseFloat("{{ e.magnitude_value }}");var mag_label=$('#mag_label-{{ e.get_public_id }}');if(magnitude<4){mag_label.addClass("badge badge-info")}else if(magnitude<6){mag_label.addClass("badge badge-warning")}else{mag_label.addClass("badge badge-danger")}
+  events.push({lat:latitude,lon:longitude,mag:magnitude,txt:`<b>Time:</b> {{ e.parse_origin_time }}<br><b>Flinn Engdahl Region:</b> {{ e.get_flinn_engdahl }}<br><b>Latitude:</b> ${latitude}<br><b>Longitude:</b> ${longitude}<br><b>Magnitude:</b> ${magnitude}<br><b>Depth:</b> ${depth}<br><b><a href="#" onclick="focusEvent(parseFloat('{{ e.origin_latitude }}'),parseFloat('{{ e.origin_longitude }}'));">Focus</a> | <a href="{% url 'event_details' e.get_public_id %}">Show details</a></b>`})
   </script>
   {% endfor %}
 </tbody>
@@ -102,12 +104,7 @@
 </div>
 
 <script type="text/javascript">
-  $(document).ready(function() {
-      $('#events_table').DataTable({
-        "order": [[ 0, "desc" ]],
-        stateSave: true
-      });
-  });
+$(document).ready(function(){$('#events_table').DataTable({"order":[[0,"desc"]],stateSave:!0});events.forEach(function(e){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([e.lon,e.lat])),name:e.txt});point.setStyle(new ol.style.Style({image:new ol.style.Circle({radius:e.mag**2/4,fill:new ol.style.Fill({color:getEventColor(e.mag)}),stroke:new ol.style.Stroke({color:'#000000',width:1})})})),vectorSource.addFeature(point)})})
 </script>
 {% else %}
 <p>
