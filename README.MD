@@ -42,9 +42,12 @@
     ```
 1. Run the test server:
     ```
-    (env) [usr@host rrsm]$ python3 manage.py runserver 0.0.0.0:8080
+    (env) [usr@host rrsm]$ python3 manage.py runserver 0.0.0.0:8000
     ```
 # Docker
+1. Make sure ports are set up correctly
+    * `/rrsm/src/docker-compose.yml`
+    * `/rrsm/src/nginx/sites-enabled/django`
 1. Build and run the images
     ```
     (env) [usr@host src]$ docker-compose -p 'rrsm' up -d
