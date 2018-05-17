@@ -138,11 +138,11 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static_rrsm2')
+STATIC_URL = '/static_rrsm2/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static_rrsm2'),
 ]
 
 LOGOUT_REDIRECT_URL = 'home'
@@ -207,3 +207,4 @@ URL_WAVEFORM = 'http://www.orfeus-eu.org/odcws/rrsm/1/waveform'
 CACHE_TIME_SHORT = config('CACHE_TIME_SHORT')
 CACHE_TIME_MEDIUM = config('CACHE_TIME_MEDIUM')
 CACHE_TIME_LONG = config('CACHE_TIME_LONG')
+RRSM_URL_BASE = config('RRSM_URL_BASE')

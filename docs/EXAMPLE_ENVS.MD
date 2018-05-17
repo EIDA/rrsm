@@ -13,6 +13,7 @@
     CACHE_TIME_SHORT=60
     CACHE_TIME_MEDIUM=300
     CACHE_TIME_LONG=1800
+    RRSM_URL_BASE='rrsm2/'
 
 # Cache backends
 * `django.core.cache.backends.dummy.DummyCache` (development)

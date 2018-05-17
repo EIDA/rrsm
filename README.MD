@@ -15,6 +15,7 @@
     CACHE_TIME_SHORT=0
     CACHE_TIME_MEDIUM=0
     CACHE_TIME_LONG=0
+    RRSM_URL_BASE='rrsm2/'
     ```
     * SECRET_KEY should be a 50-characters long string of random characters from the following set: `abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)`
     * Only `SECRET_KEY`, `DEBUG` and `ALLOWED_HOSTS` settigns are meaningful. Rest of them can be left unchanged, they are here just to satisfy the Django Framework
