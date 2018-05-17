@@ -25,6 +25,7 @@
         * `django.core.cache.backends.db.DatabaseCache` with location e.g. `rrsm_cache_table`
         * `django.core.cache.backends.dummy.DummyCache` can be used during development 
     * `CACHE_TIME_SHORT`, `CACHE_TIME_MEDIUM` and `CACHE_TIME_LONG` are timers (in seconds) used for cache validation assigned to pages depending on how often their content changes
+    * `RRSM_URL_BASE` allows adding a URL prefix to all RRSM URLs
 1. Create the virtual environment:
     ```
     [usr@host src]$ python3 -m venv env
