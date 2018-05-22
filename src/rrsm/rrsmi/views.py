@@ -46,6 +46,14 @@ class HomeListView(ListView):
         return context
 
 
+class AboutListView(ListView):
+    model = None
+    template_name = 'about.html'
+
+    def get_queryset(self):
+        return None
+
+
 class RecentEventsListView(ListView):
     model = None
     context_object_name = 'events'

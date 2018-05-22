@@ -17,6 +17,7 @@ RRSM_URL_BASE = getattr(settings, "RRSM_URL_BASE", "")
 
 urlpatterns = [
     path('{}'.format(RRSM_URL_BASE), cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.HomeListView.as_view()),name='home'),
+    path('{}about/'.format(RRSM_URL_BASE), cache_page(CACHE_TIME_LONG)(rrsmi_view.AboutListView.as_view()),name='about'),
     re_path(r'^{}recent/(?P<days>\w+)/$'.format(RRSM_URL_BASE),
         cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.RecentEventsListView.as_view()), name='recent_events'),
     re_path(r'^{}event/(?P<event_public_id>\w+)/$'.format(RRSM_URL_BASE),

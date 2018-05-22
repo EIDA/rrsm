@@ -1,0 +1,272 @@
+{% extends 'base.html' %} {% load static %} {% block stylesheet %}
+<link rel="stylesheet" href="{% static 'css/datatable/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/openlayers/ol.css' %}" type="text/css"> {% endblock %} {% block breadcrumb %}
+<li class="breadcrumb-item">
+    <a href="{% url 'home' %}">Home</a>
+</li>
+<li class="breadcrumb-item active">About</li>
+{% endblock %} {% block content %}
+<h1>Introduction</h1>
+<p>The RRSM portal allows users to query earthquake information, peak ground motion parameters, response spectral amplitudes
+    and to select and download earthquake waveforms within minutes after an earthquake with magnitude ≥ 3.5 occurring in
+    the European-Mediterranean region. Earthquake information is provided by the EMSC and all on-scale seismic waveform data
+    available from ORFEUS EIDA is considered for fully automated processing. Realtime RRSM processing started in June 2014.
+    Offline reprocessing was carried out for all M ≥ 4.5 events that occurred since January 2005, and all M ≥ 3.5 events
+    since January 2012.</p>
+<p>The RRSM is the first European system that delivers strong motion products close to realtime for earthquake scientists and
+    earthquake engineers.</p>
+<p>
+    Key features of the RRSM:
+    <ul>
+        <li>It uses all relevant, unrestricted waveform data from the
+            <b>European Integrated waveform Data Archive (EIDA), which is predominantly broadband but includes substantial sets
+                of continuous strong motion data</b>.</li>
+        <li>
+            <b>EIDA consists of high quality waveform data</b> and station metadata, based on international seismological standards.
+        </li>
+        <li>
+            <b>It facilitates discovery and dissemination of peak ground motion parameters</b>, earthquake information and related
+            products, in near-realtime, and download of the raw, unprocessed event waveforms.
+        </li>
+        <li>It uses
+            <b>fully automated processing software ("scwfparam") which is open source and integrated in SeisComP3</b>.
+        </li>
+        <li>
+            <b>It provides additional and independently derived data</b> compared to those provided by traditional strong motion
+            datasets.
+        </li>
+        <li>It processes all available (and relevant) on-scale waveforms in the vicinity of the earthquake,
+            <b>not only ‘strong-motion’ data recorded by accelerometers</b>.
+        </li>
+        <li>
+            <b>It provides a simple and user-friendly</b> webinterface to query data.
+        </li>
+    </ul>
+</p>
+<h1>The RRSM target community</h1>
+<p>The RRSM is significantly different from traditional dissemination systems of strong motion earthquake data in Europe, which
+    have been characterised for decades by (large) delays in availability of reviewed, processed data. The RRSM concept reflects
+    the current status in seismic monitoring where
+    <b>data users require rapid access</b> to raw waveform data and metadata and do not rely on
+    <b>delayed processed waveforms</b>.</p>
+<p>With this background, the RRSM is particularly targeted towards rapid data access for:
+    <ul>
+        <li>Seismologists and strong-motion data analysts.
+        </li>
+        <li>Earthquake and geotechnical engineers.
+        </li>
+        <li>International earthquake response agencies.
+        </li>
+        <li>The educated general public.
+        </li>
+    </ul>
+</p>
+<h1>Data gathering and processing</h1>
+<p>Raw waveform data and basic station information are available from the European Integrated waveform Data Archive (EIDA).
+    The ORFEUS Data Center (ODC) is a primary EIDA node.</p>
+<p>The RRSM database is populated via a strong motion processing module 
+    "<a target="_blank" href="https://www.seiscomp3.org/doc/seattle/current/apps/scwfparam.html">scwfparam</a>" 
+    which is integrated in <a target="_blank" href="https://www.seiscomp3.org/">SeisComP3</a> (SC3).</p>
+<p>The RRSM "scwfparam" processing is triggered by an earthquake alert dissemination by the EMSC. These alerts are typically
+    available 5-20 minutes after earthquake origin time.</p>
+<p>
+    Earthquake data is being processed if it meets the following criteria:
+    <ul>
+        <li>Magnitude (any scale) ≥ 3.5
+        </li>
+        <li>Location is within the greater European region (27° ≤ lat ≤ -81°, -32° ≤ lon ≤ 51)
+        </li>
+    </ul>
+</p>
+<p>Waveform data are collected from seismic stations within magnitude dependent maximum epicentral distance. The length of the
+    requested time windows as well as the corner frequencies of the filter depend also on the magnitude:
+    <table class="table table-sm table-striped" width="100%">
+        <thead>
+            <tr>
+                <th>Magnitude</th>
+                <th>Stations within</th>
+                <th>Filter frequencies</th>
+                <th>Requested time window</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>≥ 3.5</td>
+                <td>100 km</td>
+                <td>0.3 Hz - Nyquist</td>
+                <td>70 s</td>
+            </tr>
+            <tr>
+                <td>≥ 4.0</td>
+                <td>125 km</td>
+                <td>0.3 Hz - Nyquist</td>
+                <td>85 s</td>
+            </tr>
+            <tr>
+                <td>≥ 4.5</td>
+                <td>150 km</td>
+                <td>0.3 Hz - Nyquist</td>
+                <td>100 s</td>
+            </tr>
+            <tr>
+                <td>≥ 5.0</td>
+                <td>175 km</td>
+                <td>0.2 Hz - Nyquist</td>
+                <td>115 s</td>
+            </tr>
+            <tr>
+                <td>≥ 5.5</td>
+                <td>200 km</td>
+                <td>0.2 Hz - Nyquist</td>
+                <td>125 s</td>
+            </tr>
+            <tr>
+                <td>≥ 6.0</td>
+                <td>225 km</td>
+                <td>0.2 Hz - Nyquist</td>
+                <td>140 s</td>
+            </tr>
+            <tr>
+                <td>≥ 6.5</td>
+                <td>250 km</td>
+                <td>0.1 Hz - Nyquist</td>
+                <td>155 s</td>
+            </tr>
+            <tr>
+                <td>≥ 7.0</td>
+                <td>300 km</td>
+                <td>0.05 Hz - Nyquist</td>
+                <td>175 s</td>
+            </tr>
+            <tr>
+                <td>≥ 7.5</td>
+                <td>400 km</td>
+                <td>0.05 Hz - Nyquist</td>
+                <td>205 s</td>
+            </tr>
+        </tbody>
+    </table>
+</p>
+<p>Disclaimer: Spectral ordinates computed at frequencies lower than the low-cut should not be used. 
+    Please see <a target="_blank" href="http://web.boun.edu.tr/sinan.akkar/publications/11_Akkar_Bommer_EESD_35_9.pdf">Akkar and Bommer</a> (2006) 
+    for more details.</p>
+<p>Each earthquake is reprocessed after some time to ensure all available data in EIDA to be included. Current scheduling is:
+    <ul>
+        <li>Immediately upon receiving alert</li>
+        <li>5 minutes after origin time</li>
+        <li>15 minutes after origin time</li>
+        <li>1 hour after origin time</li>
+        <li>3 hours after origin time</li>
+        <li>6 hours after origin time</li>
+        <li>1 day after origin time</li>
+    </ul>
+</p>
+<p>The database is filled with data since January 1st, 2005.</p>
+<p>
+        Only the stations and streams that match the RRSM quality criteria are show in this interface. 
+        For instance, tables and charts only display data within certain limits:
+        <ul>
+            <li>0.001 cm/s<sup>2</sup> ≤ PGA ≤ 980.6 cm/s<sup>2</sup></li>
+            <li>0.0001 cm/s ≤ PGV (broadband) ≤ 1.3 cm/s</li>
+            <li>0.0001 cm/s ≤ PGV (others) ≤ 100 cm/s</li>
+        </ul>
+        In addition, KO and TU networks have been temporarily removed from processing.
+</p>
+<h1>The webinterface</h1>
+<p>The user interface allows users to access both raw waveform data and peak 
+    ground-motion values as well as response spectral ordinates of engineering interest.</p>
+<p>
+The RRSM Interface supports 3 different request types:
+<ul>
+    <li>Select Events: search earthquakes by time, magnitude and location; get stream and peak-motions fulfilling the criteria.</li>
+    <li>Select Peak-Motions: search waveforms (earthquake-station combinations) by peak-motion criteria, 
+        station location, distance and magnitude; get stream and peak-motions fulfilling the criteria.</li>
+    <li>Combined Selection: search earthquakes by peak motion criteria; get stream and peak-motions fulfilling the criteria.</li>
+</ul>    
+</p>
+<p>After submitting the search criteria, the earthquakes/waveforms are shown in the Results page. 
+    From there, the user can navigate through the Event detail page and/or the Station detail page.</p>
+<p>Peak ground-motion values are shown on all page levels. The interface provides plots of peak amplitude versus distance for a 
+    selected earthquake, and response spectra for selected stations. In addition, the user can select a set of events/stations/streams to 
+    download raw wavefoms from <a target="_blank" href="http://145.23.252.222/eida/webdc3/">WebDC3</a> (EIDA data access portal).</p>
+<h2>Notes</h2>
+<ul>
+    <li>Only the most recently processed strong motion data is shown for each event.</li>
+    <li>The download capabilities of data tables (CSV, Excel, PDF, etc.) requires Adobe Flash Player.</li>
+    <li>Most of the features of this interface, as well as WedDC3 (for waveform download) requires JavaScript enabled.</li>
+    <li>Fully compatible with browsers Mozilla Firefox and Google Chrome.</li>
+    <li>Compatible with browser Internet Explorer ≥ 8, except for downloading raw waveforms via WebDC3. Some other issues on IE8.</li>
+</ul>
+<h1>Disclaimer</h1>
+<p>The information provided by this portal has been automatically processed and it is intended only for research usage. 
+    The results are NOT reviewed by a seismologist. ORFEUS declines any responsibility from any improper use of the information therein represented.</p>
+<p>All waveform data within the RRSM are subject to the EIDA disclaimer.</p>
+<h1>Acknowledgments</h1>
+<p>The RRSM interface was designed and implemented by ORFEUS Data Center (ODC) and ETH Zurich, using funding from NERA. 
+    The waveform processing tool "scwfparam" within SeisComP3 was designed by ETH Zurich and implemented by Gempa GmBH. 
+    Funding for "scwfparam" development came from ETH Zurich, GNS New Zealand and Geoscience Australia. 
+    Details on "scwfparam" processing options can be found 
+    <a target="_blank" href="https://www.orfeus-eu.org/opencms/export/sites/default/rrsm/information/scwfparam-poster.pdf">here</a>.</p>
+<p>SeisComP3 is an earthquake monitoring software developed by GFZ Potsdam and Gempa GmbH, largely used in Europe and worldwide.</p>
+<p>The EIDA data access portal (WebDC3) is developed at GFZ Potsdam.</p>
+<p>The data user is kindly requested to provide proper reference to the data suppliers: 
+    <a target="_blank" href="http://www.orfeus-eu.org/eida/eida_acknowledgement.html">http://www.orfeus-eu.org/eida/eida_acknowledgement.html</a></p>
+<h1>Data format and usage</h1>
+<p>The <a target="_blank" href="http://145.23.252.222/eida/webdc3/">WebDC3</a> (EIDA data access portal) 
+    allows download of time series data in Full SEED and Mini-SEED formats only. 
+    Guidelines and examples for SEED data reading and conversion are given here.</p>
+<p>Mini-SEED data can be read in <a target="_blank" href="http://www.mathworks.com/">Matlab</a> by means of a variety of scripts 
+    prepared by Matlab users and available on the Web. One example is the miniSeedToolbox, that uses the 
+    IRIS <a target="_blank" href="https://github.com/iris-edu/libmseed">libmseed</a> library to 
+    read and write Mini-SEED formatted files in Matlab. If Matlab and the miniSeedToolbox are properly installed on your computer, 
+    this sample script can be used as a starting point for reading and displaying Mini-SEED data files.</p>
+<p>A powerful tool for Mini-SEED data visualisation and basic processing is PQLII, free software available from 
+    <a target="_blank" href="https://www.passcal.nmt.edu/content/pql-ii-program-viewing-data">IRIS Passcal</a>. 
+    Further, the reader is invited to evaluate the variety of free software resources provided by Passcal 
+    <a target="_blank" href="https://www.passcal.nmt.edu/content/software-resources">here</a>.</p>
+<p>Other free software tools that can deal with Mini-SEED are 
+    <a target="_blank" href="http://www.geopsy.org/">Geopsy</a> and 
+    <a target="_blank" href="https://github.com/obspy/obspy/wiki">Obspy</a>.</p>
+<p>As to data conversion, the reader is referred to the exhaustive list of tools provided by ORFEUS and IRIS. 
+    This list includes software packages for conversion from Mini-SEED to ascii and SAC, 
+    the standard package for seismic data processing in many regions, in particular the US.</p>
+<h2>rdseed</h2>
+<p>In particular, <code>rdseed</code> can be used to convert SEED volumes into SAC compatible data.</p>
+<p>As exhaustively documented in the rdseed <a target="_blank" href="http://ds.iris.edu/ds/nodes/dmc/manuals/">manual</a>, 
+    several options can be used when reading SEED volumes. In particular, the</p>
+<code>-d read data from tape</code>
+<p>option can be used to read the waveforms from full SEED data and subsequently convert into different formats:</p>
+<code>-o specify output format (1=SAC, 2=AH, 3=CSS, 4=miniSEED, 5=SEED [default=1])</code>
+<p>When Mini-SEED data are used, the user should specify that station configuration and responses be taken from another SEED volume, 
+    for example a data-less SEED volume. The environment variable ALT_RESPONSE_FILE should be defined with its value being the 
+    path name of the SEED volume (be it full or data-less SEED) from which responses should be taken. If Mini-SEED is being used, 
+    enter the Mini-SEED file name into the rdseed prompt as you would a normal seed volume, as following:</p>
+<code>rdseed -d -f yourminiseedfile -o 1 -g yourdatalessfile</code>
+<p>
+    The following files can be used as 'fake' data-less for rapid conversion into sac:
+    <ul>
+        <li>strong-motion.dless</li>
+        <li>broadband.dless</li>
+        <li>short-period.dless</li>
+    </ul>
+</p>
+<p>The user should modify the station and network name using e.g. 
+    <a target="_blank" href="http://ds.iris.edu/ds/nodes/dmc/software/">PDCC</a>.</p>
+<h2>Note on start/end time of the requested waveforms</h2>
+<p>Users might be interested in processing waveform data with start and end time that exactly match the start / end time of the 
+    requested time windows. Time sichronisation tipically does not occur automatically because - as SEED format is 
+    block-oriented - it is possible to have incomplete blocks in the waveforms retrieved from ArcLink.</p>
+<p>One possibility is to sychronise the waveforms later in SAC, using the 
+    <a target="_blank" href="http://ds.iris.edu/ds/nodes/dmc/software/">SYNCHRONIZE</a> command.</p>
+<p>Another possibility is to fill in the incomplete blocks with padding, so that the data starts and ends as close as 
+    possible to the specified time. qmerge for example has an option -T: Exact trim -- trim data to closest specified time. 
+    Default is to trim to nearest inclusive block boundary.</p>
+<h1>Links</h1>
+<p>Other websites related to the RRSM Interface.</p>
+<p><b>European Station Book interface:</b> <a target="_blank" href="http://www.orfeus-eu.org/stationbook/">http://www.orfeus-eu.org/stationbook/</a></p>
+<p><b>Engineering Strong Motion (ESM) interface:</b> <a target="_blank" href="http://dyna.mi.ingv.it/processing/">http://dyna.mi.ingv.it/processing/</a></p>
+<p><b>NERA project:</b> <a target="_blank" href="http://www.nera-eu.org/">http://www.nera-eu.org/</a></p>
+<p><b>WebDC3 (EIDA data access portal):</b> <a target="_blank" href="http://145.23.252.222/eida/webdc3/">http://145.23.252.222/eida/webdc3/</a></p>
+<p><b>SeisComP3 scwfparam module:</b> <a target="_blank" href="http://www.seiscomp3.org/doc/seattle/current/apps/scwfparam.html">http://www.seiscomp3.org/doc/seattle/current/apps/scwfparam.html</a></p>
+<p><b>SeismicPortal:</b> <a target="_blank" href="http://www.seismicportal.eu/">http://www.seismicportal.eu/</a></p>
+{% endblock %}
