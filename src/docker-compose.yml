@@ -3,27 +3,11 @@ services:
   rrsmweb:
     restart: always
     build: ./rrsm/
-    expose:
-      - "8000"
-    volumes:
-      - /data/rrsm/rrsm/static
+    ports:
+      - "8000:8000"
     networks:
       - rrsm_net
     command: gunicorn rrsm.wsgi:application --timeout 300 -w 2 -b :8000
-    
-  rrsmnginx:
-    restart: always
-    build: ./nginx/
-    depends_on:
-      - rrsmweb
-    ports:
-      - "8000:8000"
-    volumes_from:
-      - rrsmweb
-    links:
-      - rrsmweb:rrsmweb
-    networks:
-      - rrsm_net
 
 networks:
   rrsm_net:
