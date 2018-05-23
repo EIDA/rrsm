@@ -26,7 +26,7 @@ var popup = new ol.Overlay({
     element: element,
     positioning: 'bottom-center',
     stopEvent: false,
-    offset: [5, -30]
+    offset: [5, -5]
 });
 map.addOverlay(popup);
 
