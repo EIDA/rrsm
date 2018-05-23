@@ -1,11 +1,28 @@
-{% extends 'base.html' %} {% load static %} {% block stylesheet %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block stylesheet %}
 <link rel="stylesheet" href="{% static 'css/datatable/dataTables.bootstrap4.min.css' %}">
-<link rel="stylesheet" href="{% static 'css/openlayers/ol.css' %}" type="text/css"> {% endblock %} {% block breadcrumb %}
+<link rel="stylesheet" href="{% static 'css/openlayers/ol.css' %}" type="text/css">
+<style type="text/css">
+    .box {
+        display: inline-block;
+    }
+
+    .box:hover {
+        box-shadow: 0 0 5px #ccc;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
 <li class="breadcrumb-item">
     <a href="{% url 'home' %}">Home</a>
 </li>
 <li class="breadcrumb-item active">About</li>
-{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
 <h1>Introduction</h1>
 <p>The RRSM portal allows users to query earthquake information, peak ground motion parameters, response spectral amplitudes
     and to select and download earthquake waveforms within minutes after an earthquake with magnitude ≥ 3.5 occurring in
@@ -29,7 +46,7 @@
             products, in near-realtime, and download of the raw, unprocessed event waveforms.
         </li>
         <li>It uses
-            <b>fully automated processing software ("scwfparam") which is open source and integrated in SeisComP3</b>.
+            <b>fully automated processing software ("<a target="_blank" href="https://www.seiscomp3.org/doc/seattle/current/apps/scwfparam.html">scwfparam</a>") which is open source and integrated in SeisComP3</b>.
         </li>
         <li>
             <b>It provides additional and independently derived data</b> compared to those provided by traditional strong motion
@@ -46,9 +63,8 @@
 <h1>The RRSM target community</h1>
 <p>The RRSM is significantly different from traditional dissemination systems of strong motion earthquake data in Europe, which
     have been characterised for decades by (large) delays in availability of reviewed, processed data. The RRSM concept reflects
-    the current status in seismic monitoring where
-    <b>data users require rapid access</b> to raw waveform data and metadata and do not rely on
-    <b>delayed processed waveforms</b>.</p>
+    the current status in seismic monitoring where <b>data users require rapid access</b> to raw waveform 
+    data and metadata and do not rely on <b>delayed processed waveforms</b>.</p>
 <p>With this background, the RRSM is particularly targeted towards rapid data access for:
     <ul>
         <li>Seismologists and strong-motion data analysts.
@@ -64,9 +80,8 @@
 <h1>Data gathering and processing</h1>
 <p>Raw waveform data and basic station information are available from the European Integrated waveform Data Archive (EIDA).
     The ORFEUS Data Center (ODC) is a primary EIDA node.</p>
-<p>The RRSM database is populated via a strong motion processing module 
-    "<a target="_blank" href="https://www.seiscomp3.org/doc/seattle/current/apps/scwfparam.html">scwfparam</a>" 
-    which is integrated in <a target="_blank" href="https://www.seiscomp3.org/">SeisComP3</a> (SC3).</p>
+<p>The RRSM database is populated via a strong motion processing module "scwfparam" which is 
+    integrated in <a target="_blank" href="https://www.seiscomp3.org/">SeisComP3</a> (SC3).</p>
 <p>The RRSM "scwfparam" processing is triggered by an earthquake alert dissemination by the EMSC. These alerts are typically
     available 5-20 minutes after earthquake origin time.</p>
 <p>
@@ -148,8 +163,9 @@
     </table>
 </p>
 <p>Disclaimer: Spectral ordinates computed at frequencies lower than the low-cut should not be used. 
-    Please see <a target="_blank" href="http://web.boun.edu.tr/sinan.akkar/publications/11_Akkar_Bommer_EESD_35_9.pdf">Akkar and Bommer</a> (2006) 
-    for more details.</p>
+    Please see 
+    <a target="_blank" href="http://web.boun.edu.tr/sinan.akkar/publications/11_Akkar_Bommer_EESD_35_9.pdf">Akkar and Bommer</a> 
+    (2006) for more details.</p>
 <p>Each earthquake is reprocessed after some time to ensure all available data in EIDA to be included. Current scheduling is:
     <ul>
         <li>Immediately upon receiving alert</li>
@@ -176,13 +192,13 @@
 <p>The user interface allows users to access both raw waveform data and peak 
     ground-motion values as well as response spectral ordinates of engineering interest.</p>
 <p>
-The RRSM Interface supports 3 different request types:
+The RRSM Interface supports following request types:
 <ul>
     <li>Select Events: search earthquakes by time, magnitude and location; get stream and peak-motions fulfilling the criteria.</li>
-    <li>Select Peak-Motions: search waveforms (earthquake-station combinations) by peak-motion criteria, 
+    <!-- <li>Select Peak-Motions: search waveforms (earthquake-station combinations) by peak-motion criteria, 
         station location, distance and magnitude; get stream and peak-motions fulfilling the criteria.</li>
-    <li>Combined Selection: search earthquakes by peak motion criteria; get stream and peak-motions fulfilling the criteria.</li>
-</ul>    
+    <li>Combined Selection: search earthquakes by peak motion criteria; get stream and peak-motions fulfilling the criteria.</li> -->
+</ul>
 </p>
 <p>After submitting the search criteria, the earthquakes/waveforms are shown in the Results page. 
     From there, the user can navigate through the Event detail page and/or the Station detail page.</p>
@@ -192,7 +208,7 @@ The RRSM Interface supports 3 different request types:
 <h2>Notes</h2>
 <ul>
     <li>Only the most recently processed strong motion data is shown for each event.</li>
-    <li>The download capabilities of data tables (CSV, Excel, PDF, etc.) requires Adobe Flash Player.</li>
+    <!-- <li>The download capabilities of data tables (CSV, Excel, PDF, etc.) requires Adobe Flash Player.</li> -->
     <li>Most of the features of this interface, as well as WedDC3 (for waveform download) requires JavaScript enabled.</li>
     <li>Fully compatible with browsers Mozilla Firefox and Google Chrome.</li>
     <li>Compatible with browser Internet Explorer ≥ 8, except for downloading raw waveforms via WebDC3. Some other issues on IE8.</li>
@@ -269,4 +285,37 @@ The RRSM Interface supports 3 different request types:
 <p><b>WebDC3 (EIDA data access portal):</b> <a target="_blank" href="http://145.23.252.222/eida/webdc3/">http://145.23.252.222/eida/webdc3/</a></p>
 <p><b>SeisComP3 scwfparam module:</b> <a target="_blank" href="http://www.seiscomp3.org/doc/seattle/current/apps/scwfparam.html">http://www.seiscomp3.org/doc/seattle/current/apps/scwfparam.html</a></p>
 <p><b>SeismicPortal:</b> <a target="_blank" href="http://www.seismicportal.eu/">http://www.seismicportal.eu/</a></p>
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col box">
+            <a href="http://www.knmi.nl/">
+                <img src="{% static 'img/logo/knmi.png' %}" width="100%" alt="KNMI">
+            </a>
+        </div>
+        <div class="col box">
+            <a href="https://www.orfeus-eu.org/">
+                <img src="{% static 'img/logo/orfeus.png' %}" width="100%" alt="Orfeus">
+            </a>
+        </div>
+        <div class="col box">
+            <a href="http://www.seismo.ethz.ch/">
+                <img src="{% static 'img/logo/sed.png' %}" width="100%" alt="SED">
+            </a>
+        </div>
+        <div class="col box">
+            <a href="https://www.ethz.ch/">
+                <img src="{% static 'img/logo/eth.png' %}" width="100%" alt="ETH">
+            </a>
+        </div>
+    </div>
+</div>
+<hr>
+<small>
+<b>Disclaimer</b> The peak-motion and spectral values provided through the RRSM Interface result from fast high-quality 
+automatic processing of velocity and acceleration waveforms, without any human interaction. Please help us 
+clearing severe mistakes if any, by sending your feedback at rrsm@knmi.nl
+<br>
+RRSM Interface ©2018 ODC/ETH
+</small>
 {% endblock %}
