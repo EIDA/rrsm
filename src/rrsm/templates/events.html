@@ -21,7 +21,7 @@
 {% endblock modal %}
 
 {% block content %}
-{% if events %}
+{% if motion_data %}
 <div id="map" class="map">
   <div id="popup"></div>
 </div>
@@ -83,19 +83,19 @@
 <script type="text/javascript">
   var events = []
 </script>
-  {% for e in events %}
+  {% for s in motion_data.stations %}
   <tr>
-    <td><a href="{% url 'event_details' e.get_public_id %}">{{ e.parse_origin_time }}</a></td>
+    <td><a href="{% url 'event_details' s.get_public_id %}">{{ s.parse_origin_time }}</a></td>
     <td>
-      <a href="#" onclick="focusEvent(parseFloat('{{ e.origin_latitude }}'),parseFloat('{{ e.origin_longitude }}'));">{{ e.get_flinn_engdahl }}</a>
-      <small class="text-muted d-block">Lat: {{ e.origin_latitude }}, Lon: {{ e.origin_longitude }}</small>
+      <a href="#" onclick="focusEvent(parseFloat('{{ s.event_latitude }}'),parseFloat('{{ s.event_longitude }}'));">{{ s.get_flinn_engdahl }}</a>
+      <small class="text-muted d-block">Lat: {{ s.event_latitude }}, Lon: {{ s.event_longitude }}</small>
     </td>
-    <td><span id="mag_label-{{ e.get_public_id }}" class="badge">{{ e.magnitude_value }}</span></td>
-    <td>{{ e.origin_depth }}</td>
+    <td><span id="mag_label-{{ s.get_public_id }}" class="badge">{{ s.event_magnitude }}</span></td>
+    <td>{{ s.event_depth }}</td>
   </tr>
   <script type="text/javascript">
-  var latitude=parseFloat("{{ e.origin_latitude }}"),longitude=parseFloat("{{ e.origin_longitude }}"),depth=parseFloat("{{ e.origin_depth }}"),magnitude=parseFloat("{{ e.magnitude_value }}");var mag_label=$('#mag_label-{{ e.get_public_id }}');if(magnitude<4){mag_label.addClass("badge badge-info")}else if(magnitude<6){mag_label.addClass("badge badge-warning")}else{mag_label.addClass("badge badge-danger")}
-  events.push({lat:latitude,lon:longitude,mag:magnitude,txt:`<b>Time:</b> {{ e.parse_origin_time }}<br><b>Flinn Engdahl Region:</b> {{ e.get_flinn_engdahl }}<br><b>Latitude:</b> ${latitude}<br><b>Longitude:</b> ${longitude}<br><b>Magnitude:</b> ${magnitude}<br><b>Depth:</b> ${depth}<br><b><a href="#" onclick="focusEvent(parseFloat('{{ e.origin_latitude }}'),parseFloat('{{ e.origin_longitude }}'));">Focus</a> | <a href="{% url 'event_details' e.get_public_id %}">Show details</a></b>`})
+  var latitude=parseFloat("{{ s.event_latitude }}"),longitude=parseFloat("{{ s.event_longitude }}"),depth=parseFloat("{{ s.event_depth }}"),magnitude=parseFloat("{{ s.event_magnitude }}");var mag_label=$('#mag_label-{{ s.get_public_id }}');if(magnitude<4){mag_label.addClass("badge badge-info")}else if(magnitude<6){mag_label.addClass("badge badge-warning")}else{mag_label.addClass("badge badge-danger")}
+  events.push({lat:latitude,lon:longitude,mag:magnitude,txt:`<b>Time:</b> {{ s.parse_origin_time }}<br><b>Flinn Engdahl Region:</b> {{ s.get_flinn_engdahl }}<br><b>Latitude:</b> ${latitude}<br><b>Longitude:</b> ${longitude}<br><b>Magnitude:</b> ${magnitude}<br><b>Depth:</b> ${depth}<br><b><a href="#" onclick="focusEvent(parseFloat('{{ s.event_latitude }}'),parseFloat('{{ s.event_longitude }}'));">Focus</a> | <a href="{% url 'event_details' s.get_public_id %}">Show details</a></b>`})
   </script>
   {% endfor %}
 </tbody>
@@ -104,7 +104,7 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function(){$('#events_table').DataTable({"order":[[0,"desc"]],stateSave:!0});events.forEach(function(e){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([e.lon,e.lat])),name:e.txt});point.setStyle(new ol.style.Style({image:new ol.style.Circle({radius:e.mag**2/4,fill:new ol.style.Fill({color:getEventColor(e.mag)}),stroke:new ol.style.Stroke({color:'#000000',width:1})})})),vectorSource.addFeature(point)})})
+$(document).ready(function(){$('#events_table').DataTable({"order":[[0,"desc"]],stateSave:!0});events.forEach(function(s){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([s.lon,s.lat])),name:s.txt});point.setStyle(new ol.style.Style({image:new ol.style.Circle({radius:s.mag**2/4,fill:new ol.style.Fill({color:getEventColor(s.mag)}),stroke:new ol.style.Stroke({color:'#000000',width:1})})})),vectorSource.addFeature(point)})})
 </script>
 {% else %}
 <p>

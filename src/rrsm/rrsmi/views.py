@@ -20,8 +20,7 @@ import plotly.offline as opy
 import plotly.graph_objs as go
 
 from .fdsn.fdsn_manager import \
-    FdsnEventManager, FdsnMotionManager, \
-    FdsnShakemapManager, FdsnWaveformManager
+    FdsnMotionManager, FdsnShakemapManager, FdsnWaveformManager
 
 from .models import SearchEvent
 from .forms import SearchEventsForm
@@ -38,9 +37,9 @@ class HomeListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        data, ws_url = FdsnEventManager().get_events(days_back=31)
+        motion_data, ws_url = FdsnMotionManager().get_event_list(days_back=31)
         context['breadcrumb'] = 'Home (events from last 31 days)'
-        context['events'] = data.events
+        context['motion_data'] = motion_data
         context['ws_url'] = ws_url
         context['is_homepage'] = True
         return context
@@ -64,11 +63,11 @@ class RecentEventsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        data, ws_url = FdsnEventManager().get_events(
+        motion_data, ws_url = FdsnMotionManager().get_event_list(
             days_back=int(self.kwargs.get('days'))
             )
         context['breadcrumb'] = 'Recent events'
-        context['events'] = data.events
+        context['motion_data'] = motion_data
         context['ws_url'] = ws_url
         context['is_homepage'] = True
         return context
@@ -292,7 +291,7 @@ def search_events(request):
     if request.method == 'POST':
         search_form = SearchEventsForm(request.POST)
         if search_form.is_valid():
-            data, ws_url = FdsnEventManager().get_events(
+            motion_data, ws_url = FdsnMotionManager().get_event_list(
                 event_id=search_form.cleaned_data['event_id'],
                 date_start=search_form.cleaned_data['date_start'],
                 date_end=search_form.cleaned_data['date_end'],
@@ -302,8 +301,8 @@ def search_events(request):
                 level=search_form.cleaned_data['level']
             )
 
-            if data:
-                queryset = data.events
+            if motion_data:
+                queryset = motion_data
             else:
                 queryset = None
 
@@ -311,7 +310,7 @@ def search_events(request):
                 request,
                 'events.html',
                 {
-                    'events': queryset,
+                    'motion_data': queryset,
                     'breadcrumb': 'Search result',
                     'ws_url': ws_url,
                     'is_homepage': True

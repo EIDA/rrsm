@@ -6,8 +6,8 @@ from xml.etree.ElementTree import ParseError
 from urllib.request import Request, urlopen
 
 from .base_classes import NSMAP, NO_FDSNWS_DATA, \
-NodeWrapper, Events, EventWrapper, \
-MotionData, MotionDataStation, MotionDataStationChannel, SpectralAmplitude
+    NodeWrapper, \
+    MotionData, MotionDataStation, MotionDataStationChannel, SpectralAmplitude
 from ..logger import RrsmLoggerMixin
 
 
@@ -36,12 +36,12 @@ class FdsnHttpBase(RrsmLoggerMixin):
             return string
 
 
-class FdsnEventManager(FdsnHttpBase):
+class FdsnMotionManager(FdsnHttpBase):
     def __init__(self):
-        super(FdsnEventManager, self).__init__()
+        super(FdsnMotionManager, self).__init__()
         self.node_wrapper = NodeWrapper()
 
-    def get_events(
+    def get_event_list(
         self, days_back=None, event_id=None, date_start=None, date_end=None,
             magnitude_min=None, network_code=None,
             station_code=None, level=None):
@@ -51,85 +51,18 @@ class FdsnEventManager(FdsnHttpBase):
                 magnitude_min, network_code,
                 station_code, level)
 
-            self.log_information(ws_url)
-
             response = self.fdsn_request(ws_url)
 
             if not response:
                 return None, ws_url
 
-            root = ET.fromstring(response)
-            event_graph = Events()
+            data = json.loads(response.decode('utf-8'))
+            extracted = self._extract_data(data, False, True)
 
-            for event in root.findall('.//mw:event', namespaces=NSMAP):
-                ew = EventWrapper()
-
-                tmp = event.get('publicID')
-                if tmp is not None:
-                    ew.public_id = self.validate_string(tmp)
-
-                tmp = event.find(
-                    './/mw:creationInfo//mw:author', namespaces=NSMAP
-                )
-                if tmp is not None:
-                    ew.author = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:magnitude', namespaces=NSMAP).get('publicID')
-                if tmp is not None:
-                    ew.magnitude_public_id = self.validate_string(tmp)
-
-                tmp = event.find(
-                    './/mw:magnitude//mw:mag//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.magnitude_value = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:origin', namespaces=NSMAP).get('publicID')
-                if tmp is not None:
-                    ew.origin_public_id = self.validate_string(tmp)
-
-                tmp = event.find(
-                    './/mw:origin//mw:time//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.origin_time = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:origin//mw:longitude//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.origin_longitude = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:origin//mw:latitude//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.origin_latitude = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:origin//mw:depth//mw:value', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.origin_depth = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:preferredOriginID', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.preferred_origin_id = self.validate_string(tmp.text)
-
-                tmp = event.find(
-                    './/mw:preferredMagnitudeID', namespaces=NSMAP)
-                if tmp is not None:
-                    ew.preferred_magnitude_id = self.validate_string(tmp.text)
-
-                event_graph.events.append(ew)
-            return event_graph, ws_url
+            return extracted, ws_url
         except:
             self.log_exception()
             return None, ws_url
-
-
-class FdsnMotionManager(FdsnHttpBase):
-    def __init__(self):
-        super(FdsnMotionManager, self).__init__()
-        self.node_wrapper = NodeWrapper()
 
     def get_event_details(self, event_public_id, network=None, station=None, spectra=False):
         try:
@@ -142,10 +75,23 @@ class FdsnMotionManager(FdsnHttpBase):
             if not response:
                 return None, ws_url
 
-            result = MotionData()
             data = json.loads(response.decode('utf-8'))
+            extracted = self._extract_data(data, True, False)
+            
+            return extracted, ws_url
+        except:
+            self.log_exception()
+            return None, ws_url
+
+    def _extract_data(self, data, extract_channels=True, unique_event_id=False):
+        try:
+            result = MotionData()
 
             for s in data:
+                if unique_event_id == True:
+                    if any(x.event_id == s['event-id'] for x in result.stations):
+                        continue
+
                 station_data = MotionDataStation()
                 station_data.event_id = s['event-id']
                 station_data.event_time = s['event-time']
@@ -163,32 +109,33 @@ class FdsnMotionManager(FdsnHttpBase):
                 station_data.epicentral_distance = s['epicentral-distance']
                 station_data.event_reference = s['event-reference']
 
-                for d in s['sensor-channels']:
-                    ch = MotionDataStationChannel()
-                    ch.channel_code = d['channel-code']
-                    ch.pga_value = d['pga-value']
-                    ch.pgv_value = d['pgv-value']
-                    ch.sensor_azimuth = d['sensor-azimuth']
-                    ch.sensor_dip = d['sensor-dip']
-                    ch.sensor_depth = d['sensor-depth']
-                    ch.sensor_unit = d['sensor-unit']
-                    ch.corner_freq_lower = d['corner-freq-lower']
-                    ch.corner_freq_upper = d['corner-freq-upper']
+                if extract_channels == True:
+                    for d in s['sensor-channels']:
+                        ch = MotionDataStationChannel()
+                        ch.channel_code = d['channel-code']
+                        ch.pga_value = d['pga-value']
+                        ch.pgv_value = d['pgv-value']
+                        ch.sensor_azimuth = d['sensor-azimuth']
+                        ch.sensor_dip = d['sensor-dip']
+                        ch.sensor_depth = d['sensor-depth']
+                        ch.sensor_unit = d['sensor-unit']
+                        ch.corner_freq_lower = d['corner-freq-lower']
+                        ch.corner_freq_upper = d['corner-freq-upper']
 
-                    if 'spectral-amplitudes' in d:
-                        for spa in d['spectral-amplitudes']:
-                            sa = SpectralAmplitude()
-                            sa.period = spa['period']
-                            sa.amplitude = spa['amplitude']
-                            sa.type = spa['type']
-                            ch.spectral_amplitudes.append(sa)
+                        if 'spectral-amplitudes' in d:
+                            for spa in d['spectral-amplitudes']:
+                                sa = SpectralAmplitude()
+                                sa.period = spa['period']
+                                sa.amplitude = spa['amplitude']
+                                sa.type = spa['type']
+                                ch.spectral_amplitudes.append(sa)
 
-                    station_data.sensor_channels.append(ch)
+                        station_data.sensor_channels.append(ch)
                 result.stations.append(station_data)
-            return result, ws_url
+            return result
         except:
             self.log_exception()
-            return None, ws_url
+            return None
 
 
 class FdsnShakemapManager(object):
