@@ -26,7 +26,7 @@ class NodeWrapper(object):
 
     def build_url_events(
         self, days_back, event_id, date_start, date_end, magnitude_min,
-            network_code, station_code, level):
+            network_code, station_code, level, max_pga, min_pga, max_pgv, min_pgv):
 
         payload = {}
         if days_back is not None and len(str(days_back)) > 0:
@@ -65,6 +65,18 @@ class NodeWrapper(object):
 
         if level is not None and len(str(level)) > 0:
             payload['level'] = level
+
+        if max_pga is not None and len(str(max_pga)) > 0:
+            payload['maxpga'] = max_pga
+
+        if min_pga is not None and len(str(min_pga)) > 0:
+            payload['minpga'] = min_pga
+
+        if max_pgv is not None and len(str(max_pgv)) > 0:
+            payload['maxpgv'] = max_pgv
+
+        if min_pgv is not None and len(str(min_pgv)) > 0:
+            payload['minpgv'] = min_pgv
 
         response = requests.get(self.url_motion, params=payload)
         return response.url

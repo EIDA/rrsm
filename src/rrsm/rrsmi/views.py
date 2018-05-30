@@ -298,7 +298,11 @@ def search_events(request):
                 magnitude_min=search_form.cleaned_data['magnitude_min'],
                 network_code=search_form.cleaned_data['network_code'],
                 station_code=search_form.cleaned_data['station_code'],
-                level=search_form.cleaned_data['level']
+                level=search_form.cleaned_data['level'],
+                max_pga=search_form.cleaned_data['pga_max'],
+                min_pga=search_form.cleaned_data['pga_min'],
+                max_pgv=search_form.cleaned_data['pgv_max'],
+                min_pgv=search_form.cleaned_data['pgv_min']
             )
 
             if motion_data:

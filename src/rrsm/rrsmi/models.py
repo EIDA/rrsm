@@ -32,6 +32,18 @@ class SearchEvent(models.Model):
     level = models.CharField(
         max_length=STRING_LENGTH_SHORT, blank=True
     )
+    pga_max = models.DecimalField(
+        max_digits=10, decimal_places=5, blank=True
+    )
+    pga_min = models.DecimalField(
+        max_digits=10, decimal_places=5, blank=True
+    )
+    pgv_max = models.DecimalField(
+        max_digits=10, decimal_places=5, blank=True
+    )
+    pgv_min = models.DecimalField(
+        max_digits=10, decimal_places=5, blank=True
+    )
 
     class Meta:
         managed = False

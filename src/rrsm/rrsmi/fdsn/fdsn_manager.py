@@ -43,13 +43,13 @@ class FdsnMotionManager(FdsnHttpBase):
 
     def get_event_list(
         self, days_back=None, event_id=None, date_start=None, date_end=None,
-            magnitude_min=None, network_code=None,
-            station_code=None, level=None):
+            magnitude_min=None, network_code=None, station_code=None, level=None,
+            max_pga=None, min_pga=None, max_pgv=None, min_pgv=None):
         try:
             ws_url = self.node_wrapper.build_url_events(
                 days_back, event_id, date_start, date_end,
-                magnitude_min, network_code,
-                station_code, level)
+                magnitude_min, network_code, station_code, level,
+                max_pga, min_pga, max_pgv, min_pgv)
 
             response = self.fdsn_request(ws_url)
 
