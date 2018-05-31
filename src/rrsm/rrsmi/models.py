@@ -26,16 +26,16 @@ class SearchEvent(models.Model):
         max_length=STRING_LENGTH_SHORT, blank=True
     )
     event_lat_min = models.DecimalField(
-        max_digits=6, decimal_places=3, blank=True
+        max_digits=8, decimal_places=5, blank=True
     )
     event_lat_max = models.DecimalField(
-        max_digits=6, decimal_places=3, blank=True
+        max_digits=8, decimal_places=5, blank=True
     )
     event_lon_min = models.DecimalField(
-        max_digits=6, decimal_places=3, blank=True
+        max_digits=8, decimal_places=5, blank=True
     )
     event_lon_max = models.DecimalField(
-        max_digits=6, decimal_places=3, blank=True
+        max_digits=8, decimal_places=5, blank=True
     )
 
     class Meta:
@@ -77,16 +77,16 @@ class SearchCombined(models.Model):
         max_digits=10, decimal_places=5, blank=True
     )
     stat_lat_min = models.DecimalField(
-        max_digits=6, decimal_places=3, blank=True
+        max_digits=8, decimal_places=5, blank=True
     )
     stat_lat_max = models.DecimalField(
-        max_digits=6, decimal_places=3, blank=True
+        max_digits=8, decimal_places=5, blank=True
     )
     stat_lon_min = models.DecimalField(
-        max_digits=6, decimal_places=3, blank=True
+        max_digits=8, decimal_places=5, blank=True
     )
     stat_lon_max = models.DecimalField(
-        max_digits=6, decimal_places=3, blank=True
+        max_digits=8, decimal_places=5, blank=True
     )
 
     class Meta:

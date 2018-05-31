@@ -8,23 +8,31 @@
   </div>
 {% endif %}
 
-{% for field in form %}
-  <div class="form-group">
-    {{ field.label_tag }}
-    {% if form.is_bound %}
-      {% render_field field class=field|input_class %}
-      {% for error in field.errors %}
+<div class="container">
+  {% for field in form %}
+  <div class="row mb-2">
+    <div class="col-3">
+      {{ field.label_tag }}
+    </div>
+    <div class="col-4">
+      {% if form.is_bound %}
+        {% render_field field class=field|input_class %}
+        {% for error in field.errors %}
         <div class="invalid-feedback">
           {{ error }}
         </div>
-      {% endfor %}
-    {% else %}
-      {% render_field field class=field|input_class %}
-    {% endif %}
-    {% if field.help_text %}
+        {% endfor %}
+      {% else %}
+        {% render_field field class=field|input_class %}
+      {% endif %}
+    </div>
+    <div class="col">
+      {% if field.help_text %}
       <small class="form-text text-muted">
         {{ field.help_text|safe }}
       </small>
-    {% endif %}
+      {% endif %}
+    </div>
   </div>
-{% endfor %}
+  {% endfor %}
+</div>
