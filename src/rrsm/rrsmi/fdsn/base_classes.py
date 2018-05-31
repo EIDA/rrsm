@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-import requests
 from django.conf import settings
 from django.utils.dateparse import parse_datetime
 from datetime import datetime, timedelta
@@ -78,18 +77,28 @@ class NodeWrapper(object):
         if pgv_max is not None and len(str(pgv_max)) > 0:
             payload['maxpgv'] = pgv_max
 
-        if all(d is not None for d in [event_lat_min, event_lat_max, event_lon_min, event_lon_max]):
-            payload['eventsquareselection'] = '{},{},{},{}'.format(event_lat_min, event_lat_max, event_lon_min, event_lon_max)
+        if all(d is not None for d in [
+            event_lat_min, event_lat_max, event_lon_min, event_lon_max
+        ]):
+            payload['eventsquareselection'] = '{},{},{},{}'.format(
+                event_lat_min, event_lat_max, event_lon_min, event_lon_max
+            )
 
-        if all(d is not None for d in [stat_lat_min, stat_lat_max, stat_lon_min, stat_lon_max]):
-            payload['stationsquareselection'] = '{},{},{},{}'.format(stat_lat_min, stat_lat_max, stat_lon_min, stat_lon_max)
+        if all(d is not None for d in [
+            stat_lat_min, stat_lat_max, stat_lon_min, stat_lon_max
+        ]):
+            payload['stationsquareselection'] = '{},{},{},{}'.format(
+                stat_lat_min, stat_lat_max, stat_lon_min, stat_lon_max
+            )
 
-        # This is to prevent the encoding of special characters by the requests module
+        # This is to prevent the encoding of special
+        # characters by the requests module
         payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
-        response = requests.get(self.url_motion, params=payload_str)
-        return response.url
+        return '{}?{}'.format(self.url_motion, payload_str)
 
-    def build_url_motion(self, event_public_id, network=None, station=None, spectra=False):
+    def build_url_motion(
+        self, event_public_id, network=None, station=None, spectra=False
+    ):
         payload = {}
 
         if event_public_id is not None and len(str(event_public_id)) > 0:
@@ -104,9 +113,10 @@ class NodeWrapper(object):
         if spectra:
             payload['level'] = 'spectra'
 
-        response = requests.get(self.url_motion, params=payload)
-        print(response.url)
-        return response.url
+        # This is to prevent the encoding of special
+        # characters by the requests module
+        payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
+        return '{}?{}'.format(self.url_motion, payload_str)
 
     def build_url_shakemap_by_id(self, id):
         return self.url_shakemap + '?id={}'.format(id)

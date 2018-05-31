@@ -72,7 +72,9 @@ class FdsnMotionManager(FdsnHttpBase):
             self.log_exception()
             return None, ws_url
 
-    def get_event_details(self, event_public_id, network=None, station=None, spectra=False):
+    def get_event_details(
+        self, event_public_id, network=None, station=None, spectra=False
+    ):
         try:
             ws_url = self.node_wrapper.build_url_motion(
                 event_public_id, network, station, spectra
@@ -91,13 +93,17 @@ class FdsnMotionManager(FdsnHttpBase):
             self.log_exception()
             return None, ws_url
 
-    def _extract_data(self, data, extract_channels=True, unique_event_id=False):
+    def _extract_data(
+        self, data, extract_channels=True, unique_event_id=False
+    ):
         try:
             result = MotionData()
 
             for s in data:
-                if unique_event_id == True:
-                    if any(x.event_id == s['event-id'] for x in result.stations):
+                if unique_event_id is True:
+                    if any(
+                        x.event_id == s['event-id'] for x in result.stations
+                    ):
                         continue
 
                 station_data = MotionDataStation()

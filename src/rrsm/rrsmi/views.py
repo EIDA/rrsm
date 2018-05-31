@@ -226,9 +226,13 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             data_drs = defaultdict(dict)
 
             for sc in station_data.sensor_channels:
-                for sa_psa in filter(lambda x: x.type.lower() == 'psa', sc.spectral_amplitudes):
+                for sa_psa in filter(
+                    lambda x: x.type.lower() == 'psa', sc.spectral_amplitudes
+                ):
                     data_psa[sc.channel_code][sa_psa.period] = sa_psa.amplitude
-                for sa_drs in filter(lambda x: x.type.lower() == 'drs', sc.spectral_amplitudes):
+                for sa_drs in filter(
+                    lambda x: x.type.lower() == 'drs', sc.spectral_amplitudes
+                ):
                     data_drs[sc.channel_code][sa_drs.period] = sa_drs.amplitude
 
             for key in data_psa:
