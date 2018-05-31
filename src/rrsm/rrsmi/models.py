@@ -3,11 +3,7 @@ from __future__ import unicode_literals
 
 from enum import Enum
 
-from django.db import models, transaction
-from django.utils import timezone
-from django.utils.html import mark_safe
-from django.contrib.auth.models import User
-
+from django.db import models
 
 STRING_LENGTH_SHORT = 256
 STRING_LENGTH_MEDIUM = 1024
@@ -29,20 +25,68 @@ class SearchEvent(models.Model):
     station_code = models.CharField(
         max_length=STRING_LENGTH_SHORT, blank=True
     )
-    level = models.CharField(
-        max_length=STRING_LENGTH_SHORT, blank=True
+    event_lat_min = models.DecimalField(
+        max_digits=6, decimal_places=3, blank=True
+    )
+    event_lat_max = models.DecimalField(
+        max_digits=6, decimal_places=3, blank=True
+    )
+    event_lon_min = models.DecimalField(
+        max_digits=6, decimal_places=3, blank=True
+    )
+    event_lon_max = models.DecimalField(
+        max_digits=6, decimal_places=3, blank=True
+    )
+
+    class Meta:
+        managed = False
+
+
+class SearchPeakMotions(models.Model):
+    pga_min = models.DecimalField(
+        max_digits=10, decimal_places=5, blank=True
     )
     pga_max = models.DecimalField(
         max_digits=10, decimal_places=5, blank=True
     )
-    pga_min = models.DecimalField(
+    pgv_min = models.DecimalField(
         max_digits=10, decimal_places=5, blank=True
     )
     pgv_max = models.DecimalField(
         max_digits=10, decimal_places=5, blank=True
     )
+
+    class Meta:
+        managed = False
+
+
+class SearchCombined(models.Model):
+    magnitude_min = models.DecimalField(
+        max_digits=3, decimal_places=1, blank=True
+    )
+    pga_min = models.DecimalField(
+        max_digits=10, decimal_places=5, blank=True
+    )
+    pga_max = models.DecimalField(
+        max_digits=10, decimal_places=5, blank=True
+    )
     pgv_min = models.DecimalField(
         max_digits=10, decimal_places=5, blank=True
+    )
+    pgv_max = models.DecimalField(
+        max_digits=10, decimal_places=5, blank=True
+    )
+    stat_lat_min = models.DecimalField(
+        max_digits=6, decimal_places=3, blank=True
+    )
+    stat_lat_max = models.DecimalField(
+        max_digits=6, decimal_places=3, blank=True
+    )
+    stat_lon_min = models.DecimalField(
+        max_digits=6, decimal_places=3, blank=True
+    )
+    stat_lon_max = models.DecimalField(
+        max_digits=6, decimal_places=3, blank=True
     )
 
     class Meta:

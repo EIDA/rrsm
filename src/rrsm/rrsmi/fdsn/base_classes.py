@@ -25,8 +25,11 @@ class NodeWrapper(object):
         self.url_waveform = URL_WAVEFORM
 
     def build_url_events(
-        self, days_back, event_id, date_start, date_end, magnitude_min,
-            network_code, station_code, level, max_pga, min_pga, max_pgv, min_pgv):
+        self, days_back, event_id, date_start, date_end,
+            magnitude_min, network_code, station_code,
+            pga_min, pga_max, pgv_min, pgv_max,
+            event_lat_min, event_lat_max, event_lon_min, event_lon_max,
+            stat_lat_min, stat_lat_max, stat_lon_min, stat_lon_max):
 
         payload = {}
         if days_back is not None and len(str(days_back)) > 0:
@@ -63,22 +66,27 @@ class NodeWrapper(object):
         if station_code is not None and len(str(station_code)) > 0:
             payload['station'] = station_code
 
-        if level is not None and len(str(level)) > 0:
-            payload['level'] = level
+        if pga_min is not None and len(str(pga_min)) > 0:
+            payload['minpga'] = pga_min
 
-        if max_pga is not None and len(str(max_pga)) > 0:
-            payload['maxpga'] = max_pga
+        if pga_max is not None and len(str(pga_max)) > 0:
+            payload['maxpga'] = pga_max
 
-        if min_pga is not None and len(str(min_pga)) > 0:
-            payload['minpga'] = min_pga
+        if pgv_min is not None and len(str(pgv_min)) > 0:
+            payload['minpgv'] = pgv_min
 
-        if max_pgv is not None and len(str(max_pgv)) > 0:
-            payload['maxpgv'] = max_pgv
+        if pgv_max is not None and len(str(pgv_max)) > 0:
+            payload['maxpgv'] = pgv_max
 
-        if min_pgv is not None and len(str(min_pgv)) > 0:
-            payload['minpgv'] = min_pgv
+        if all(d is not None for d in [event_lat_min, event_lat_max, event_lon_min, event_lon_max]):
+            payload['eventsquareselection'] = '{},{},{},{}'.format(event_lat_min, event_lat_max, event_lon_min, event_lon_max)
 
-        response = requests.get(self.url_motion, params=payload)
+        if all(d is not None for d in [stat_lat_min, stat_lat_max, stat_lon_min, stat_lon_max]):
+            payload['stationsquareselection'] = '{},{},{},{}'.format(stat_lat_min, stat_lat_max, stat_lon_min, stat_lon_max)
+
+        # This is to prevent the encoding of special characters by the requests module
+        payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
+        response = requests.get(self.url_motion, params=payload_str)
         return response.url
 
     def build_url_motion(self, event_public_id, network=None, station=None, spectra=False):

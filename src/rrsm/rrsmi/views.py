@@ -22,8 +22,8 @@ import plotly.graph_objs as go
 from .fdsn.fdsn_manager import \
     FdsnMotionManager, FdsnShakemapManager, FdsnWaveformManager
 
-from .models import SearchEvent
-from .forms import SearchEventsForm
+from .models import SearchEvent, SearchPeakMotions, SearchCombined
+from .forms import SearchEventsForm, SearchPeakMotionsForm, SearchCombinedForm
 from .logger import RrsmLoggerMixin
 
 
@@ -289,33 +289,27 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
 
 def search_events(request):
     if request.method == 'POST':
-        search_form = SearchEventsForm(request.POST)
-        if search_form.is_valid():
-            motion_data, ws_url = FdsnMotionManager().get_event_list(
-                event_id=search_form.cleaned_data['event_id'],
-                date_start=search_form.cleaned_data['date_start'],
-                date_end=search_form.cleaned_data['date_end'],
-                magnitude_min=search_form.cleaned_data['magnitude_min'],
-                network_code=search_form.cleaned_data['network_code'],
-                station_code=search_form.cleaned_data['station_code'],
-                level=search_form.cleaned_data['level'],
-                max_pga=search_form.cleaned_data['pga_max'],
-                min_pga=search_form.cleaned_data['pga_min'],
-                max_pgv=search_form.cleaned_data['pgv_max'],
-                min_pgv=search_form.cleaned_data['pgv_min']
+        form = SearchEventsForm(request.POST)
+        if form.is_valid():
+            data, ws_url = FdsnMotionManager().get_event_list(
+                event_id=form.cleaned_data['event_id'],
+                date_start=form.cleaned_data['date_start'],
+                date_end=form.cleaned_data['date_end'],
+                magnitude_min=form.cleaned_data['magnitude_min'],
+                network_code=form.cleaned_data['network_code'],
+                station_code=form.cleaned_data['station_code'],
+                event_lat_min=form.cleaned_data['event_lat_min'],
+                event_lat_max=form.cleaned_data['event_lat_max'],
+                event_lon_min=form.cleaned_data['event_lon_min'],
+                event_lon_max=form.cleaned_data['event_lon_max']
             )
-
-            if motion_data:
-                queryset = motion_data
-            else:
-                queryset = None
 
             return render(
                 request,
                 'events.html',
                 {
-                    'motion_data': queryset,
-                    'breadcrumb': 'Search result',
+                    'motion_data': data,
+                    'breadcrumb': 'Search result (events)',
                     'ws_url': ws_url,
                     'is_homepage': True
                 }
@@ -323,18 +317,107 @@ def search_events(request):
         else:
             return render(
                 request,
-                'search_events.html',
+                'search.html',
                 {
-                    'form': search_form
+                    'form': form,
+                    'show_info': True
                 }
             )
     else:
-        search_form = SearchEventsForm(instance=SearchEvent())
+        form = SearchEventsForm(instance=SearchEvent())
         return render(
             request,
-            'search_events.html',
+            'search.html',
             {
-                'form': search_form
+                'form': form,
+                'show_info': True
+            }
+        )
+
+
+def search_peak_motions(request):
+    if request.method == 'POST':
+        form = SearchPeakMotionsForm(request.POST)
+        if form.is_valid():
+            data, ws_url = FdsnMotionManager().get_event_list(
+                pga_min=form.cleaned_data['pga_min'],
+                pga_max=form.cleaned_data['pga_max'],
+                pgv_min=form.cleaned_data['pgv_min'],
+                pgv_max=form.cleaned_data['pgv_max']
+            )
+
+            return render(
+                request,
+                'events.html',
+                {
+                    'motion_data': data,
+                    'breadcrumb': 'Search result (peak motions)',
+                    'ws_url': ws_url,
+                    'is_homepage': True
+                }
+            )
+        else:
+            return render(
+                request,
+                'search.html',
+                {
+                    'form': form
+                }
+            )
+    else:
+        form = SearchPeakMotionsForm(instance=SearchPeakMotions())
+        return render(
+            request,
+            'search.html',
+            {
+                'form': form
+            }
+        )
+
+
+def search_combined(request):
+    if request.method == 'POST':
+        form = SearchCombinedForm(request.POST)
+        if form.is_valid():
+            data, ws_url = FdsnMotionManager().get_event_list(
+                magnitude_min=form.cleaned_data['magnitude_min'],
+                pga_min=form.cleaned_data['pga_min'],
+                pga_max=form.cleaned_data['pga_max'],
+                pgv_min=form.cleaned_data['pgv_min'],
+                pgv_max=form.cleaned_data['pgv_max'],
+                stat_lat_min=form.cleaned_data['stat_lat_min'],
+                stat_lat_max=form.cleaned_data['stat_lat_max'],
+                stat_lon_min=form.cleaned_data['stat_lon_min'],
+                stat_lon_max=form.cleaned_data['stat_lon_max']
+            )
+
+            return render(
+                request,
+                'events.html',
+                {
+                    'motion_data': data,
+                    'breadcrumb': 'Search result (combined)',
+                    'ws_url': ws_url,
+                    'is_homepage': True
+                }
+            )
+        else:
+            return render(
+                request,
+                'search.html',
+                {
+                    'form': form,
+                    'show_info': True
+                }
+            )
+    else:
+        form = SearchCombinedForm(instance=SearchCombined())
+        return render(
+            request,
+            'search.html',
+            {
+                'form': form,
+                'show_info': True
             }
         )
 
