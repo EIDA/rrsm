@@ -27,6 +27,7 @@ urlpatterns = [
     path('{}search-events/'.format(RRSM_URL_BASE), rrsmi_view.search_events, name='search_events'),
     path('{}search-peak-motions/'.format(RRSM_URL_BASE), rrsmi_view.search_peak_motions, name='search_peak_motions'),
     path('{}search-combined/'.format(RRSM_URL_BASE), rrsmi_view.search_combined, name='search_combined'),
+    path('{}search-custom/'.format(RRSM_URL_BASE), rrsmi_view.search_custom, name='search_custom'),
     path('{}admin/'.format(RRSM_URL_BASE), admin.site.urls),
     path('{}logout/'.format(RRSM_URL_BASE), auth_views.LogoutView.as_view(), name='logout'),
 ]

@@ -22,8 +22,13 @@ import plotly.graph_objs as go
 from .fdsn.fdsn_manager import \
     FdsnMotionManager, FdsnShakemapManager, FdsnWaveformManager
 
-from .models import SearchEvent, SearchPeakMotions, SearchCombined
-from .forms import SearchEventsForm, SearchPeakMotionsForm, SearchCombinedForm
+from .models import \
+    SearchEvent, SearchPeakMotions, \
+    SearchCombined, SearchCustom
+from .forms import \
+    SearchEventsForm, SearchPeakMotionsForm, \
+    SearchCombinedForm, SearchCustomForm
+
 from .logger import RrsmLoggerMixin
 
 
@@ -422,6 +427,60 @@ def search_combined(request):
             {
                 'form': form,
                 'show_info': True
+            }
+        )
+
+
+def search_custom(request):
+    if request.method == 'POST':
+        form = SearchCustomForm(request.POST)
+        if form.is_valid():
+            data, ws_url = FdsnMotionManager().get_event_list(
+                event_id=form.cleaned_data['event_id'],
+                date_start=form.cleaned_data['date_start'],
+                date_end=form.cleaned_data['date_end'],
+                magnitude_min=form.cleaned_data['magnitude_min'],
+                network_code=form.cleaned_data['network_code'],
+                station_code=form.cleaned_data['station_code'],
+                pga_min=form.cleaned_data['pga_min'],
+                pga_max=form.cleaned_data['pga_max'],
+                pgv_min=form.cleaned_data['pgv_min'],
+                pgv_max=form.cleaned_data['pgv_max'],
+                stat_lat_min=form.cleaned_data['stat_lat_min'],
+                stat_lat_max=form.cleaned_data['stat_lat_max'],
+                stat_lon_min=form.cleaned_data['stat_lon_min'],
+                stat_lon_max=form.cleaned_data['stat_lon_max'],
+                event_lat_min=form.cleaned_data['event_lat_min'],
+                event_lat_max=form.cleaned_data['event_lat_max'],
+                event_lon_min=form.cleaned_data['event_lon_min'],
+                event_lon_max=form.cleaned_data['event_lon_max']
+            )
+
+            return render(
+                request,
+                'events.html',
+                {
+                    'motion_data': data,
+                    'breadcrumb': 'Search result (custom)',
+                    'ws_url': ws_url,
+                    'is_homepage': True
+                }
+            )
+        else:
+            return render(
+                request,
+                'search_custom.html',
+                {
+                    'form': form
+                }
+            )
+    else:
+        form = SearchCustomForm(instance=SearchCustom())
+        return render(
+            request,
+            'search_custom.html',
+            {
+                'form': form
             }
         )
 

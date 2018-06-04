@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+<li class="breadcrumb-item active">Search custom</li>
+{% endblock %}
+
+{% block content %}
+<button id="btn_event_id" type="button" class="btn mb-3" onclick="toggleElements(['#event_id',], btn_event_id);">Event ID</button>
+<button id="btn_dates" type="button" class="btn mb-3" onclick="toggleElements(['#date_start', '#date_end',], btn_dates);">Start/End dates</button>
+<button id="btn_magnitude" type="button" class="btn mb-3" onclick="toggleElements(['#magnitude_min',], btn_magnitude);">Magnitude</button>
+<button id="btn_network" type="button" class="btn mb-3" onclick="toggleElements(['#network_code',], btn_network);">Network</button>
+<button id="btn_code" type="button" class="btn mb-3" onclick="toggleElements(['#station_code',], btn_code);">Station</button>
+<button id="btn_pga" type="button" class="btn mb-3" onclick="toggleElements(['#pga_min', '#pga_max',], btn_pga);">PGA</button>
+<button id="btn_pgv" type="button" class="btn mb-3" onclick="toggleElements(['#pgv_min', '#pgv_max',], btn_pgv);">PGV</button>
+<button id="btn_station_location" type="button" class="btn mb-3"
+onclick="toggleElements(['#stat_lat_min','#stat_lat_max','#stat_lon_min','#stat_lon_max',], btn_station_location);">Station location</button>
+<button id="btn_event_location" type="button" class="btn mb-3"
+onclick="toggleElements(['#event_lat_min','#event_lat_max','#event_lon_min','#event_lon_max',], btn_event_location);">Event location</button>
+
+{% if show_info %}
+<div class="alert alert-info alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  To include <strong>event location</strong> or <strong>station location</strong> in the search, all 4 coordinates need to be provided.
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {% include 'includes/form.html' %}
+  <button type="submit" class="btn btn-success btn-lg btn-block">Search!</button>
+</form>
+
+
+<script>
+$(function() {
+  toggleElements([
+    '#event_id',
+    '#date_start',
+    '#date_end',
+    '#magnitude_min',
+    '#network_code',
+    '#station_code',
+    '#pga_min',
+    '#pga_max',
+    '#pgv_min',
+    '#pgv_max',
+    '#stat_lat_min',
+    '#stat_lat_max',
+    '#stat_lon_min',
+    '#stat_lon_max',
+    '#event_lat_min',
+    '#event_lat_max',
+    '#event_lon_min',
+    '#event_lon_max',
+  ], null, 0)
+});
+
+function toggleElements(classNames, senderName='', time=100){
+  if (!$(senderName).hasClass('btn-primary')){
+    !$(senderName).addClass('btn-primary')
+  }
+  else{
+    !$(senderName).removeClass('btn-primary')
+  }
+
+  for (var cn in classNames){
+    $(classNames[cn]).find('input').val('');
+    $(classNames[cn]).toggle(time);
+  }
+}
+</script>
+{% endblock %}
