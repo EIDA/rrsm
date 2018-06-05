@@ -1,6 +1,9 @@
 from django import forms
 from .models import \
-    SearchEvent, SearchPeakMotions, SearchCombined, SearchCustom
+    SearchEvent, SearchPeakMotions, SearchCombined, SearchCustom, \
+    COORD_INTEGERS, COORD_DECIMALS, \
+    PGA_PGV_INTEGERS, PGA_PGV_DECIMALS, \
+    MAG_INTEGERS, MAG_DECIMALS
 
 LABEL_EVENT_ID = 'Event Id'
 LABEL_DATE_START = 'Start date (YYYY-MM-DD)'
@@ -24,21 +27,47 @@ LABEL_EVENT_LON_MAX = 'Event longitude maximum'
 TEXT_EVENT_ID = 'Alphanumeric string, e.g. "20180414_0000061"'
 TEXT_DATE_START = 'Date field, e.g. "2018-01-21"'
 TEXT_DATE_END = 'Date field, e.g. "2018-01-21"'
-TEXT_MAGNITUDE_MIN = 'Maximum 3 digits including 1 decimal place'
+TEXT_MAGNITUDE_MIN = 'Maximum {} digits including {} decimal place'.format(
+    MAG_INTEGERS + MAG_DECIMALS, MAG_DECIMALS
+)
 TEXT_NETWORK_CODE = 'Alphanumeric string'
 TEXT_STATION_CODE = 'Alphanumeric string'
-TEXT_PGA_MIN = 'Maximum 10 digits including 5 decimal places'
-TEXT_PGA_MAX = 'Maximum 10 digits including 5 decimal places'
-TEXT_PGV_MIN = 'Maximum 10 digits including 5 decimal places'
-TEXT_PGV_MAX = 'Maximum 10 digits including 5 decimal places'
-TEXT_STAT_LAT_MIN = 'Maximum 8 digits including 5 decimal places'
-TEXT_STAT_LAT_MAX = 'Maximum 8 digits including 5 decimal places'
-TEXT_STAT_LON_MIN = 'Maximum 8 digits including 5 decimal places'
-TEXT_STAT_LON_MAX = 'Maximum 8 digits including 5 decimal places'
-TEXT_EVENT_LAT_MIN = 'Maximum 8 digits including 5 decimal places'
-TEXT_EVENT_LAT_MAX = 'Maximum 8 digits including 5 decimal places'
-TEXT_EVENT_LON_MIN = 'Maximum 8 digits including 5 decimal places'
-TEXT_EVENT_LON_MAX = 'Maximum 8 digits including 5 decimal places'
+TEXT_PGA_MIN = 'Maximum {} digits including {} decimal places'.format(
+    PGA_PGV_INTEGERS + PGA_PGV_DECIMALS, PGA_PGV_DECIMALS
+)
+TEXT_PGA_MAX = 'Maximum {} digits including {} decimal places'.format(
+    PGA_PGV_INTEGERS + PGA_PGV_DECIMALS, PGA_PGV_DECIMALS
+)
+TEXT_PGV_MIN = 'Maximum {} digits including {} decimal places'.format(
+    PGA_PGV_INTEGERS + PGA_PGV_DECIMALS, PGA_PGV_DECIMALS
+)
+TEXT_PGV_MAX = 'Maximum {} digits including {} decimal places'.format(
+    PGA_PGV_INTEGERS + PGA_PGV_DECIMALS, PGA_PGV_DECIMALS
+)
+TEXT_STAT_LAT_MIN = 'Maximum {} digits including {} decimal places'.format(
+    COORD_INTEGERS + COORD_DECIMALS, COORD_DECIMALS
+)
+TEXT_STAT_LAT_MAX = 'Maximum {} digits including {} decimal places'.format(
+    COORD_INTEGERS + COORD_DECIMALS, COORD_DECIMALS
+)
+TEXT_STAT_LON_MIN = 'Maximum {} digits including {} decimal places'.format(
+    COORD_INTEGERS + COORD_DECIMALS, COORD_DECIMALS
+)
+TEXT_STAT_LON_MAX = 'Maximum {} digits including {} decimal places'.format(
+    COORD_INTEGERS + COORD_DECIMALS, COORD_DECIMALS
+)
+TEXT_EVENT_LAT_MIN = 'Maximum {} digits including {} decimal places'.format(
+    COORD_INTEGERS + COORD_DECIMALS, COORD_DECIMALS
+)
+TEXT_EVENT_LAT_MAX = 'Maximum {} digits including {} decimal places'.format(
+    COORD_INTEGERS + COORD_DECIMALS, COORD_DECIMALS
+)
+TEXT_EVENT_LON_MIN = 'Maximum {} digits including {} decimal places'.format(
+    COORD_INTEGERS + COORD_DECIMALS, COORD_DECIMALS
+)
+TEXT_EVENT_LON_MAX = 'Maximum {} digits including {} decimal places'.format(
+    COORD_INTEGERS + COORD_DECIMALS, COORD_DECIMALS
+)
 
 
 class SearchEventsForm(forms.ModelForm):

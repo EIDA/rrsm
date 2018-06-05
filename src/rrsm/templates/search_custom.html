@@ -11,7 +11,7 @@
 <button id="btn_dates" type="button" class="btn mb-3" onclick="toggleElements(['#date_start', '#date_end',], btn_dates);">Start/End dates</button>
 <button id="btn_magnitude" type="button" class="btn mb-3" onclick="toggleElements(['#magnitude_min',], btn_magnitude);">Magnitude</button>
 <button id="btn_network" type="button" class="btn mb-3" onclick="toggleElements(['#network_code',], btn_network);">Network</button>
-<button id="btn_code" type="button" class="btn mb-3" onclick="toggleElements(['#station_code',], btn_code);">Station</button>
+<button id="btn_station" type="button" class="btn mb-3" onclick="toggleElements(['#station_code',], btn_station);">Station</button>
 <button id="btn_pga" type="button" class="btn mb-3" onclick="toggleElements(['#pga_min', '#pga_max',], btn_pga);">PGA</button>
 <button id="btn_pgv" type="button" class="btn mb-3" onclick="toggleElements(['#pgv_min', '#pgv_max',], btn_pgv);">PGV</button>
 <button id="btn_station_location" type="button" class="btn mb-3"
@@ -32,37 +32,67 @@ onclick="toggleElements(['#event_lat_min','#event_lat_max','#event_lon_min','#ev
   <button type="submit" class="btn btn-success btn-lg btn-block">Search!</button>
 </form>
 
-
 <script>
-$(function() {
-  toggleElements([
-    '#event_id',
-    '#date_start',
-    '#date_end',
-    '#magnitude_min',
-    '#network_code',
-    '#station_code',
-    '#pga_min',
-    '#pga_max',
-    '#pgv_min',
-    '#pgv_max',
-    '#stat_lat_min',
-    '#stat_lat_max',
-    '#stat_lon_min',
-    '#stat_lon_max',
-    '#event_lat_min',
-    '#event_lat_max',
-    '#event_lon_min',
-    '#event_lon_max',
-  ], null, 0)
-});
+  UI_ELEMENTS = [{
+      btn: 'btn_event_id',
+      inputs: ['#event_id', ]
+    },
+    {
+      btn: 'btn_dates',
+      inputs: ['#date_start', '#date_end', ]
+    },
+    {
+      btn: 'btn_magnitude',
+      inputs: ['#magnitude_min', ]
+    },
+    {
+      btn: 'btn_network',
+      inputs: ['#network_code', ]
+    },
+    {
+      btn: 'btn_station',
+      inputs: ['#station_code', ]
+    },
+    {
+      btn: 'btn_pga',
+      inputs: ['#pga_min', '#pga_max', ]
+    },
+    {
+      btn: 'btn_pgv',
+      inputs: ['#pgv_min', '#pgv_max', ]
+    },
+    {
+      btn: 'btn_station_location',
+      inputs: ['#stat_lat_min', '#stat_lat_max', '#stat_lon_min', '#stat_lon_max', ]
+    },
+    {
+      btn: 'btn_event_location',
+      inputs: ['#event_lat_min', '#event_lat_max', '#event_lon_min', '#event_lon_max', ]
+    }
+  ]
 
-function toggleElements(classNames, senderName='', time=100){
-  $(senderName).toggleClass('btn-primary')
-  for (var cn in classNames){
-    $(classNames[cn]).find('input').val('');
-    $(classNames[cn]).toggle(time);
+  $(function () {
+    // If input has value on page load (e.g. when page has been re-rendered
+    // because of wrong input value), keep the input visible on the screen.
+    for (var obj in UI_ELEMENTS) {
+      var hasValue = UI_ELEMENTS[obj].inputs.some(x => $(x).find('input').val() != '')
+      toggleElements(UI_ELEMENTS[obj].inputs, UI_ELEMENTS[obj].btn, 0, hasValue)
+    }
+  });
+
+  function toggleElements(classNames, senderName = '', time = 100, hasValue = false) {
+    if (hasValue == true) {
+      $('#' + senderName).toggleClass('btn-primary')
+    } else {
+      for (var cn in classNames) {
+        // Clear the input value
+        $(classNames[cn]).find('input').val('');
+        // Toggle the inputs visibility
+        $(classNames[cn]).toggle(time);
+      }
+      // Toggle the button class to make it look active/inactive
+      $(senderName).toggleClass('btn-primary')
+    }
   }
-}
 </script>
 {% endblock %}
