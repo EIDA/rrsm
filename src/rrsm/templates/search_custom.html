@@ -58,13 +58,7 @@ $(function() {
 });
 
 function toggleElements(classNames, senderName='', time=100){
-  if (!$(senderName).hasClass('btn-primary')){
-    !$(senderName).addClass('btn-primary')
-  }
-  else{
-    !$(senderName).removeClass('btn-primary')
-  }
-
+  $(senderName).toggleClass('btn-primary')
   for (var cn in classNames){
     $(classNames[cn]).find('input').val('');
     $(classNames[cn]).toggle(time);
