@@ -46,6 +46,7 @@
     ```
     (env) [usr@host rrsm]$ python3 manage.py runserver 0.0.0.0:8000
     ```
+
 # Docker
 1. Make sure ports are set up correctly
     * `/rrsm/src/docker-compose.yml`
@@ -58,11 +59,13 @@
     ```
     [usr@host ~]$ docker exec -it <CONTAINER ID> sh
     ```
+
 # Logs
 Tail can be used to follow the app logs:
 ```
 [usr@host rrsm]$ tail -f logs/rrsm.log
 ```
+
 # Remarks
 * The WebService response times in some cases can get long resulting in `504 Gateway Timeout`. This can be prevented by modifying the `/etc/ninx/nginx.conf` on the Nginx container and adding following lines to the basic config:
     ```
