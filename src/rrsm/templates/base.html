@@ -8,15 +8,14 @@
   <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/app/app.css' %}">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Bangers'>
-  {% block stylesheet %}
-  {% endblock %}
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+    crossorigin="anonymous"> {% block stylesheet %} {% endblock %}
 </head>
 
 <body>
   <script src="{% static 'js/jquery/jquery-3.2.1.min.js' %}"></script>
   <script src="{% static 'js/popper/popper.min.js' %}"></script>
-  <script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
-  {% block body %}
+  <script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script> {% block body %}
   <nav class="navbar sticky-top navbar-expand-sm navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="{% url 'home' %}">RRSM</a>
@@ -28,7 +27,7 @@
         <ul class="navbar-nav p-1">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Recent events
+              <i class="fas fa-newspaper" style="color:darkseagreen"></i> Recent events
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
               <h6 class="dropdown-header">Show events from:</h6>
@@ -44,10 +43,10 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Search
+              <i class="fas fa-search" style="color:lightblue"></i> Search
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-                <h6 class="dropdown-header">Predefined search</h6>
+              <h6 class="dropdown-header">Predefined search</h6>
               <a class="dropdown-item" href="{% url 'search_events' %}">Search events</a>
               <a class="dropdown-item" href="{% url 'search_peak_motions' %}">Search peak motions</a>
               <a class="dropdown-item" href="{% url 'search_combined' %}">Search combined</a>
@@ -57,10 +56,10 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'about' %}">About RRSM</a>
+            <a class="nav-link" href="{% url 'about' %}">
+              <i class="fas fa-info-circle" style="color:thistle"></i> About RRSM</a>
           </li>
-          {% block menu_injection %}
-          {% endblock menu_injection %}
+          {% block menu_injection %} {% endblock menu_injection %}
         </ul>
       </div>
     </div>
@@ -68,11 +67,9 @@
 
   <div class="container mb-5">
     <ol class="breadcrumb my-3">
-      {% block breadcrumb %}
-      {% endblock %}
+      {% block breadcrumb %} {% endblock %}
     </ol>
-    {% block content %}
-    {% endblock %}
+    {% block content %} {% endblock %}
 
     <!-- The Modal -->
     <div class="modal fade" id="pageInfo">
@@ -83,8 +80,7 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
-            {% block modal %}
-            {% endblock modal %}
+            {% block modal %} {% endblock modal %}
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -93,19 +89,14 @@
       </div>
     </div>
   </div>
-  {% endblock body %}
-
-  {% block footer %}
+  {% endblock body %} {% block footer %}
   <div id="footer-bottom">
     <div class="container">
       <p class="muted credit">Part of
         <a href="https://www.orfeus-eu.org/">ORFEUS</a> foundation.</p>
     </div>
   </div>
-  {% endblock footer %}
-
-  {% block javascript %}
-  {% endblock %}
+  {% endblock footer %} {% block javascript %} {% endblock %}
 </body>
 
 </html>

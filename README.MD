@@ -5,8 +5,8 @@
     DEBUG=False
     ALLOWED_HOSTS=.localhost,127.0.0.1
     DATABASE_URL=sqlite:///db.sqlite3
-    DATABASE_ENGINE = "sqlite3"
-    DATABASE_NAME = "rrsm.db"
+    DATABASE_ENGINE=django.db.backends.sqlite3
+    DATABASE_NAME='rrsm.db'
     DATABASE_USER='admin'
     DATABASE_PASS='passwd'
     EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
