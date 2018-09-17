@@ -15,8 +15,8 @@ var map = new ol.Map({
     interactions: ol.interaction.defaults({mouseWheelZoom:false}),
     target: document.getElementById('map'),
     view: new ol.View({
-        center: ol.proj.fromLonLat([5, 52]),
-        zoom: 2
+        center: ol.proj.fromLonLat([10, 45]),
+        zoom: 4
     })
 });
 
@@ -77,9 +77,9 @@ var getEventColor = function (value) {
 var zoomReset = function () {
     $(element).popover('dispose');
     map.getView().animate({
-        center: ol.proj.fromLonLat([5, 52]),
+        center: ol.proj.fromLonLat([10, 45]),
         duration: 1000,
-        zoom: 2
+        zoom: 4
     })
 }
 

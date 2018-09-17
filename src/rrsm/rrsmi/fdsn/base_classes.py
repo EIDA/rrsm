@@ -13,7 +13,7 @@ URL_WAVEFORM = getattr(settings, 'URL_WAVEFORM', '')
 
 NO_FDSNWS_DATA = None
 NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
-
+PGA_PGV_DECIMAL_PLACES = 5
 
 # Single node instance wrapper
 class NodeWrapper(object):
@@ -187,18 +187,18 @@ class MotionDataStation(object):
             self.sensor_channels.sort(key=lambda x: x.pga_value, reverse=True)
             cha = self.sensor_channels[0].channel_code
             val = self.sensor_channels[0].pga_value
-            return val, cha
+            return round(float(val), PGA_PGV_DECIMAL_PLACES), cha
         except:
-            return '', 0
+            return '', 0.0
 
     def get_max_pgv(self):
         try:
             self.sensor_channels.sort(key=lambda x: x.pgv_value, reverse=True)
             cha = self.sensor_channels[0].channel_code
             val = self.sensor_channels[0].pgv_value
-            return val, cha
+            return round(float(val), PGA_PGV_DECIMAL_PLACES), cha
         except:
-            return '', 0
+            return '', 0.0
 
 
 class MotionDataStationChannel(object):
@@ -218,6 +218,18 @@ class MotionDataStationChannel(object):
         return sorted(
             self.spectral_amplitudes, key=lambda x: x.period
         )
+
+    def get_pga(self):
+        try:
+            return round(float(self.pga_value), PGA_PGV_DECIMAL_PLACES)
+        except:
+            return 0.0
+
+    def get_pgv(self):
+        try:
+            return round(float(self.pgv_value), PGA_PGV_DECIMAL_PLACES)
+        except:
+            return 0.0
 
 
 class SpectralAmplitude(object):

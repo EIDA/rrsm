@@ -133,7 +133,7 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                 lot_pga.append(go.Scatter(
                     x=list(_tmp.keys()),
                     y=list(_tmp.values()),
-                    mode='markers+lines',
+                    mode='markers',
                     marker=dict(
                         size=5,
                     ),
@@ -149,7 +149,7 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                 lot_pgv.append(go.Scatter(
                     x=list(_tmp.keys()),
                     y=list(_tmp.values()),
-                    mode='markers+lines',
+                    mode='markers',
                     marker=dict(
                         size=5,
                     ),
@@ -245,7 +245,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 lot_psa.append(go.Scatter(
                     x=list(_tmp.keys()),
                     y=list(_tmp.values()),
-                    mode='markers+lines',
+                    mode='markers',
                     marker=dict(
                         size=5,
                     ),
@@ -261,7 +261,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 lot_drs.append(go.Scatter(
                     x=list(_tmp.keys()),
                     y=list(_tmp.values()),
-                    mode='markers+lines',
+                    mode='markers',
                     marker=dict(
                         size=5,
                     ),
