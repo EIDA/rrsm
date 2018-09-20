@@ -15,13 +15,12 @@ URL_WAVEFORM = getattr(settings, 'URL_WAVEFORM', '')
 NO_FDSNWS_DATA = None
 NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
 PGA_PGV_DECIMAL_PLACES = 2
-TWOPLACES = decimal.Decimal(10) ** -2
 
 class FdsnBaseClass(object):
-    def string_to_decimal(self, string, multiplier=1):
+    def string_to_decimal(self, string, multiplier=1, decimals=2):
         try:
             tmp = float(string) * multiplier
-            return decimal.Decimal(tmp).quantize(TWOPLACES)
+            return decimal.Decimal(tmp).quantize(decimal.Decimal(10) ** -decimals)
         except:
             raise
 
@@ -193,7 +192,7 @@ class MotionDataStation(FdsnBaseClass):
             return 'unknown'
 
     def get_magnitude(self):
-        return self.string_to_decimal(self.event_magnitude)
+        return self.string_to_decimal(self.event_magnitude, decimals=1)
 
     def get_latitude(self):
         return self.string_to_decimal(self.event_latitude)
