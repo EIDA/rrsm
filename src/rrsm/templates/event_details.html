@@ -16,8 +16,41 @@
 {% endblock %}
 
 {% block modal %}
-<h6>Plot manipulation</h6>
-<p>Click on <b>Export to plot.ly</b> link below a chart to edit it in an external editor.</p>
+<h5>Station markers</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Icon</th>
+            <th>PGA value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img src="{% static 'img/markers/triangle-grey.png' %}"></td>
+            <td>Unprocessed</td>
+        </tr>
+        <tr>
+            <td><img src="{% static 'img/markers/triangle-blue.png' %}"></td>
+            <td>0-10</td>
+        </tr>
+        <tr>
+            <td><img src="{% static 'img/markers/triangle-green.png' %}"></td>
+            <td>10-20</td>
+        </tr>
+        <tr>
+            <td><img src="{% static 'img/markers/triangle-yellow.png' %}"></td>
+            <td>20-50</td>
+        </tr>
+        <tr>
+            <td><img src="{% static 'img/markers/triangle-orange.png' %}"></td>
+            <td>50-100</td>
+        </tr>
+        <tr>
+            <td><img src="{% static 'img/markers/triangle-red.png' %}"></td>
+            <td>100 - &infin;</td>
+        </tr>
+    </tbody>
+</table>
 {% endblock modal %}
 
 {% block content %}
@@ -31,137 +64,139 @@
 <script src="{% static 'js/openlayers/olRrsm.js' %}"></script>
 
 <div class="mt-2">
-<div class="container">
-    <div class="row">
-        <div class="btn-group" role="group">
+    <div class="container">
+        <div class="row">
             <div class="btn-group" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Download data</button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{{ ws_url }}" target="_blank">Motion data (this page source)</a>
-                    <a class="dropdown-item" href="{{ shakemap_url }}" target="_blank">ShakeMap XML</a>
-                    <a class="dropdown-item" href="{{ waveform_url }}" target="_blank">Processed Waveforms</a>
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Download
+                        data</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{ ws_url }}" target="_blank">Motion data (this page source)</a>
+                        <a class="dropdown-item" href="{{ shakemap_url }}" target="_blank">ShakeMap XML</a>
+                        <a class="dropdown-item" href="{{ waveform_url }}" target="_blank">Processed Waveforms</a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">External
+                        links</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="http://orfeus-eu.org/webdc3/" target="_blank">Go to WebDC3</a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#modal">Legend</button>
                 </div>
             </div>
-            <div class="btn-group" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">External links</button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="http://orfeus-eu.org/webdc3/" target="_blank">Go to WebDC3</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                {% if chart_pga %}
+                <div>
+                    {{ chart_pga|safe }}
                 </div>
+                {% endif %}
             </div>
-            <div class="btn-group" role="group">
-              <button class="btn btn-primary" data-toggle="modal" data-target="#pageInfo">Page information</button>
+            <div class="col-6">
+                {% if chart_pgv %}
+                <div>
+                    {{ chart_pgv|safe }}
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
-</div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-6">
-            {% if chart_pga %}
-            <div>
-                {{ chart_pga|safe }}
+    <h1 class="bg-dark text-white pl-2">Earthquake information</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <p><b>Event ID: </b>{{ motion_data.stations.0.event_id }}</p>
+                <p><b>Event time (UTC): </b>{{ motion_data.stations.0.parse_origin_time }}</p>
             </div>
-            {% endif %}
-        </div>
-        <div class="col-6">
-            {% if chart_pgv %}
-            <div>
-                {{ chart_pgv|safe }}
+            <div class="col">
+                <p><b>Event magnitude: </b>{{ motion_data.stations.0.get_magnitude }} ({{ motion_data.stations.0.event_type }})</p>
+                <p><b>Event depth [km]: </b>{{ motion_data.stations.0.event_depth }}</p>
             </div>
-            {% endif %}
+            <div class="col">
+                <p><b>Event latitude [°]: </b>{{ motion_data.stations.0.get_latitude }}</p>
+                <p><b>Event longitude [°]: </b>{{ motion_data.stations.0.get_longitude }}</p>
+            </div>
         </div>
     </div>
-</div>
 
-<h1 class="bg-dark text-white pl-2">Earthquake information</h1>
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <p><b>Event ID: </b>{{ motion_data.stations.0.event_id }}</p>
-            <p><b>Event time (UTC): </b>{{ motion_data.stations.0.parse_origin_time }}</p>
-        </div>
-        <div class="col">
-            <p><b>Event magnitude: </b>{{ motion_data.stations.0.event_magnitude }} ({{ motion_data.stations.0.event_type }})</p>
-            <p><b>Event depth [km]: </b>{{ motion_data.stations.0.event_depth }}</p>
-        </div>
-        <div class="col">
-            <p><b>Event latitude [°]: </b>{{ motion_data.stations.0.event_latitude }}</p>
-            <p><b>Event longitude [°]: </b>{{ motion_data.stations.0.event_longitude }}</p>
-        </div>
+    <h1 class="bg-dark text-white pl-2">List of stations</h1>
+    <div class="table-responsive">
+        <table id="stations_table" class="table" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>
+                        Network / Station
+                        <small class="text-muted d-block">(click for streams)</small>
+                    </th>
+                    <th>Location code</th>
+                    <th>Max. PGA [cm/s<sup>2</sup>]</th>
+                    <th>Max. PGV [cm/s]</th>
+                    <th>Epicentral distance [km]</th>
+                    <th>Elevation [m]</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in motion_data.stations %}
+                <tr>
+                    <td>
+                        <a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">
+                            {{ s.network_code }} / {{ s.station_code }}
+                        </a>
+                        <small class="text-muted d-block">Lat: {{ s.get_latitude }}, Lon: {{ s.get_longitude }}</small>
+                    </td>
+                    <td>{{ s.location_code }}</td>
+                    <td>
+                        {{ s.get_max_pga.0 }}
+                        <small class="text-muted d-block">Channel: {{ s.get_max_pga.1 }}</small>
+                    </td>
+                    <td>
+                        {{ s.get_max_pgv.0 }}
+                        <small class="text-muted d-block">Channel: {{ s.get_max_pgv.1 }}</small>
+                    </td>
+                    <td>{{ s.get_epicentral_distance }}</td>
+                    <td>{{ s.station_elevation }}</td>
+                </tr>
+                <script type="text/javascript">
+                    var latitude = parseFloat("{{ s.station_latitude }}"), longitude = parseFloat("{{ s.station_longitude }}"), stationCode = "{{ s.station_code }}", networkCode = "{{ s.network_code }}", markerPath = "{% static s.get_map_marker_path %}"; if (!isNaN(latitude) && !isNaN(longitude)) { var point = new ol.Feature({ geometry: new ol.geom.Point(ol.proj.fromLonLat([longitude, latitude])), name: `<b>Network code: </b>${networkCode}<br><b>Station code: </b>${stationCode}\n<br><b>Latitude: </b>${latitude}\n<br><b>Longitude: </b>${longitude}\n<br><a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">Go to station streams</a>` }); point.setStyle(new ol.style.Style({ image: new ol.style.Icon({ anchor: [0.5, 1], anchorXUnits: "fraction", anchorYUnits: "fraction", src: markerPath }) })), vectorSource.addFeature(point) }
+                </script>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
 
-<h1 class="bg-dark text-white pl-2">List of stations</h1>
-<div class="table-responsive">
-<table id="stations_table" class="table" cellspacing="0" width="100%">
-    <thead>
-        <tr>
-            <th>
-                Network / Station
-                <small class="text-muted d-block">(click for streams)</small>
-            </th>
-            <th>Location code</th>
-            <th>Max. PGA [cm/s<sup>2</sup>]</th>
-            <th>Max. PGV [cm/s]</th>
-            <th>Epicentral distance [km]</th>
-            <th>Elevation [m]</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for s in motion_data.stations %}
-        <tr>
-            <td>
-                <a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">
-                    {{ s.network_code }} / {{ s.station_code }}
-                </a>
-                <small class="text-muted d-block">Lat: {{ s.station_latitude }}, Lon: {{ s.station_longitude }}</small>
-            </td>
-            <td>{{ s.location_code }}</td>
-            <td>
-                {{ s.get_max_pga.0 }}
-                <small class="text-muted d-block">Channel: {{ s.get_max_pga.1 }}</small>
-            </td>
-            <td>
-                {{ s.get_max_pgv.0 }}
-                <small class="text-muted d-block">Channel: {{ s.get_max_pgv.1 }}</small>
-            </td>
-            <td>{{ s.epicentral_distance }}</td>
-            <td>{{ s.station_elevation }}</td>
-        </tr>
-        <script type="text/javascript">
-        var latitude=parseFloat("{{ s.station_latitude }}"),longitude=parseFloat("{{ s.station_longitude }}"),stationCode="{{ s.station_code }}",networkCode="{{ s.network_code }}",markerPath="{% static 'img/markers/triangle-green.png' %}";if(!isNaN(latitude)&&!isNaN(longitude)){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([longitude,latitude])),name:`<b>Network code: </b>${networkCode}<br><b>Station code: </b>${stationCode}\n<br><b>Latitude: </b>${latitude}\n<br><b>Longitude: </b>${longitude}\n<br><a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">Go to station streams</a>`});point.setStyle(new ol.style.Style({image:new ol.style.Icon({anchor:[0.5,1],anchorXUnits:"fraction",anchorYUnits:"fraction",src:markerPath})})),vectorSource.addFeature(point)}
-        </script>
-        {% endfor %}
-    </tbody>
-</table>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#stations_table').DataTable({
+                stateSave: true
+            });
+        });
+    </script>
+
+    {% else %}
+
+    <p>
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">No data</h4>
+            <p>Event details not available for given event:</p>
+            <a href="{{ ws_url }}" class="alert-link">{{ ws_url }}</a>
+        </div>
+    </p>
+
+    {% endif %}
+
 </div>
 
 <script type="text/javascript">
-  $(document).ready(function() {
-      $('#stations_table').DataTable({
-        stateSave: true
-      });
-  });
-</script>
-
-{% else %}
-
-<p>
-    <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">No data</h4>
-        <p>Event details not available for given event:</p>
-        <a href="{{ ws_url }}" class="alert-link">{{ ws_url }}</a>
-    </div>
-</p>
-
-{% endif %}
-
-</div>
-
-<script type="text/javascript">
-var event_latitude=parseFloat("{{ motion_data.stations.0.event_latitude }}"),event_longitude=parseFloat("{{ motion_data.stations.0.event_longitude }}"),event_depth=parseFloat("{{ motion_data.stations.0.event_depth }}"),event_magnitude=parseFloat("{{ motion_data.stations.0.event_magnitude }}");if(!isNaN(event_latitude)&&!isNaN(event_longitude)){var point=new ol.Feature({geometry:new ol.geom.Point(ol.proj.fromLonLat([event_longitude,event_latitude]))});point.setStyle(new ol.style.Style({image:new ol.style.Circle({radius:event_magnitude**2/2,fill:new ol.style.Fill({color:getEventColor(event_magnitude)}),stroke:new ol.style.Stroke({color:'#000000',width:1})})})),vectorSource.addFeature(point)}
-var latitude=parseFloat("{{ motion_data.stations.0.event_latitude }}"),longitude=parseFloat("{{ motion_data.stations.0.event_longitude }}");map.getView().setCenter(ol.proj.transform([longitude,latitude],"EPSG:4326","EPSG:3857")),map.getView().setZoom(8);
+    var event_latitude = parseFloat("{{ motion_data.stations.0.event_latitude }}"), event_longitude = parseFloat("{{ motion_data.stations.0.event_longitude }}"), event_depth = parseFloat("{{ motion_data.stations.0.event_depth }}"), event_magnitude = parseFloat("{{ motion_data.stations.0.get_magnitude }}"); if (!isNaN(event_latitude) && !isNaN(event_longitude)) { var point = new ol.Feature({ geometry: new ol.geom.Point(ol.proj.fromLonLat([event_longitude, event_latitude])) }); point.setStyle(new ol.style.Style({ image: new ol.style.Circle({ radius: event_magnitude ** 2 / 2, fill: new ol.style.Fill({ color: getEventColor(event_magnitude) }), stroke: new ol.style.Stroke({ color: '#000000', width: 1 }) }) })), vectorSource.addFeature(point) }
+    var latitude = parseFloat("{{ motion_data.stations.0.event_latitude }}"), longitude = parseFloat("{{ motion_data.stations.0.event_longitude }}"); map.getView().setCenter(ol.proj.transform([longitude, latitude], "EPSG:4326", "EPSG:3857")), map.getView().setZoom(8);
 </script>
 
 {% block javascript %}

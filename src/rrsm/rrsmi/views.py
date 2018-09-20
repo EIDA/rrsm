@@ -125,8 +125,8 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
 
             for s in motion_data.stations:
                 for sc in s.sensor_channels:
-                    data_pga[sc.channel_code][s.epicentral_distance] = sc.pga_value or 0
-                    data_pgv[sc.channel_code][s.epicentral_distance] = sc.pgv_value or 0
+                    data_pga[sc.channel_code][s.get_epicentral_distance()] = sc.get_pga() or 0
+                    data_pgv[sc.channel_code][s.get_epicentral_distance()] = sc.get_pgv() or 0
 
             for key in data_pga:
                 _tmp = OrderedDict(sorted(data_pga[key].items()))

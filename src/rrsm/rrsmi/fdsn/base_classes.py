@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import decimal
 from django.conf import settings
 from django.utils.dateparse import parse_datetime
 from datetime import datetime, timedelta
@@ -13,7 +14,16 @@ URL_WAVEFORM = getattr(settings, 'URL_WAVEFORM', '')
 
 NO_FDSNWS_DATA = None
 NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
-PGA_PGV_DECIMAL_PLACES = 5
+PGA_PGV_DECIMAL_PLACES = 2
+TWOPLACES = decimal.Decimal(10) ** -2
+
+class FdsnBaseClass(object):
+    def string_to_decimal(self, string, multiplier=1):
+        try:
+            tmp = float(string) * multiplier
+            return decimal.Decimal(tmp).quantize(TWOPLACES)
+        except:
+            raise
 
 # Single node instance wrapper
 class NodeWrapper(object):
@@ -133,7 +143,7 @@ class MotionData(object):
         return sorted(self.stations, key=lambda x: x.epicentral_distance)
 
 
-class MotionDataStation(object):
+class MotionDataStation(FdsnBaseClass):
     def __init__(self):
         self.event_id = NO_FDSNWS_DATA
         self.event_time = NO_FDSNWS_DATA
@@ -182,12 +192,24 @@ class MotionDataStation(object):
         except:
             return 'unknown'
 
+    def get_magnitude(self):
+        return self.string_to_decimal(self.event_magnitude)
+
+    def get_latitude(self):
+        return self.string_to_decimal(self.event_latitude)
+
+    def get_longitude(self):
+        return self.string_to_decimal(self.event_longitude)
+
+    def get_epicentral_distance(self):
+        return self.string_to_decimal(self.epicentral_distance)
+
     def get_max_pga(self):
         try:
             self.sensor_channels.sort(key=lambda x: x.pga_value, reverse=True)
             cha = self.sensor_channels[0].channel_code
             val = self.sensor_channels[0].pga_value
-            return round(float(val), PGA_PGV_DECIMAL_PLACES), cha
+            return self.string_to_decimal(val, 100), cha
         except:
             return '', 0.0
 
@@ -196,12 +218,25 @@ class MotionDataStation(object):
             self.sensor_channels.sort(key=lambda x: x.pgv_value, reverse=True)
             cha = self.sensor_channels[0].channel_code
             val = self.sensor_channels[0].pgv_value
-            return round(float(val), PGA_PGV_DECIMAL_PLACES), cha
+            return self.string_to_decimal(val, 100), cha
         except:
             return '', 0.0
 
+    def get_map_marker_path(self):
+        tmp = self.get_max_pga()[0]
+        if (tmp > 100):
+            return 'img/markers/triangle-red.png'
+        elif (tmp > 50):
+            return 'img/markers/triangle-orange.png'
+        elif (tmp > 20):
+            return 'img/markers/triangle-yellow.png'
+        elif (tmp > 10):
+            return 'img/markers/triangle-green.png'
+        else:
+            return 'img/markers/triangle-blue.png'
 
-class MotionDataStationChannel(object):
+
+class MotionDataStationChannel(FdsnBaseClass):
     def __init__(self):
         self.channel_code = NO_FDSNWS_DATA
         self.pga_value = 0.0
@@ -220,16 +255,16 @@ class MotionDataStationChannel(object):
         )
 
     def get_pga(self):
-        try:
-            return round(float(self.pga_value), PGA_PGV_DECIMAL_PLACES)
-        except:
-            return 0.0
+        return self.string_to_decimal(self.pga_value, 100)
 
     def get_pgv(self):
-        try:
-            return round(float(self.pgv_value), PGA_PGV_DECIMAL_PLACES)
-        except:
-            return 0.0
+        return self.string_to_decimal(self.pgv_value, 100)
+
+    def get_corner_freq_lower(self):
+        return self.string_to_decimal(self.corner_freq_lower)
+
+    def get_corner_freq_upper(self):
+        return self.string_to_decimal(self.corner_freq_upper)
 
 
 class SpectralAmplitude(object):
