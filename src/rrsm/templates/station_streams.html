@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    <h1 class="bg-dark text-white pl-2">Station information</h1>
+    <h5 class="bg-dark text-white pl-2">Station information</h5>
     <div class="container">
         <div class="row">
             <div class="col">
@@ -129,7 +129,7 @@
         </div>
     </div>
 
-    <h1 class="bg-dark text-white pl-2">List of streams</h1>
+    <h5 class="bg-dark text-white pl-2">List of streams</h5>
     <div class="table-responsive">
         <table id="stations_table" class="table" cellspacing="0" width="100%">
             <thead>
@@ -167,10 +167,32 @@
             </tbody>
         </table>
     </div>
+    <div class="text-center">
+        <div class="col-12">
+            <button id="downloadRawData" class="btn btn-success disabled">Download raw waveforms</button>
+        </div>
+    </div>
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#stations_table').DataTable();
+            var table = $('#stations_table').DataTable();
+
+            $('#stations_table tbody').on('click', 'tr', function () {
+                $(this).toggleClass('table-success');
+
+                if (table.rows('.table-success').data().length > 0) {
+                    $('#downloadRawData').removeClass('disabled');
+                }
+                else {
+                    $('#downloadRawData').addClass('disabled');
+                }
+            });
+
+            $('#downloadRawData').click(function () {
+                if (table.rows('.table-success').data().length > 0) {
+                    alert(table.rows('.table-success').data().length + ' row(s) selected');
+                }
+            });
         });
     </script>
 
