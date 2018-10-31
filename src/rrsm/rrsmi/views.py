@@ -162,14 +162,30 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
 
             layout_pga = go.Layout(
                 title="PGA vs Epicentral distance",
-                xaxis={'title': 'Epicentral distance [km]'},
-                yaxis={'title': 'Value'}
+                xaxis={
+                    'type': 'log',
+                    'autorange': 'True',
+                    'title': 'Epicentral distance [km]'
+                },
+                yaxis={
+                    'type': 'log',
+                    'autorange': 'True',
+                    'title': 'Value'
+                }
             )
 
             layout_pgv = go.Layout(
                 title="PGV vs Epicentral distance",
-                xaxis={'title': 'Epicentral distance [km]'},
-                yaxis={'title': 'Value'}
+                xaxis={
+                    'type': 'log',
+                    'autorange': 'True',
+                    'title': 'Epicentral distance [km]'
+                },
+                yaxis={
+                    'type': 'log',
+                    'autorange': 'True',
+                    'title': 'Value'
+                }
             )
 
             figure_pga = go.Figure(data=lot_pga, layout=layout_pga)
@@ -274,14 +290,22 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
 
             lay_psa = go.Layout(
                 title="Pseudo-Spectral Acceleration",
-                xaxis={'title': 'Time [s]'},
-                yaxis={'title': 'PSA [cm/s*s]'}
+                xaxis={
+                    'type': 'log',
+                    'autorange': 'True',
+                    'title': 'Time [s]'
+                },
+                yaxis={
+                    'type': 'log',
+                    'autorange': 'True',
+                    'title': 'PSA [cm/s*s]'
+                }
             )
 
             lay_drs = go.Layout(
                 title="Displacement Response Spectra",
-                xaxis={'title': 'Time [s]'},
-                yaxis={'title': 'DRS [cm]'}
+                xaxis={'type': 'log', 'autorange': 'True', 'title': 'Time [s]'},
+                yaxis={'type': 'log', 'autorange': 'True', 'title': 'DRS [cm]'}
             )
 
             figure_psa = go.Figure(data=lot_psa, layout=lay_psa)
