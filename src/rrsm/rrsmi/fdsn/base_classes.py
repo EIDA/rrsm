@@ -11,6 +11,7 @@ URL_EVENT = getattr(settings, 'URL_EVENT', '')
 URL_MOTION = getattr(settings, 'URL_MOTION', '')
 URL_SHAKEMAP = getattr(settings, 'URL_SHAKEMAP', '')
 URL_WAVEFORM = getattr(settings, 'URL_WAVEFORM', '')
+URL_ROUTING = getattr(settings, 'URL_ROUTING', '')
 
 NO_FDSNWS_DATA = None
 NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
@@ -23,6 +24,34 @@ class FdsnBaseClass(object):
             return decimal.Decimal(tmp).quantize(decimal.Decimal(10) ** -decimals)
         except:
             raise
+
+
+class RoutingWrapper(object):
+    def __init__(self):
+        self.url_routing = URL_ROUTING
+
+    def build_url_routing(self, network_code, station_code):
+        payload = {}
+        payload['network'] = network_code
+        payload['station'] = station_code
+        payload['service'] = 'dataselect'
+        payload['format'] = 'json'
+        payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
+        return '{}?{}'.format(self.url_routing, payload_str)
+
+
+class DataselectWrapper(object):
+    def build_url_dataselect(
+        self, url, network_code, station_code, event_start, event_end
+    ):
+        payload = {}
+        payload['network'] = network_code
+        payload['station'] = station_code
+        payload['start'] = event_start
+        payload['end'] = event_end
+        payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
+        return '{}?{}'.format(url, payload_str)
+
 
 # Single node instance wrapper
 class NodeWrapper(object):

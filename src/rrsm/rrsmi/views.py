@@ -20,7 +20,8 @@ import plotly.offline as opy
 import plotly.graph_objs as go
 
 from .fdsn.fdsn_manager import \
-    FdsnMotionManager, FdsnShakemapManager, FdsnWaveformManager
+    FdsnMotionManager, FdsnShakemapManager, \
+    FdsnWaveformManager, FdsnDataselectManager
 
 from .models import \
     SearchEvent, SearchPeakMotions, \
@@ -222,6 +223,10 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         station_code = self.kwargs.get('station_code')
         fdsn_motion_man = FdsnMotionManager()
 
+        dataselect_url = FdsnDataselectManager(
+            'NL', 'DBN', '2018-11-18T12:00:00'
+        ).get_dataselect_url()
+
         motion_data, ws_url = fdsn_motion_man.get_event_details(
             event_id, network_code, station_code, True
         )
@@ -231,9 +236,11 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             context['station_data'] = motion_data.stations[0]
         else:
             context['motion_data'] = None
+
         context['chart_psa'] = chart_psa
         context['chart_drs'] = chart_drs
         context['ws_url'] = ws_url
+        context['dataselect_url'] = dataselect_url
         return context
 
     def get_spectra_charts(self, station_data):

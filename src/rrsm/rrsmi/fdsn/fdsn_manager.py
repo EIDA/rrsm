@@ -5,9 +5,13 @@ import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ParseError
 from urllib.request import Request, urlopen
 
+from datetime import datetime, timedelta
+from django.utils.dateparse import parse_datetime
+
 from .base_classes import NSMAP, NO_FDSNWS_DATA, \
-    NodeWrapper, \
+    NodeWrapper, RoutingWrapper, DataselectWrapper, \
     MotionData, MotionDataStation, MotionDataStationChannel, SpectralAmplitude
+
 from ..logger import RrsmLoggerMixin
 
 
@@ -152,14 +156,39 @@ class FdsnMotionManager(FdsnHttpBase):
             return None
 
 
-class FdsnShakemapManager(object):
-    def __init__(self):
-        super(FdsnShakemapManager, self).__init__()
-        self.node_wrapper = NodeWrapper()
+class FdsnDataselectManager(FdsnHttpBase):
+    def __init__(self, net_code, stat_code, event_time):
+        super(FdsnDataselectManager, self).__init__()
+        self.routing_wrapper = RoutingWrapper()
+        self.dataselect_wrapper = DataselectWrapper()
+        self.net_code = net_code
+        self.stat_code = stat_code
+        self.event_time = event_time
 
-    def get_shakemap_url(self, id):
-        ws_url = self.node_wrapper.build_url_shakemap_by_id(id)
-        return ws_url
+    def get_dataselect_url(self):
+        ws_url = self.routing_wrapper.build_url_routing(
+            self.net_code, self.stat_code
+        )
+
+        response = self.fdsn_request(ws_url)
+
+        if not response:
+            return None
+
+        dt = parse_datetime(self.event_time)
+        event_start = dt - timedelta(seconds=5)
+        event_end = dt + timedelta(minutes=3)
+
+        data = json.loads(response.decode('utf-8'))
+        dataselect_url = self.dataselect_wrapper.build_url_dataselect(
+            data[0]['url'],
+            self.net_code,
+            self.stat_code,
+            event_start.isoformat(),
+            event_end.isoformat()
+        )
+
+        return dataselect_url
 
 
 class FdsnWaveformManager(object):
@@ -169,6 +198,16 @@ class FdsnWaveformManager(object):
 
     def get_waveform_url(self, id):
         ws_url = self.node_wrapper.build_url_waveform_by_id(id)
+        return ws_url
+
+
+class FdsnShakemapManager(object):
+    def __init__(self):
+        super(FdsnShakemapManager, self).__init__()
+        self.node_wrapper = NodeWrapper()
+
+    def get_shakemap_url(self, id):
+        ws_url = self.node_wrapper.build_url_shakemap_by_id(id)
         return ws_url
 
 
