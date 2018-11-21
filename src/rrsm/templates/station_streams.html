@@ -136,6 +136,7 @@
                     <th>Unit</th>
                     <th>Corner freq. lower</th>
                     <th>Corner freq. upper</th>
+                    <th>Raw waveforms</th>
                 </tr>
             </thead>
             <tbody>
@@ -150,6 +151,7 @@
                     <td>{{ sc.sensor_unit }}</td>
                     <td>{{ sc.get_corner_freq_lower }}</td>
                     <td>{{ sc.get_corner_freq_upper }}</td>
+                    <td><a href="{{ sc.dataselect_url }}">Download</a></td>
                 </tr>
                 <script type="text/javascript">
                     var event_latitude = parseFloat("{{ station_data.event_latitude }}"), event_longitude = parseFloat("{{ station_data.event_longitude }}"), event_depth = parseFloat("{{ station_data.event_depth }}"), event_magnitude = parseFloat("{{ station_data.event_magnitude }}"); if (!isNaN(event_latitude) && !isNaN(event_longitude)) { var point = new ol.Feature({ geometry: new ol.geom.Point(ol.proj.fromLonLat([event_longitude, event_latitude])) }); point.setStyle(new ol.style.Style({ image: new ol.style.Circle({ radius: event_magnitude ** 2 / 2, fill: new ol.style.Fill({ color: getEventColor(event_magnitude) }), stroke: new ol.style.Stroke({ color: '#000000', width: 1 }) }) })), vectorSource.addFeature(point) }

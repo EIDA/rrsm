@@ -42,13 +42,18 @@ class RoutingWrapper(object):
 
 class DataselectWrapper(object):
     def build_url_dataselect(
-        self, url, network_code, station_code, event_start, event_end
+        self, url, network_code, station_code, event_start, event_end, \
+        channel=None
     ):
         payload = {}
         payload['network'] = network_code
         payload['station'] = station_code
         payload['start'] = event_start
         payload['end'] = event_end
+
+        if channel:
+            payload['channel'] = channel
+
         payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
         return '{}?{}'.format(url, payload_str)
 
@@ -277,6 +282,7 @@ class MotionDataStationChannel(FdsnBaseClass):
         self.corner_freq_lower = 0.0
         self.corner_freq_upper = 0.0
         self.spectral_amplitudes = []
+        self.dataselect_url = NO_FDSNWS_DATA
 
     def get_amplitudes_order_by_period(self):
         return sorted(

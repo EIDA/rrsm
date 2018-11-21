@@ -144,6 +144,12 @@ class FdsnMotionManager(FdsnHttpBase):
                         ch.sensor_unit = d['sensor-unit']
                         ch.corner_freq_lower = d['corner-freq-lower']
                         ch.corner_freq_upper = d['corner-freq-upper']
+                        ch.dataselect_url = FdsnDataselectManager(
+                            s['network-code'],
+                            s['station-code'],
+                            s['event-time'],
+                            d['channel-code']
+                        ).get_dataselect_url()
 
                         if 'spectral-amplitudes' in d:
                             for spa in d['spectral-amplitudes']:
@@ -162,13 +168,14 @@ class FdsnMotionManager(FdsnHttpBase):
 
 
 class FdsnDataselectManager(FdsnHttpBase):
-    def __init__(self, net_code, stat_code, event_time):
+    def __init__(self, net_code, stat_code, event_time, channel=None):
         super(FdsnDataselectManager, self).__init__()
         self.routing_wrapper = RoutingWrapper()
         self.dataselect_wrapper = DataselectWrapper()
         self.net_code = net_code
         self.stat_code = stat_code
         self.event_time = event_time
+        self.channel = channel
 
     def get_dataselect_url(self):
         ws_url = self.routing_wrapper.build_url_routing(
@@ -190,7 +197,8 @@ class FdsnDataselectManager(FdsnHttpBase):
             self.net_code,
             self.stat_code,
             event_start.isoformat(),
-            event_end.isoformat()
+            event_end.isoformat(),
+            self.channel
         )
 
         return dataselect_url
