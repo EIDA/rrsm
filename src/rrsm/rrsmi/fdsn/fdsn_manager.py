@@ -126,6 +126,11 @@ class FdsnMotionManager(FdsnHttpBase):
                 station_data.station_elevation = s['station-elevation']
                 station_data.epicentral_distance = s['epicentral-distance']
                 station_data.event_reference = s['event-reference']
+                station_data.dataselect_url = FdsnDataselectManager(
+                    s['network-code'],
+                    s['station-code'],
+                    s['event-time']
+                ).get_dataselect_url()
 
                 if extract_channels == True:
                     for d in s['sensor-channels']:
@@ -176,8 +181,8 @@ class FdsnDataselectManager(FdsnHttpBase):
             return None
 
         dt = parse_datetime(self.event_time)
-        event_start = dt - timedelta(seconds=5)
-        event_end = dt + timedelta(minutes=3)
+        event_start = dt - timedelta(seconds=30)
+        event_end = dt + timedelta(minutes=10)
 
         data = json.loads(response.decode('utf-8'))
         dataselect_url = self.dataselect_wrapper.build_url_dataselect(
