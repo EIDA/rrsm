@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import operator
 from collections import defaultdict, OrderedDict
 
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import \
     get_object_or_404, redirect, render, render_to_response
 from django.contrib.auth.models import User
@@ -514,6 +514,17 @@ def search_custom(request):
                 'form': form
             }
         )
+
+
+def download_waveforms(request):
+    if request.method == 'POST':
+        urls = request.POST.get('urls')
+        return HttpResponse(
+            urls,
+            content_type="text/plain"
+        )
+    else:
+        return None
 
 
 def custom_404(request, exception=None):

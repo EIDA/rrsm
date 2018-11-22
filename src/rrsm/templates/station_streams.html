@@ -127,6 +127,7 @@
         <table id="stations_table" class="table" cellspacing="0" width="100%">
             <thead>
                 <tr>
+                    <th hidden>Dataselect</th>
                     <th>Channel code</th>
                     <th>PGA [cm/s<sup>2</sup>]</th>
                     <th>PGV [cm/s]</th>
@@ -142,6 +143,7 @@
             <tbody>
                 {% for sc in station_data.sensor_channels %}
                 <tr>
+                    <td hidden>{{ sc.dataselect_url }}</td>
                     <td>{{ sc.channel_code }}</td>
                     <td>{{ sc.get_pga }}</td>
                     <td>{{ sc.get_pgv }}</td>
@@ -184,9 +186,28 @@
             });
 
             $('#downloadRawData').click(function () {
-                if (table.rows('.table-success').data().length > 0) {
-                    alert(table.rows('.table-success').data().length + ' row(s) selected');
+                urls = []
+                table.rows('.table-success').every(function() {
+                    urls.push(this.data()[0]);
+                });
+
+                if (urls.length <= 0) {
+                    return;
                 }
+
+                urls_str = urls.join(';');
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'download_waveforms' %}",
+                    data: {
+                        "csrfmiddlewaretoken": "{{ csrf_token }}",
+                        'urls': urls_str
+                    },
+                    success: function(result) {
+                        console.log(result);
+                    }
+                });
             });
         });
     </script>

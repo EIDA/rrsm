@@ -16,20 +16,65 @@ CACHE_TIME_LONG = int(getattr(settings, "CACHE_TIME_LONG", 0))
 RRSM_URL_BASE = getattr(settings, "RRSM_URL_BASE", "")
 
 urlpatterns = [
-    path('{}'.format(RRSM_URL_BASE), cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.HomeListView.as_view()),name='home'),
-    path('{}about/'.format(RRSM_URL_BASE), cache_page(CACHE_TIME_LONG)(rrsmi_view.AboutListView.as_view()),name='about'),
-    re_path(r'^{}recent/(?P<days>\w+)/$'.format(RRSM_URL_BASE),
-        cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.RecentEventsListView.as_view()), name='recent_events'),
-    re_path(r'^{}event/(?P<event_public_id>\w+)/$'.format(RRSM_URL_BASE),
-        cache_page(CACHE_TIME_LONG)(rrsmi_view.EventDetailsListView.as_view()), name='event_details'),
-    re_path(r'^{}event/(?P<event_public_id>\w+)/(?P<network_code>\w+)/(?P<station_code>\w+)/$'.format(RRSM_URL_BASE),
-        cache_page(CACHE_TIME_LONG)(rrsmi_view.StationStreamsListView.as_view()), name='station_streams'),
-    path('{}search-events/'.format(RRSM_URL_BASE), rrsmi_view.search_events, name='search_events'),
-    path('{}search-peak-motions/'.format(RRSM_URL_BASE), rrsmi_view.search_peak_motions, name='search_peak_motions'),
-    path('{}search-combined/'.format(RRSM_URL_BASE), rrsmi_view.search_combined, name='search_combined'),
-    path('{}search-custom/'.format(RRSM_URL_BASE), rrsmi_view.search_custom, name='search_custom'),
-    path('{}admin/'.format(RRSM_URL_BASE), admin.site.urls),
-    path('{}logout/'.format(RRSM_URL_BASE), auth_views.LogoutView.as_view(), name='logout'),
+    path(
+        '{}'.format(RRSM_URL_BASE),
+        cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.HomeListView.as_view()),
+        name='home'
+    ),
+    path(
+        '{}about/'.format(RRSM_URL_BASE),
+        cache_page(CACHE_TIME_LONG)(rrsmi_view.AboutListView.as_view()),
+        name='about'
+    ),
+    re_path(
+        r'^{}recent/(?P<days>\w+)/$'.format(RRSM_URL_BASE),
+        cache_page(CACHE_TIME_MEDIUM)(rrsmi_view.RecentEventsListView.as_view()),
+        name='recent_events'
+    ),
+    re_path(
+        r'^{}event/(?P<event_public_id>\w+)/$'.format(RRSM_URL_BASE),
+        cache_page(CACHE_TIME_LONG)(rrsmi_view.EventDetailsListView.as_view()),
+        name='event_details'
+    ),
+    re_path(
+        r'^{}event/(?P<event_public_id>\w+)/(?P<network_code>\w+)/(?P<station_code>\w+)/$'.format(RRSM_URL_BASE),
+        cache_page(CACHE_TIME_LONG)(rrsmi_view.StationStreamsListView.as_view()),
+        name='station_streams'
+    ),
+    path(
+        '{}search-events/'.format(RRSM_URL_BASE),
+        rrsmi_view.search_events,
+        name='search_events'
+    ),
+    path(
+        '{}search-peak-motions/'.format(RRSM_URL_BASE),
+        rrsmi_view.search_peak_motions,
+        name='search_peak_motions'
+    ),
+    path(
+        '{}search-combined/'.format(RRSM_URL_BASE),
+        rrsmi_view.search_combined,
+        name='search_combined'
+    ),
+    path(
+        '{}search-custom/'.format(RRSM_URL_BASE),
+        rrsmi_view.search_custom,
+        name='search_custom'
+    ),
+    path(
+        '{}download-waveforms/'.format(RRSM_URL_BASE),
+        rrsmi_view.download_waveforms,
+        name='download_waveforms'
+    ),
+    path(
+        '{}admin/'.format(RRSM_URL_BASE),
+        admin.site.urls
+    ),
+    path(
+        '{}logout/'.format(RRSM_URL_BASE),
+        auth_views.LogoutView.as_view(),
+        name='logout'
+    ),
 ]
 
 if settings.DEBUG:

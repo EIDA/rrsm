@@ -125,6 +125,7 @@
         <table id="stations_table" class="table" cellspacing="0" width="100%">
             <thead>
                 <tr>
+                    <th hidden>Dataselect</th>
                     <th>
                         Network / Station
                         <small class="text-muted d-block">(click for streams)</small>
@@ -140,6 +141,7 @@
             <tbody>
                 {% for s in motion_data.stations %}
                 <tr>
+                    <td hidden>{{ s.dataselect_url }}</td>
                     <td>
                         <a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">
                             {{ s.network_code }} / {{ s.station_code }}
@@ -171,6 +173,7 @@
             <button id="downloadRawData" class="btn btn-success disabled">Download raw waveforms</button>
         </div>
     </div>
+    <p id="dataselectUrls"></p>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -188,8 +191,27 @@
             });
 
             $('#downloadRawData').click(function () {
+                urls = []
                 table.rows('.table-success').every(function() {
-                    console.log(this.data()[0]);
+                    urls.push(this.data()[0]);
+                });
+
+                if (urls.length <= 0) {
+                    return;
+                }
+
+                urls_str = urls.join(';');
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'download_waveforms' %}",
+                    data: {
+                        "csrfmiddlewaretoken": "{{ csrf_token }}",
+                        'urls': urls_str
+                    },
+                    success: function(result) {
+                        console.log(result);
+                    }
                 });
             });
         });
