@@ -188,7 +188,7 @@ class FdsnDataselectManager(FdsnHttpBase):
             return None
 
         dt = parse_datetime(self.event_time)
-        event_start = dt - timedelta(seconds=30)
+        event_start = dt - timedelta(minutes=1)
         event_end = dt + timedelta(minutes=10)
 
         data = json.loads(response.decode('utf-8'))

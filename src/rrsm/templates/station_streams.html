@@ -165,10 +165,12 @@
         </table>
     </div>
     <div class="text-center">
-        <div class="col-12">
-            <button id="downloadRawData" class="btn btn-success disabled">Download raw waveforms</button>
+        <div class="col-12 mt-2">
+            <button id="downloadRawData" class="btn btn-success disabled">Download selected raw waveforms</button>
+            <button id="downloadAllRawData" class="btn btn-success">Download all raw waveforms</button>
         </div>
     </div>
+    <p class="mt-2" id="rawDataUrls"></p>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -195,7 +197,7 @@
                     return;
                 }
 
-                urls_str = urls.join(';');
+                urls_str = urls.join(',');
 
                 $.ajax({
                     type: "POST",
@@ -205,7 +207,44 @@
                         'urls': urls_str
                     },
                     success: function(result) {
-                        console.log(result);
+                        $('#rawDataUrls').text('');
+                        let array = result.split(',');
+                        for (let u of array) {
+                            $('#rawDataUrls').append(
+                                `<br /> <a href="${u}">${u}</a>`
+                            );
+                        }
+                    }
+                });
+            });
+
+            $('#downloadAllRawData').click(function () {
+                urls = []
+                table.rows().every(function() {
+                    urls.push(this.data()[0]);
+                });
+
+                if (urls.length <= 0) {
+                    return;
+                }
+
+                urls_str = urls.join(',');
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'download_waveforms' %}",
+                    data: {
+                        "csrfmiddlewaretoken": "{{ csrf_token }}",
+                        'urls': urls_str
+                    },
+                    success: function(result) {
+                        $('#rawDataUrls').text('');
+                        let array = result.split(',');
+                        for (let u of array) {
+                            $('#rawDataUrls').append(
+                                `<br /> <a href="${u}">${u}</a>`
+                            );
+                        }
                     }
                 });
             });
