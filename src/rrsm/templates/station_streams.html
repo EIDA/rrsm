@@ -122,6 +122,18 @@
         </div>
     </div>
 
+    <div class="container">
+        {% if waveform_pic %}
+        <div>
+            {{ waveform_pic|safe }}
+        </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+          Waveform preview is not available.
+        </div>
+        {% endif %}
+    </div>
+
     <h5 class="bg-dark text-white pl-2">List of streams</h5>
     <div class="table-responsive">
         <table id="stations_table" class="table" cellspacing="0" width="100%">

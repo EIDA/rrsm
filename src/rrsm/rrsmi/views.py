@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import operator
 from collections import defaultdict, OrderedDict
+from datetime import datetime
 
 from django.http import Http404, HttpResponse
 from django.shortcuts import \
@@ -21,7 +22,8 @@ import plotly.graph_objs as go
 
 from .fdsn.fdsn_manager import \
     FdsnMotionManager, FdsnShakemapManager, \
-    FdsnWaveformManager, FdsnDataselectManager
+    FdsnWaveformManager, FdsnDataselectManager, \
+    OdcApiManager
 
 from .models import \
     SearchEvent, SearchPeakMotions, \
@@ -237,8 +239,11 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         else:
             context['motion_data'] = None
 
+        waveform_pic = self.get_waveform_pic(motion_data)
+
         context['chart_psa'] = chart_psa
         context['chart_drs'] = chart_drs
+        context['waveform_pic'] = waveform_pic
         context['ws_url'] = ws_url
         context['dataselect_url'] = dataselect_url
         return context
@@ -325,6 +330,49 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         except:
             self.log_exception()
             return None, None
+
+    def get_waveform_pic(self, station_data):
+        try:
+            oam = OdcApiManager(station_data.stations[0])
+            data = oam.get_waveform_data()
+            
+            data_wf = defaultdict(dict)
+            lot_wf = []  # List of traces
+
+            for trace in data['payload'][0]['traces']:
+                for e in trace['data']:
+                    dt = datetime.utcfromtimestamp(int(e[0])/1000).isoformat()
+                    data_wf[trace['name']][dt] = e[1]
+
+            for key in data_wf:
+                _tmp = OrderedDict(sorted(data_wf[key].items()))
+                lot_wf.append(go.Scatter(
+                    x=list(_tmp.keys()),
+                    y=list(_tmp.values()),
+                    mode='lines',
+                    marker=dict(
+                        size=3,
+                    ),
+                    name='{}'.format(key),
+                    line=dict(
+                        width=1,
+                        shape='spline'
+                    )
+                ))
+
+            lay_wf = go.Layout(
+                title="Waveform",
+                xaxis={'autorange': 'True', 'title': 'Time'},
+                yaxis={'autorange': 'True', 'title': ''}
+            )
+
+            figure_wf = go.Figure(data=lot_wf, layout=lay_wf)
+            plot_wf = opy.plot(figure_wf, auto_open=False, output_type='div')
+
+            return plot_wf
+        except:
+            self.log_exception()
+            return None
 
 
 def search_events(request):

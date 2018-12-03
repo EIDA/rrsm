@@ -203,6 +203,7 @@ URL_MOTION = 'http://www.orfeus-eu.org/odcws/rrsm/1/motion'
 URL_SHAKEMAP = 'http://www.orfeus-eu.org/odcws/rrsm/1/shakemap'
 URL_WAVEFORM = 'http://www.orfeus-eu.org/odcws/rrsm/1/waveform'
 URL_ROUTING = 'http://www.orfeus-eu.org/eidaws/routing/1/query'
+URL_ODC_API = 'https://orfeus-eu.org/api/waveform'
 
 # Cache
 CACHE_TIME_SHORT = config('CACHE_TIME_SHORT')

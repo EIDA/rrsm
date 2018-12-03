@@ -12,6 +12,7 @@ URL_MOTION = getattr(settings, 'URL_MOTION', '')
 URL_SHAKEMAP = getattr(settings, 'URL_SHAKEMAP', '')
 URL_WAVEFORM = getattr(settings, 'URL_WAVEFORM', '')
 URL_ROUTING = getattr(settings, 'URL_ROUTING', '')
+URL_ODC_API = getattr(settings, 'URL_ODC_API', '')
 
 NO_FDSNWS_DATA = None
 NSMAP = {'mw': 'http://quakeml.org/xmlns/bed/1.2'}
@@ -178,6 +179,7 @@ class MotionData(object):
 
 class MotionDataStation(FdsnBaseClass):
     def __init__(self):
+        self.url_odc_api = URL_ODC_API
         self.event_id = NO_FDSNWS_DATA
         self.event_time = NO_FDSNWS_DATA
         self.event_magnitude = 0.0
@@ -195,6 +197,20 @@ class MotionDataStation(FdsnBaseClass):
         self.event_reference = NO_FDSNWS_DATA
         self.sensor_channels = []
         self.dataselect_url = NO_FDSNWS_DATA
+
+    def build_url_odc_api(self, event_start, event_end):
+        payload = {}
+        payload['start'] = event_start
+        payload['end'] = event_end
+        payload['units'] = 'rawdata'
+
+        payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
+        return '{}/{}/{}/--/HH*?{}'.format(
+            self.url_odc_api,
+            self.network_code,
+            self.station_code,
+            payload_str
+        )
 
     def get_public_id(self):
         try:

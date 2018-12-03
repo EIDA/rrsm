@@ -196,8 +196,8 @@ class FdsnDataselectManager(FdsnHttpBase):
             data[0]['url'],
             self.net_code,
             self.stat_code,
-            event_start.isoformat(),
-            event_end.isoformat(),
+            event_start.isoformat().split('+')[0],
+            event_end.isoformat().split('+')[0],
             self.channel
         )
 
@@ -222,6 +222,31 @@ class FdsnShakemapManager(object):
     def get_shakemap_url(self, id):
         ws_url = self.node_wrapper.build_url_shakemap_by_id(id)
         return ws_url
+
+
+class OdcApiManager(FdsnHttpBase):
+    def __init__(self, motion_data_station):
+        super(OdcApiManager, self).__init__()
+
+        self.mds = motion_data_station
+
+        dt = parse_datetime(self.mds.event_time)
+        event_start = dt - timedelta(seconds=15)
+        event_end = dt + timedelta(minutes=3)
+
+        self.api_url = motion_data_station.build_url_odc_api(
+            event_start.isoformat().split('+')[0],
+            event_end.isoformat().split('+')[0]
+        )
+
+    def get_waveform_data(self):
+        print(self.api_url)
+        response = self.fdsn_request(self.api_url)
+
+        if not response:
+            return None
+
+        return json.loads(response.decode('utf-8'))
 
 
 class FdsnManager(RrsmLoggerMixin):
