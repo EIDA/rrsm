@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import operator
+import json
 from collections import defaultdict, OrderedDict
 from datetime import datetime
 
@@ -232,7 +233,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         motion_data, ws_url = fdsn_motion_man.get_event_details(
             event_id, network_code, station_code, True
         )
-        chart_psa, chart_drs = self.get_spectra_charts(motion_data.stations[0])
+        # chart_psa, chart_drs = self.get_spectra_charts(motion_data.stations[0])
 
         if motion_data:
             context['station_data'] = motion_data.stations[0]
@@ -240,12 +241,15 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             context['motion_data'] = None
 
         waveform_pic = self.get_waveform_pic(motion_data)
+        # highchart = self.get_highchart(motion_data)
 
-        context['chart_psa'] = chart_psa
-        context['chart_drs'] = chart_drs
+        # context['chart_psa'] = chart_psa
+        # context['chart_drs'] = chart_drs
         context['waveform_pic'] = waveform_pic
         context['ws_url'] = ws_url
         context['dataselect_url'] = dataselect_url
+        # context['highchart'] = highchart
+
         return context
 
     def get_spectra_charts(self, station_data):
@@ -373,6 +377,46 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         except:
             self.log_exception()
             return None
+
+    def get_highchart(self, station_data):
+        try:
+            data_wf = defaultdict(dict)
+            oam = OdcApiManager(station_data.stations[0])
+            data = oam.get_waveform_data()
+
+            if not data:
+                return None
+
+            for trace in data['payload'][0]['traces']:
+                for e in trace['data']:
+                    dt = datetime.utcfromtimestamp(int(e[0])/1000).isoformat()
+                    data_wf[trace['name']][dt] = e[1]
+
+            series = []
+
+            for key in data_wf:
+                _tmp = OrderedDict(sorted(data_wf[key].items()))
+                series.append(list(_tmp.values()))
+
+            chart = {
+                'chart': {'type': 'spline'},
+                'title': {'text': 'Waveform pictures'},
+                'plotOptions': {
+                    'series': {
+                        'lineWidth': 1
+                    }
+                },
+                'xAxis': {'type': 'datetime'}, 
+                'series': [{
+                    'name': 'dadada',
+                    'data': series[0]
+                }]
+            }
+
+            dump = json.dumps(chart)
+            return dump
+        except:
+            raise
 
 
 def search_events(request):

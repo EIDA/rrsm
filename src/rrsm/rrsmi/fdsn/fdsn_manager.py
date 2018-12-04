@@ -240,7 +240,11 @@ class OdcApiManager(FdsnHttpBase):
         )
 
     def get_waveform_data(self):
-        print(self.api_url)
+        self.log_information(
+            'Downloading waveform raw data: {}'.format(
+                self.api_url
+            )
+        )
         response = self.fdsn_request(self.api_url)
 
         if not response:

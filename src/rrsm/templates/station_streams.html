@@ -59,6 +59,7 @@
 </div>
 <script src="{% static 'js/openlayers/ol.js' %}"></script>
 <script src="{% static 'js/openlayers/olRrsm.js' %}"></script>
+<script src="{% static 'js/highcharts/highcharts.js' %}"></script>
 
 <div class="mt-2">
     <div class="container mb-2">
@@ -96,6 +97,8 @@
             </div>
         </div>
     </div>
+
+    <div id="highchart"></div>
 
     <h5 class="bg-dark text-white pl-2">Station information</h5>
     <div class="container">
@@ -186,6 +189,8 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            Highcharts.chart('highchart', {{ highchart|safe }});
+
             var table = $('#stations_table').DataTable();
 
             $('#stations_table tbody').on('click', 'tr', function () {
@@ -280,6 +285,7 @@
 {% block javascript %}
 <script src="{% static 'js/datatable/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'js/datatable/dataTables.bootstrap4.min.js' %}"></script>
+
 {% endblock %}
 
 {% endblock %}
