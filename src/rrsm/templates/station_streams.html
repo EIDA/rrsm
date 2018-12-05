@@ -60,6 +60,9 @@
 <script src="{% static 'js/openlayers/ol.js' %}"></script>
 <script src="{% static 'js/openlayers/olRrsm.js' %}"></script>
 <script src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script src="{% static 'js/highcharts/exporting.js' %}"></script>
+<script src="{% static 'js/highcharts/offline-exporting.js' %}"></script>
+<script src="{% static 'js/highcharts/export-data.js' %}"></script>
 
 <div class="mt-2">
     <div class="container mb-2">
@@ -98,8 +101,6 @@
         </div>
     </div>
 
-    <div id="highchart"></div>
-
     <h5 class="bg-dark text-white pl-2">Station information</h5>
     <div class="container">
         <div class="row">
@@ -125,7 +126,8 @@
         </div>
     </div>
 
-    <div class="container">
+    <div id="wafeform_picture"></div>
+    <!-- <div class="container">
         {% if waveform_pic %}
         <div>
             {{ waveform_pic|safe }}
@@ -135,7 +137,7 @@
           Waveform preview is not available.
         </div>
         {% endif %}
-    </div>
+    </div> -->
 
     <h5 class="bg-dark text-white pl-2">List of streams</h5>
     <div class="table-responsive">
@@ -189,7 +191,9 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            Highcharts.chart('highchart', {{ highchart|safe }});
+            if ('{{ wafeform_picture }}'.toLowerCase() != 'none') {
+                Highcharts.chart('wafeform_picture', {{ wafeform_picture|safe }});
+            }
 
             var table = $('#stations_table').DataTable();
 

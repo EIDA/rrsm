@@ -3,6 +3,7 @@ import gzip
 import json
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ParseError
+from urllib import error as urllib_error
 from urllib.request import Request, urlopen
 
 from datetime import datetime, timedelta
@@ -29,9 +30,9 @@ class FdsnHttpBase(RrsmLoggerMixin):
                 return gzip.decompress(response.read())
             else:
                 return response.read()
-        except Exception:
-            self.log_exception(url)
-            raise
+        except urllib_error.HTTPError as e:
+            self.log_exception(e)
+            return None
 
     def validate_string(self, string):
         if not string or len(string) <= 0:
