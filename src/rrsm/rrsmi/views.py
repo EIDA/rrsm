@@ -210,7 +210,6 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                     'data': chart_data_pgv[t]
                 })
 
-            print(chart_pga)
             dump_pga = json.dumps(chart_pga)
             dump_pgv = json.dumps(chart_pgv)
             return dump_pga, dump_pgv
@@ -356,7 +355,6 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             }
 
             for t in chart_data_psa:
-                print(chart_data_drs[t])
                 chart_psa['series'].append({
                     'name': t,
                     'data': chart_data_psa[t]
@@ -424,7 +422,6 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             }
 
             for t in data_wf:
-                print(data_wf[t])
                 chart['series'].append({
                     'name': t,
                     'data': data_wf[t]
