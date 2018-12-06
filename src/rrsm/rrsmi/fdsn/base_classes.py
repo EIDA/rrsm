@@ -254,6 +254,9 @@ class MotionDataStation(FdsnBaseClass):
     def get_epicentral_distance(self):
         return self.string_to_decimal(self.epicentral_distance)
 
+    def get_epicentral_distance_int(self):
+        return int(self.epicentral_distance)
+
     def get_max_pga(self):
         try:
             self.sensor_channels.sort(key=lambda x: x.pga_value, reverse=True)
@@ -310,6 +313,12 @@ class MotionDataStationChannel(FdsnBaseClass):
 
     def get_pgv(self):
         return self.string_to_decimal(self.pgv_value, 100)
+
+    def get_pga_int(self):
+        return int(self.pga_value)
+
+    def get_pgv_int(self):
+        return int(self.pgv_value)
 
     def get_corner_freq_lower(self):
         return self.string_to_decimal(self.corner_freq_lower)

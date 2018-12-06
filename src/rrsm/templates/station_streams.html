@@ -82,21 +82,13 @@
         </div>
     </div>
 
-    <div class="container mt-5">
+    <div class="container mt-2">
         <div class="row">
             <div class="col-6">
-                {% if chart_psa %}
-                <div>
-                    {{ chart_psa|safe }}
-                </div>
-                {% endif %}
+                <div id="chart_psa"></div>
             </div>
             <div class="col-6">
-                {% if chart_drs %}
-                <div>
-                    {{ chart_drs|safe }}
-                </div>
-                {% endif %}
+                <div id="chart_drs"></div>
             </div>
         </div>
     </div>
@@ -127,17 +119,6 @@
     </div>
 
     <div id="wafeform_picture"></div>
-    <!-- <div class="container">
-        {% if waveform_pic %}
-        <div>
-            {{ waveform_pic|safe }}
-        </div>
-        {% else %}
-        <div class="alert alert-warning" role="alert">
-          Waveform preview is not available.
-        </div>
-        {% endif %}
-    </div> -->
 
     <h5 class="bg-dark text-white pl-2">List of streams</h5>
     <div class="table-responsive">
@@ -193,6 +174,14 @@
         $(document).ready(function () {
             if ('{{ wafeform_picture }}'.toLowerCase() != 'none') {
                 Highcharts.chart('wafeform_picture', {{ wafeform_picture|safe }});
+            }
+
+            if ('{{ chart_psa }}'.toLowerCase() != 'none') {
+                Highcharts.chart('chart_psa', {{ chart_psa|safe }});
+            }
+
+            if ('{{ chart_drs }}'.toLowerCase() != 'none') {
+                Highcharts.chart('chart_drs', {{ chart_drs|safe }});
             }
 
             var table = $('#stations_table').DataTable();

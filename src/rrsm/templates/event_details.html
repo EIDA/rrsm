@@ -62,6 +62,10 @@
 </div>
 <script src="{% static 'js/openlayers/ol.js' %}"></script>
 <script src="{% static 'js/openlayers/olRrsm.js' %}"></script>
+<script src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script src="{% static 'js/highcharts/exporting.js' %}"></script>
+<script src="{% static 'js/highcharts/offline-exporting.js' %}"></script>
+<script src="{% static 'js/highcharts/export-data.js' %}"></script>
 
 <div class="mt-2">
     <div class="container">
@@ -83,21 +87,13 @@
         </div>
     </div>
 
-    <div class="container mt-5">
+    <div class="container mt-2">
         <div class="row">
             <div class="col-6">
-                {% if chart_pga %}
-                <div>
-                    {{ chart_pga|safe }}
-                </div>
-                {% endif %}
+                <div id="chart_pga"></div>
             </div>
             <div class="col-6">
-                {% if chart_pgv %}
-                <div>
-                    {{ chart_pgv|safe }}
-                </div>
-                {% endif %}
+                <div id="chart_pgv"></div>
             </div>
         </div>
     </div>
@@ -178,6 +174,13 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            if ('{{ chart_pga }}'.toLowerCase() != 'none') {
+                Highcharts.chart('chart_pga', {{ chart_pga|safe }});
+            }
+
+            if ('{{ chart_pgv }}'.toLowerCase() != 'none') {
+                Highcharts.chart('chart_pgv', {{ chart_pgv|safe }});
+            }
             var table = $('#stations_table').DataTable();
 
             $('#stations_table tbody').on('click', 'tr', function () {

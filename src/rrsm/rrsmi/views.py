@@ -17,10 +17,6 @@ from django.views.generic import ListView, DetailView
 from django.db import transaction
 from django.db.models import Q, Count
 
-import plotly.plotly as py
-import plotly.offline as opy
-import plotly.graph_objs as go
-
 from .fdsn.fdsn_manager import \
     FdsnMotionManager, FdsnShakemapManager, \
     FdsnWaveformManager, FdsnDataselectManager, \
@@ -122,83 +118,102 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
             if not motion_data:
                 return None, None
 
-            lot_pga = []  # List of traces PGA
-            lot_pgv = []  # List of traces PGV
             data_pga = defaultdict(dict)
             data_pgv = defaultdict(dict)
+            chart_data_pga = {}
+            chart_data_pgv = {}
 
             for s in motion_data.stations:
                 for sc in s.sensor_channels:
-                    data_pga[sc.channel_code][s.get_epicentral_distance()] = sc.get_pga() or 0
-                    data_pgv[sc.channel_code][s.get_epicentral_distance()] = sc.get_pgv() or 0
+                    data_pga[sc.channel_code][s.epicentral_distance] = \
+                        sc.pga_value
+                    data_pgv[sc.channel_code][s.epicentral_distance] = \
+                        sc.pgv_value
 
             for key in data_pga:
-                _tmp = OrderedDict(sorted(data_pga[key].items()))
-                lot_pga.append(go.Scatter(
-                    x=list(_tmp.keys()),
-                    y=list(_tmp.values()),
-                    mode='markers',
-                    marker=dict(
-                        size=5,
-                    ),
-                    name='{} PGA'.format(key),
-                    line=dict(
-                        width=1,
-                        shape='spline'
-                    )
-                ))
+                _tmp = sorted(data_pga[key].items())
+                chart_data_pga[key] = _tmp
 
             for key in data_pgv:
-                _tmp = OrderedDict(sorted(data_pgv[key].items()))
-                lot_pgv.append(go.Scatter(
-                    x=list(_tmp.keys()),
-                    y=list(_tmp.values()),
-                    mode='markers',
-                    marker=dict(
-                        size=5,
-                    ),
-                    name='{} PGV'.format(key),
-                    line=dict(
-                        width=1,
-                        shape='spline'
-                    )
-                ))
+                _tmp = sorted(data_pgv[key].items())
+                chart_data_pgv[key] = _tmp
 
-            layout_pga = go.Layout(
-                title="PGA vs Epicentral distance",
-                xaxis={
-                    'type': 'log',
-                    'autorange': 'True',
-                    'title': 'Epicentral distance [km]'
+            chart_pga = {
+                'exporting': {
+                    'chartOptions': {
+                        'plotOptions': {
+                            'series': {
+                            'dataLabels': {
+                                'enabled': 'true'
+                            }
+                        }
+                    }
                 },
-                yaxis={
-                    'type': 'log',
-                    'autorange': 'True',
-                    'title': 'Value'
-                }
-            )
+                'fallbackToExportServer': 'false'
+            },
+                'chart': {'type': 'scatter'},
+                'title': {'text': 'PGA vs Epicentral distance'},
+                'xAxis': {
+                    'title': {
+                        'text': 'Epicentral distance [km]'
+                    },
+                    'type': 'logarithmic',
+                }, 
+                'yAxis': {
+                    'title': {
+                        'text': 'PGA'
+                    },
+                    'type': 'logarithmic'
+                }, 
+                'series': []
+            }
 
-            layout_pgv = go.Layout(
-                title="PGV vs Epicentral distance",
-                xaxis={
-                    'type': 'log',
-                    'autorange': 'True',
-                    'title': 'Epicentral distance [km]'
+            chart_pgv = {
+                'exporting': {
+                    'chartOptions': {
+                        'plotOptions': {
+                            'series': {
+                            'dataLabels': {
+                                'enabled': 'true'
+                            }
+                        }
+                    }
                 },
-                yaxis={
-                    'type': 'log',
-                    'autorange': 'True',
-                    'title': 'Value'
-                }
-            )
+                'fallbackToExportServer': 'false'
+            },
+                'chart': {'type': 'scatter'},
+                'title': {'text': 'PGV vs Epicentral distance'},
+                'xAxis': {
+                    'title': {
+                        'text': 'Epicentral distance [km]'
+                    },
+                    'type': 'logarithmic'
+                }, 
+                'yAxis': {
+                    'title': {
+                        'text': 'DRS [cm]'
+                    },
+                    'type': 'logarithmic'
+                }, 
+                'series': []
+            }
 
-            figure_pga = go.Figure(data=lot_pga, layout=layout_pga)
-            figure_pgv = go.Figure(data=lot_pgv, layout=layout_pgv)
+            for t in chart_data_pga:
+                chart_pga['series'].append({
+                    'name': t,
+                    'data': chart_data_pga[t]
+                })
+            
+            for t in chart_data_pgv:
+                chart_pgv['series'].append({
+                    'name': t,
+                    'data': chart_data_pgv[t]
+                })
 
-            plot_pga = opy.plot(figure_pga, auto_open=False, output_type='div')
-            plot_pgv = opy.plot(figure_pgv, auto_open=False, output_type='div')
-
-            return plot_pga, plot_pgv
+            print(chart_pga)
+            dump_pga = json.dumps(chart_pga)
+            dump_pgv = json.dumps(chart_pgv)
+            return dump_pga, dump_pgv
         except:
             self.log_exception()
             return None, None
@@ -257,10 +272,10 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             if not station_data:
                 return None, None
 
-            lot_psa = []  # List of traces Pseudo-Spectral Acceleration
-            lot_drs = []  # List of traces Displacement Response Data
             data_psa = defaultdict(dict)
             data_drs = defaultdict(dict)
+            chart_data_psa = {}
+            chart_data_drs = {}
 
             for sc in station_data.sensor_channels:
                 for sa_psa in filter(
@@ -273,110 +288,92 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     data_drs[sc.channel_code][sa_drs.period] = sa_drs.amplitude
 
             for key in data_psa:
-                _tmp = OrderedDict(sorted(data_psa[key].items()))
-                lot_psa.append(go.Scatter(
-                    x=list(_tmp.keys()),
-                    y=list(_tmp.values()),
-                    mode='markers',
-                    marker=dict(
-                        size=5,
-                    ),
-                    name='{}'.format(key),
-                    line=dict(
-                        width=1,
-                        shape='spline'
-                    )
-                ))
-
+                _tmp = sorted(data_psa[key].items())
+                chart_data_psa[key] = _tmp
+            
             for key in data_drs:
-                _tmp = OrderedDict(sorted(data_drs[key].items()))
-                lot_drs.append(go.Scatter(
-                    x=list(_tmp.keys()),
-                    y=list(_tmp.values()),
-                    mode='markers',
-                    marker=dict(
-                        size=5,
-                    ),
-                    name='{}'.format(key),
-                    line=dict(
-                        width=1,
-                        shape='spline'
-                    )
-                ))
+                _tmp = sorted(data_drs[key].items())
+                chart_data_drs[key] = _tmp
 
-            lay_psa = go.Layout(
-                title="Pseudo-Spectral Acceleration",
-                xaxis={
-                    'type': 'log',
-                    'autorange': 'True',
-                    'title': 'Time [s]'
+            chart_psa = {
+                'exporting': {
+                    'chartOptions': {
+                        'plotOptions': {
+                            'series': {
+                            'dataLabels': {
+                                'enabled': 'true'
+                            }
+                        }
+                    }
                 },
-                yaxis={
-                    'type': 'log',
-                    'autorange': 'True',
-                    'title': 'PSA [cm/s*s]'
-                }
-            )
+                'fallbackToExportServer': 'false'
+            },
+                'chart': {'type': 'scatter'},
+                'title': {'text': 'Pseudo-Spectral Acceleration'},
+                'xAxis': {
+                    'title': {
+                        'text': 'Time [s]'
+                    },
+                    'type': 'logarithmic',
+                }, 
+                'yAxis': {
+                    'title': {
+                        'text': 'PSA [cm/s*s]'
+                    },
+                    'type': 'logarithmic'
+                }, 
+                'series': []
+            }
 
-            lay_drs = go.Layout(
-                title="Displacement Response Spectra",
-                xaxis={'type': 'log', 'autorange': 'True', 'title': 'Time [s]'},
-                yaxis={'type': 'log', 'autorange': 'True', 'title': 'DRS [cm]'}
-            )
+            chart_drs = {
+                'exporting': {
+                    'chartOptions': {
+                        'plotOptions': {
+                            'series': {
+                            'dataLabels': {
+                                'enabled': 'true'
+                            }
+                        }
+                    }
+                },
+                'fallbackToExportServer': 'false'
+            },
+                'chart': {'type': 'scatter'},
+                'title': {'text': 'Displacement Response Data'},
+                'xAxis': {
+                    'title': {
+                        'text': 'Time [s]'
+                    },
+                    'type': 'logarithmic'
+                }, 
+                'yAxis': {
+                    'title': {
+                        'text': 'DRS [cm]'
+                    },
+                    'type': 'logarithmic'
+                }, 
+                'series': []
+            }
 
-            figure_psa = go.Figure(data=lot_psa, layout=lay_psa)
-            figure_drs = go.Figure(data=lot_drs, layout=lay_drs)
+            for t in chart_data_psa:
+                print(chart_data_drs[t])
+                chart_psa['series'].append({
+                    'name': t,
+                    'data': chart_data_psa[t]
+                })
+            
+            for t in chart_data_drs:
+                chart_drs['series'].append({
+                    'name': t,
+                    'data': chart_data_drs[t]
+                })
 
-            plot_psa = opy.plot(figure_psa, auto_open=False, output_type='div')
-            plot_drs = opy.plot(figure_drs, auto_open=False, output_type='div')
-
-            return plot_psa, plot_drs
+            dump_psa = json.dumps(chart_psa)
+            dump_drs = json.dumps(chart_drs)
+            return dump_psa, dump_drs
         except:
             self.log_exception()
             return None, None
-
-    def get_waveform_pic(self, station_data):
-        try:
-            oam = OdcApiManager(station_data.stations[0])
-            data = oam.get_waveform_data()
-            
-            data_wf = defaultdict(dict)
-            lot_wf = []  # List of traces
-
-            for trace in data['payload'][0]['traces']:
-                for e in trace['data']:
-                    dt = datetime.utcfromtimestamp(int(e[0])/1000).isoformat()
-                    data_wf[trace['name']][dt] = e[1]
-
-            for key in data_wf:
-                _tmp = OrderedDict(sorted(data_wf[key].items()))
-                lot_wf.append(go.Scatter(
-                    x=list(_tmp.keys()),
-                    y=list(_tmp.values()),
-                    mode='lines',
-                    marker=dict(
-                        size=3,
-                    ),
-                    name='{}'.format(key),
-                    line=dict(
-                        width=1,
-                        shape='spline'
-                    )
-                ))
-
-            lay_wf = go.Layout(
-                title="Waveform",
-                xaxis={'autorange': 'True', 'title': 'Time'},
-                yaxis={'autorange': 'True', 'title': ''}
-            )
-
-            figure_wf = go.Figure(data=lot_wf, layout=lay_wf)
-            plot_wf = opy.plot(figure_wf, auto_open=False, output_type='div')
-
-            return plot_wf
-        except:
-            self.log_exception()
-            return None
 
     def get_wafeform_picture(self, station_data):
         try:
@@ -390,16 +387,18 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             for trace in data['payload'][0]['traces']:
                 _tmp = []
                 for e in trace['data']:
-                    if not e[1]: continue
-                    dt = datetime.utcfromtimestamp(int(e[0])/1000)
+                    if not e[1]:
+                        continue
+                    # Mo need to convert the UNIX timestamp 
+                    # dt = datetime.utcfromtimestamp(int(e[0])/1000)
                     _tmp.append([e[0], e[1]])
                 data_wf[trace['name']] = _tmp
                     
             chart = {
                 'exporting': {
-                'chartOptions': {
-                    'plotOptions': {
-                        'series': {
+                    'chartOptions': {
+                        'plotOptions': {
+                            'series': {
                             'dataLabels': {
                                 'enabled': 'true'
                             }
