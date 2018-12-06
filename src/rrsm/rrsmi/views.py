@@ -191,7 +191,7 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                 }, 
                 'yAxis': {
                     'title': {
-                        'text': 'DRS [cm]'
+                        'text': 'PGV'
                     },
                     'type': 'logarithmic'
                 }, 
