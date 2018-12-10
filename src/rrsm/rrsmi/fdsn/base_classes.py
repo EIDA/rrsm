@@ -183,7 +183,7 @@ class MotionDataStation(FdsnBaseClass):
         self.event_id = NO_FDSNWS_DATA
         self.event_time = NO_FDSNWS_DATA
         self.event_magnitude = 0.0
-        self.event_type = NO_FDSNWS_DATA
+        self.magnitude_type = NO_FDSNWS_DATA
         self.event_depth = 0.0
         self.event_latitude = 0.0
         self.event_longitude = 0.0
