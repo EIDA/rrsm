@@ -126,7 +126,8 @@ class FdsnMotionManager(FdsnHttpBase):
                 station_data.station_longitude = s['station-longitude']
                 station_data.station_elevation = s['station-elevation']
                 station_data.epicentral_distance = s['epicentral-distance']
-                station_data.event_reference = s['event-reference']
+                station_data.event_location_reference = s['event-location-reference']
+                station_data.event_magnitude_reference = s['event-magnitude-reference']
                 station_data.dataselect_url = FdsnDataselectManager(
                     s['network-code'],
                     s['station-code'],

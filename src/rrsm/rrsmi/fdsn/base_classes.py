@@ -194,7 +194,8 @@ class MotionDataStation(FdsnBaseClass):
         self.station_longitude = 0.0
         self.station_elevation = 0.0
         self.epicentral_distance = 0.0
-        self.event_reference = NO_FDSNWS_DATA
+        self.event_location_reference = NO_FDSNWS_DATA
+        self.event_magnitude_reference = NO_FDSNWS_DATA
         self.sensor_channels = []
         self.dataselect_url = NO_FDSNWS_DATA
 

@@ -199,7 +199,7 @@ LOGGING = {
 
 # FDSN/ODCWS WS URLs
 URL_EVENT = 'http://www.orfeus-eu.org/fdsnws/event/1/query'
-URL_MOTION = 'http://www.orfeus-eu.org/odcws/rrsm/1/motion'
+URL_MOTION = 'http://www.orfeus-eu.org/odcws/rrsm/1/peak-motion'
 URL_SHAKEMAP = 'http://www.orfeus-eu.org/odcws/rrsm/1/shakemap'
 URL_WAVEFORM = 'http://www.orfeus-eu.org/odcws/rrsm/1/waveform'
 URL_ROUTING = 'http://www.orfeus-eu.org/eidaws/routing/1/query'
