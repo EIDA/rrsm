@@ -247,7 +247,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         motion_data, ws_url = fdsn_motion_man.get_event_details(
             event_id, network_code, station_code, True
         )
-        chart_psa, chart_drs = self.get_spectra_charts(motion_data.stations[0])
+        chart_psa, chart_sd = self.get_spectra_charts(motion_data.stations[0])
 
         if motion_data:
             context['station_data'] = motion_data.stations[0]
@@ -258,7 +258,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         wafeform_picture = self.get_wafeform_picture(motion_data)
 
         context['chart_psa'] = chart_psa
-        context['chart_drs'] = chart_drs
+        context['chart_sd'] = chart_sd
         # context['waveform_pic'] = waveform_pic
         context['ws_url'] = ws_url
         context['dataselect_url'] = dataselect_url
@@ -272,27 +272,27 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 return None, None
 
             data_psa = defaultdict(dict)
-            data_drs = defaultdict(dict)
+            data_sd = defaultdict(dict)
             chart_data_psa = {}
-            chart_data_drs = {}
+            chart_data_sd = {}
 
             for sc in station_data.sensor_channels:
                 for sa_psa in filter(
                     lambda x: x.type.lower() == 'psa', sc.spectral_amplitudes
                 ):
                     data_psa[sc.channel_code][sa_psa.period] = sa_psa.amplitude
-                for sa_drs in filter(
-                    lambda x: x.type.lower() == 'drs', sc.spectral_amplitudes
+                for sa_sd in filter(
+                    lambda x: x.type.lower() == 'sd', sc.spectral_amplitudes
                 ):
-                    data_drs[sc.channel_code][sa_drs.period] = sa_drs.amplitude
+                    data_sd[sc.channel_code][sa_sd.period] = sa_sd.amplitude
 
             for key in data_psa:
                 _tmp = sorted(data_psa[key].items())
                 chart_data_psa[key] = _tmp
             
-            for key in data_drs:
-                _tmp = sorted(data_drs[key].items())
-                chart_data_drs[key] = _tmp
+            for key in data_sd:
+                _tmp = sorted(data_sd[key].items())
+                chart_data_sd[key] = _tmp
 
             chart_psa = {
                 'exporting': {
@@ -324,7 +324,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 'series': []
             }
 
-            chart_drs = {
+            chart_sd = {
                 'exporting': {
                     'chartOptions': {
                         'plotOptions': {
@@ -338,7 +338,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 'fallbackToExportServer': 'false'
             },
                 'chart': {'type': 'scatter'},
-                'title': {'text': 'Displacement Response Data'},
+                'title': {'text': 'Spectral Displacement Data'},
                 'xAxis': {
                     'title': {
                         'text': 'Time [s]'
@@ -347,7 +347,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 }, 
                 'yAxis': {
                     'title': {
-                        'text': 'DRS [cm]'
+                        'text': 'SD [cm]'
                     },
                     'type': 'logarithmic'
                 }, 
@@ -360,15 +360,15 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     'data': chart_data_psa[t]
                 })
             
-            for t in chart_data_drs:
-                chart_drs['series'].append({
+            for t in chart_data_sd:
+                chart_sd['series'].append({
                     'name': t,
-                    'data': chart_data_drs[t]
+                    'data': chart_data_sd[t]
                 })
 
             dump_psa = json.dumps(chart_psa)
-            dump_drs = json.dumps(chart_drs)
-            return dump_psa, dump_drs
+            dump_sd = json.dumps(chart_sd)
+            return dump_psa, dump_sd
         except:
             self.log_exception()
             return None, None

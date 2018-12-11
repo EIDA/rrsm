@@ -115,7 +115,7 @@ class FdsnMotionManager(FdsnHttpBase):
                 station_data.event_id = s['event-id']
                 station_data.event_time = s['event-time']
                 station_data.event_magnitude = s['event-magnitude']
-                station_data.event_type = s['event-type']
+                station_data.magnitude_type = s['magnitude-type']
                 station_data.event_depth = s['event-depth']
                 station_data.event_latitude = s['event-latitude']
                 station_data.event_longitude = s['event-longitude']
@@ -142,9 +142,8 @@ class FdsnMotionManager(FdsnHttpBase):
                         ch.sensor_azimuth = d['sensor-azimuth']
                         ch.sensor_dip = d['sensor-dip']
                         ch.sensor_depth = d['sensor-depth']
-                        ch.sensor_unit = d['sensor-unit']
-                        ch.corner_freq_lower = d['corner-freq-lower']
-                        ch.corner_freq_upper = d['corner-freq-upper']
+                        ch.low_cut_corner = d['low-cut-corner']
+                        ch.high_cut_corner = d['high-cut-corner']
                         ch.dataselect_url = FdsnDataselectManager(
                             s['network-code'],
                             s['station-code'],

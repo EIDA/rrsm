@@ -183,7 +183,7 @@ class MotionDataStation(FdsnBaseClass):
         self.event_id = NO_FDSNWS_DATA
         self.event_time = NO_FDSNWS_DATA
         self.event_magnitude = 0.0
-        self.event_type = NO_FDSNWS_DATA
+        self.magnitude_type = NO_FDSNWS_DATA
         self.event_depth = 0.0
         self.event_latitude = 0.0
         self.event_longitude = 0.0
@@ -297,9 +297,8 @@ class MotionDataStationChannel(FdsnBaseClass):
         self.sensor_azimuth = 0.0
         self.sensor_dip = 0.0
         self.sensor_depth = 0.0
-        self.sensor_unit = NO_FDSNWS_DATA
-        self.corner_freq_lower = 0.0
-        self.corner_freq_upper = 0.0
+        self.low_cut_corner = 0.0
+        self.high_cut_corner = 0.0
         self.spectral_amplitudes = []
         self.dataselect_url = NO_FDSNWS_DATA
 
@@ -320,11 +319,11 @@ class MotionDataStationChannel(FdsnBaseClass):
     def get_pgv_int(self):
         return int(self.pgv_value)
 
-    def get_corner_freq_lower(self):
-        return self.string_to_decimal(self.corner_freq_lower)
+    def get_low_cut_corner(self):
+        return self.string_to_decimal(self.low_cut_corner)
 
-    def get_corner_freq_upper(self):
-        return self.string_to_decimal(self.corner_freq_upper)
+    def get_high_cut_corner(self):
+        return self.string_to_decimal(self.high_cut_corner)
 
 
 class SpectralAmplitude(object):
