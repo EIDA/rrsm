@@ -181,6 +181,7 @@
             if ('{{ chart_pgv }}'.toLowerCase() != 'none') {
                 Highcharts.chart('chart_pgv', {{ chart_pgv|safe }});
             }
+            
             var table = $('#stations_table').DataTable();
 
             $('#stations_table tbody').on('click', 'tr', function () {
