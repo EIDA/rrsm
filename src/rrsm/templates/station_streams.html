@@ -88,7 +88,7 @@
                 <div id="chart_psa"></div>
             </div>
             <div class="col-6">
-                <div id="chart_drs"></div>
+                <div id="chart_sd"></div>
             </div>
         </div>
     </div>
@@ -148,9 +148,8 @@
                     <td>{{ sc.sensor_azimuth }}</td>
                     <td>{{ sc.sensor_dip }}</td>
                     <td>{{ sc.sensor_depth }}</td>
-                    <td>{{ sc.sensor_unit }}</td>
-                    <td>{{ sc.get_corner_freq_lower }}</td>
-                    <td>{{ sc.get_corner_freq_upper }}</td>
+                    <td>{{ sc.get_low_cut_corner }}</td>
+                    <td>{{ sc.get_high_cut_corner }}</td>
                     <td><a href="{{ sc.dataselect_url }}">Download</a></td>
                 </tr>
                 <script type="text/javascript">
@@ -180,8 +179,8 @@
                 Highcharts.chart('chart_psa', {{ chart_psa|safe }});
             }
 
-            if ('{{ chart_drs }}'.toLowerCase() != 'none') {
-                Highcharts.chart('chart_drs', {{ chart_drs|safe }});
+            if ('{{ chart_sd }}'.toLowerCase() != 'none') {
+                Highcharts.chart('chart_sd', {{ chart_sd|safe }});
             }
 
             var table = $('#stations_table').DataTable();
