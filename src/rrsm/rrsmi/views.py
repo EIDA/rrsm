@@ -302,12 +302,17 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                             'dataLabels': {
                                 'enabled': 'true'
                             }
-                        }
+                        },
                     }
                 },
                 'fallbackToExportServer': 'false'
             },
                 'chart': {'type': 'scatter'},
+                'plotOptions':{
+                    'scatter':{
+                        'lineWidth': '1'
+                    }
+                },
                 'title': {'text': 'Pseudo-Spectral Acceleration'},
                 'xAxis': {
                     'title': {
@@ -338,6 +343,11 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 'fallbackToExportServer': 'false'
             },
                 'chart': {'type': 'scatter'},
+                'plotOptions':{
+                    'scatter':{
+                        'lineWidth': '1'
+                    }
+                },
                 'title': {'text': 'Spectral Displacement Data'},
                 'xAxis': {
                     'title': {
