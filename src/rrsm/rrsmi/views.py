@@ -126,9 +126,9 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
             for s in motion_data.stations:
                 for sc in s.sensor_channels:
                     data_pga[sc.channel_code][s.epicentral_distance] = \
-                        sc.pga_value
+                        sc.pga_value * 100
                     data_pgv[sc.channel_code][s.epicentral_distance] = \
-                        sc.pgv_value
+                        sc.pgv_value * 100
 
             for key in data_pga:
                 _tmp = sorted(data_pga[key].items())
@@ -161,7 +161,7 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                 }, 
                 'yAxis': {
                     'title': {
-                        'text': 'PGA'
+                        'text': 'PGA [cm/s^2]'
                     },
                     'type': 'logarithmic'
                 }, 
@@ -191,7 +191,7 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                 }, 
                 'yAxis': {
                     'title': {
-                        'text': 'PGV'
+                        'text': 'PGV [cm/s]'
                     },
                     'type': 'logarithmic'
                 }, 
