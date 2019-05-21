@@ -128,7 +128,9 @@
                     </th>
                     <th>Location code</th>
                     <th>Max. PGA [cm/s<sup>2</sup>]</th>
+                    <th>Max. PGA channel</th>
                     <th>Max. PGV [cm/s]</th>
+                    <th>Max. PGV channel</th>
                     <th>Epicentral distance [km]</th>
                     <th>Elevation [m]</th>
                     <th>Raw waveforms</th>
@@ -147,12 +149,12 @@
                     <td>{{ s.location_code }}</td>
                     <td>
                         {{ s.get_max_pga.0 }}
-                        <small class="text-muted d-block">Channel: {{ s.get_max_pga.1 }}</small>
                     </td>
+                    <td>{{ s.get_max_pga.1 }}</td>
                     <td>
                         {{ s.get_max_pgv.0 }}
-                        <small class="text-muted d-block">Channel: {{ s.get_max_pgv.1 }}</small>
                     </td>
+                    <td>{{ s.get_max_pgv.1 }}</td>
                     <td>{{ s.get_epicentral_distance }}</td>
                     <td>{{ s.station_elevation }}</td>
                     <td><a href="{{ s.dataselect_url }}">Download</a></td>
