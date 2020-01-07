@@ -147,6 +147,10 @@ class SearchCombinedForm(forms.ModelForm):
             'stat_lat_max',
             'stat_lon_min',
             'stat_lon_max',
+            'event_lat_min',
+            'event_lat_max',
+            'event_lon_min',
+            'event_lon_max',
         )
         labels = {
             'magnitude_min': LABEL_MAGNITUDE_MIN,
@@ -158,6 +162,10 @@ class SearchCombinedForm(forms.ModelForm):
             'stat_lat_max': LABEL_STAT_LAT_MAX,
             'stat_lon_min': LABEL_STAT_LON_MIN,
             'stat_lon_max': LABEL_STAT_LON_MAX,
+            'event_lat_min': LABEL_EVENT_LAT_MIN,
+            'event_lat_max': LABEL_EVENT_LAT_MAX,
+            'event_lon_min': LABEL_EVENT_LON_MIN,
+            'event_lon_max': LABEL_EVENT_LON_MAX,
         }
         help_texts = {
             'magnitude_min': TEXT_MAGNITUDE_MIN,
@@ -169,6 +177,10 @@ class SearchCombinedForm(forms.ModelForm):
             'stat_lat_max': TEXT_STAT_LAT_MAX,
             'stat_lon_min': TEXT_STAT_LON_MIN,
             'stat_lon_max': TEXT_STAT_LON_MAX,
+            'event_lat_min': TEXT_EVENT_LAT_MIN,
+            'event_lat_max': TEXT_EVENT_LAT_MAX,
+            'event_lon_min': TEXT_EVENT_LON_MIN,
+            'event_lon_max': TEXT_EVENT_LON_MAX,
         }
 
 

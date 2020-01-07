@@ -544,7 +544,11 @@ def search_combined(request):
                 stat_lat_min=form.cleaned_data['stat_lat_min'],
                 stat_lat_max=form.cleaned_data['stat_lat_max'],
                 stat_lon_min=form.cleaned_data['stat_lon_min'],
-                stat_lon_max=form.cleaned_data['stat_lon_max']
+                stat_lon_max=form.cleaned_data['stat_lon_max'],
+                event_lat_min=form.cleaned_data['event_lat_min'],
+                event_lat_max=form.cleaned_data['event_lat_max'],
+                event_lon_min=form.cleaned_data['event_lon_min'],
+                event_lon_max=form.cleaned_data['event_lon_max']
             )
 
             return render(

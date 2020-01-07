@@ -130,6 +130,26 @@ class SearchCombined(models.Model):
         decimal_places=COORD_DECIMALS,
         blank=True
     )
+    event_lat_min = models.DecimalField(
+        max_digits=COORD_INTEGERS + COORD_DECIMALS,
+        decimal_places=COORD_DECIMALS,
+        blank=True
+    )
+    event_lat_max = models.DecimalField(
+        max_digits=COORD_INTEGERS + COORD_DECIMALS,
+        decimal_places=COORD_DECIMALS,
+        blank=True
+    )
+    event_lon_min = models.DecimalField(
+        max_digits=COORD_INTEGERS + COORD_DECIMALS,
+        decimal_places=COORD_DECIMALS,
+        blank=True
+    )
+    event_lon_max = models.DecimalField(
+        max_digits=COORD_INTEGERS + COORD_DECIMALS,
+        decimal_places=COORD_DECIMALS,
+        blank=True
+    )
 
     class Meta:
         managed = False
