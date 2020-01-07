@@ -166,7 +166,7 @@ class NodeWrapper(object):
         return self.url_shakemap + '?id={}'.format(id)
 
     def build_url_waveform_by_id(self, id):
-        return self.url_waveform + '?id={}'.format(id)
+        return self.url_waveform + '?eventid={}'.format(id)
 
 
 class MotionData(object):
