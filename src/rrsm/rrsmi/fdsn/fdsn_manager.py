@@ -77,6 +77,37 @@ class FdsnMotionManager(FdsnHttpBase):
             self.log_exception()
             return None, ws_url
 
+    def get_stations_list(
+        self, days_back=None, event_id=None, date_start=None, date_end=None,
+            magnitude_min=None, network_code=None, station_code=None,
+            pga_min=None, pga_max=None, pgv_min=None, pgv_max=None,
+            event_lat_min=None, event_lat_max=None,
+            event_lon_min=None, event_lon_max=None,
+            stat_lat_min=None, stat_lat_max=None,
+            stat_lon_min=None, stat_lon_max=None):
+        try:
+            ws_url = self.node_wrapper.build_url_events(
+                days_back, event_id, date_start, date_end,
+                magnitude_min, network_code, station_code,
+                pga_min, pga_max, pgv_min, pgv_max,
+                event_lat_min, event_lat_max,
+                event_lon_min, event_lon_max,
+                stat_lat_min, stat_lat_max,
+                stat_lon_min, stat_lon_max)
+
+            response = self.fdsn_request(ws_url)
+
+            if not response:
+                return None, ws_url
+
+            data = json.loads(response.decode('utf-8'))
+            extracted = self._extract_data(data, True, False)
+
+            return extracted, ws_url
+        except:
+            self.log_exception()
+            return None, ws_url
+
     def get_event_details(
         self, event_public_id, network=None, station=None, spectra=False
     ):

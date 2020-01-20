@@ -495,7 +495,7 @@ def search_peak_motions(request):
     if request.method == 'POST':
         form = SearchPeakMotionsForm(request.POST)
         if form.is_valid():
-            data, ws_url = FdsnMotionManager().get_event_list(
+            data, ws_url = FdsnMotionManager().get_stations_list(
                 pga_min=form.cleaned_data['pga_min'],
                 pga_max=form.cleaned_data['pga_max'],
                 pgv_min=form.cleaned_data['pgv_min'],
@@ -504,7 +504,7 @@ def search_peak_motions(request):
 
             return render(
                 request,
-                'events.html',
+                'stations.html',
                 {
                     'motion_data': data,
                     'breadcrumb': 'Search result (peak motions)',
@@ -535,7 +535,7 @@ def search_combined(request):
     if request.method == 'POST':
         form = SearchCombinedForm(request.POST)
         if form.is_valid():
-            data, ws_url = FdsnMotionManager().get_event_list(
+            data, ws_url = FdsnMotionManager().get_stations_list(
                 magnitude_min=form.cleaned_data['magnitude_min'],
                 pga_min=form.cleaned_data['pga_min'],
                 pga_max=form.cleaned_data['pga_max'],
@@ -553,7 +553,7 @@ def search_combined(request):
 
             return render(
                 request,
-                'events.html',
+                'stations.html',
                 {
                     'motion_data': data,
                     'breadcrumb': 'Search result (combined)',

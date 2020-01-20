@@ -1,0 +1,36 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Django",
+      "type": "python",
+      "request": "launch",
+      "stopOnEntry": true,
+      "pythonPath": "${workspaceFolder}/env/bin/python3",
+      "program": "${workspaceFolder}/src/rrsm/manage.py",
+      "cwd": "${workspaceFolder}/src/rrsm",
+      "env": {
+        "SECRET_KEY": "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)",
+        "DEBUG": "True",
+        "ALLOWED_HOSTS": "localhost,127.0.0.1",
+        "DATABASE_URL": "sqlite:///db.sqlite3",
+        "DATABASE_ENGINE": "django.db.backends.sqlite3",
+        "DATABASE_NAME": "rrsm.db",
+        "DATABASE_USER": "admin",
+        "DATABASE_PASS": "passwd",
+        "EMAIL_BACKEND": "django.core.mail.backends.console.EmailBackend",
+        "CACHE_BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "CACHE_LOCATION": "rrsm_cache",
+        "CACHE_TIME_SHORT": "0",
+        "CACHE_TIME_MEDIUM": "0",
+        "CACHE_TIME_LONG": "0",
+        "RRSM_URL_BASE": ""
+      },
+      "args": ["runserver", "--noreload", "0.0.0.0:8000"],
+      "django": true
+    }
+  ]
+}
