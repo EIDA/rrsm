@@ -586,7 +586,7 @@ def search_custom(request):
     if request.method == 'POST':
         form = SearchCustomForm(request.POST)
         if form.is_valid():
-            data, ws_url = FdsnMotionManager().get_event_list(
+            data, ws_url = FdsnMotionManager().get_stations_list(
                 event_id=form.cleaned_data['event_id'],
                 date_start=form.cleaned_data['date_start'],
                 date_end=form.cleaned_data['date_end'],
@@ -609,7 +609,7 @@ def search_custom(request):
 
             return render(
                 request,
-                'events.html',
+                'stations.html',
                 {
                     'motion_data': data,
                     'breadcrumb': 'Search result (custom)',
