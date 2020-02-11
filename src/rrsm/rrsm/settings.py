@@ -212,6 +212,7 @@ CACHE_TIME_LONG = config('CACHE_TIME_LONG')
 RRSM_URL_BASE = config('RRSM_URL_BASE')
 
 # Configuration for outliers filtering
+OUTLIER_FILTERING_ENABLED = config('OUTLIER_FILTERING_ENABLED')
 PGA_MIN = config('PGA_MIN')
 PGA_MAX = config('PGA_MAX')
 PGV_MIN = config('PGV_MIN')

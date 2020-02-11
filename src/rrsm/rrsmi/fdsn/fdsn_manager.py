@@ -8,12 +8,22 @@ from urllib.request import Request, urlopen
 
 from datetime import datetime, timedelta
 from django.utils.dateparse import parse_datetime
+from django.conf import settings
 
 from .base_classes import NSMAP, NO_FDSNWS_DATA, \
     NodeWrapper, RoutingWrapper, DataselectWrapper, \
     MotionData, MotionDataStation, MotionDataStationChannel, SpectralAmplitude
 
 from ..logger import RrsmLoggerMixin
+
+OUTLIER_FILTERING_ENABLED = \
+    getattr(settings, "OUTLIER_FILTERING_ENABLED", "False").lower() == 'true'
+PGA_MIN = float(getattr(settings, "PGA_MIN", 0))
+PGA_MAX = float(getattr(settings, "PGA_MAX", 0))
+PGV_MIN = float(getattr(settings, "PGV_MIN", 0))
+PGV_MAX = float(getattr(settings, "PGV_MAX", 0))
+PGV_BROADBAND_MIN = float(getattr(settings, "PGV_BROADBAND_MIN", 0))
+PGV_BROADBAND_MAX = float(getattr(settings, "PGV_BROADBAND_MAX", 0))
 
 
 class FdsnHttpBase(RrsmLoggerMixin):
@@ -73,8 +83,8 @@ class FdsnMotionManager(FdsnHttpBase):
             extracted = self._extract_data(data, False, True)
 
             return extracted, ws_url
-        except:
-            self.log_exception()
+        except Exception as e:
+            self.log_exception(e)
             return None, ws_url
 
     def get_stations_list(
@@ -104,8 +114,8 @@ class FdsnMotionManager(FdsnHttpBase):
             extracted = self._extract_data(data, True, False)
 
             return extracted, ws_url
-        except:
-            self.log_exception()
+        except Exception as e:
+            self.log_exception(e)
             return None, ws_url
 
     def get_event_details(
@@ -123,10 +133,10 @@ class FdsnMotionManager(FdsnHttpBase):
 
             data = json.loads(response.decode('utf-8'))
             extracted = self._extract_data(data, True, False)
-            
+
             return extracted, ws_url
-        except:
-            self.log_exception()
+        except Exception as e:
+            self.log_exception(e)
             return None, ws_url
 
     def _extract_data(
@@ -157,20 +167,35 @@ class FdsnMotionManager(FdsnHttpBase):
                 station_data.station_longitude = s['station-longitude']
                 station_data.station_elevation = s['station-elevation']
                 station_data.epicentral_distance = s['epicentral-distance']
-                station_data.event_location_reference = s['event-location-reference']
-                station_data.event_magnitude_reference = s['event-magnitude-reference']
+                station_data.event_location_reference = \
+                    s['event-location-reference']
+                station_data.event_magnitude_reference = \
+                    s['event-magnitude-reference']
                 station_data.dataselect_url = FdsnDataselectManager(
                     s['network-code'],
                     s['station-code'],
                     s['event-time']
                 ).get_dataselect_url()
 
-                if extract_channels == True:
+                if extract_channels is True:
                     for d in s['sensor-channels']:
+
+                        pga_value_checked = self._check_outlier(
+                            'pga',
+                            d['channel-code'],
+                            d['pga-value']
+                        )
+
+                        pgv_value_checked = self._check_outlier(
+                            'pgv',
+                            d['channel-code'],
+                            d['pga-value']
+                        )
+
                         ch = MotionDataStationChannel()
                         ch.channel_code = d['channel-code']
-                        ch.pga_value = d['pga-value']
-                        ch.pgv_value = d['pgv-value']
+                        ch.pga_value = pga_value_checked
+                        ch.pgv_value = pgv_value_checked
                         ch.sensor_azimuth = d['sensor-azimuth']
                         ch.sensor_dip = d['sensor-dip']
                         ch.sensor_depth = d['sensor-depth']
@@ -194,9 +219,30 @@ class FdsnMotionManager(FdsnHttpBase):
                         station_data.sensor_channels.append(ch)
                 result.stations.append(station_data)
             return result
-        except:
-            self.log_exception()
+        except Exception as e:
+            self.log_exception(e)
             return None
+
+    def _check_outlier(self, type, channel, value):
+        if not OUTLIER_FILTERING_ENABLED:
+            return value
+
+        if channel.lower().startswith('BH'):
+            # It is a broadband sensor
+            if type == 'pga' and (value < PGA_MIN or value > PGA_MAX):
+                return 0
+            if type == 'pgv' and (value < PGV_BROADBAND_MIN or value > PGV_BROADBAND_MAX):
+                return 0
+        else:
+            # It is NOT a broadband sensor
+            # It is a broadband sensor
+            if type == 'pga' and (value < PGA_MIN or value > PGA_MAX):
+                return 0
+            if type == 'pgv' and (value < PGV_MIN or value > PGV_MAX):
+                return 0
+
+        # Checks passed, return original value
+        return value
 
 
 class FdsnDataselectManager(FdsnHttpBase):

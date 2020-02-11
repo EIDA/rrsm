@@ -23,8 +23,8 @@ class FdsnBaseClass(object):
         try:
             tmp = float(string) * multiplier
             return decimal.Decimal(tmp).quantize(decimal.Decimal(10) ** -decimals)
-        except:
-            raise
+        except Exception as e:
+            raise e
 
 
 class RoutingWrapper(object):

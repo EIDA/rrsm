@@ -89,8 +89,8 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
     def get_queryset(self):
         try:
             queryset = None
-        except:
-            raise
+        except Exception as e:
+            raise e
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -188,13 +188,13 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                         'text': 'Epicentral distance [km]'
                     },
                     'type': 'logarithmic'
-                }, 
+                },
                 'yAxis': {
                     'title': {
                         'text': 'PGV [cm/s]'
                     },
                     'type': 'logarithmic'
-                }, 
+                },
                 'series': []
             }
 
@@ -229,8 +229,8 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
     def get_queryset(self):
         try:
             queryset = None
-        except:
-            raise
+        except Exception as e:
+            raise e
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -379,8 +379,8 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             dump_psa = json.dumps(chart_psa)
             dump_sd = json.dumps(chart_sd)
             return dump_psa, dump_sd
-        except:
-            self.log_exception()
+        except Exception as e:
+            self.log_exception(e)
             return None, None
 
     def get_wafeform_picture(self, station_data):
@@ -397,7 +397,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 for e in trace['data']:
                     if not e[1]:
                         continue
-                    # Mo need to convert the UNIX timestamp 
+                    # Mo need to convert the UNIX timestamp
                     # dt = datetime.utcfromtimestamp(int(e[0])/1000)
                     _tmp.append([e[0], e[1]])
                 data_wf[trace['name']] = _tmp
@@ -439,8 +439,8 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
 
             dump = json.dumps(chart)
             return dump
-        except:
-            raise
+        except Exception as e:
+            raise e
 
 
 def search_events(request):

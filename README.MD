@@ -21,6 +21,7 @@
     # URL base
     RRSM_URL_BASE=''
     # Configuration for outliers filtering
+    OUTLIER_FILTERING_ENABLED=True
     PGA_MIN=0.001
     PGA_MAX=980.6
     PGV_MIN=0.0001
