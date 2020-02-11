@@ -210,3 +210,11 @@ CACHE_TIME_SHORT = config('CACHE_TIME_SHORT')
 CACHE_TIME_MEDIUM = config('CACHE_TIME_MEDIUM')
 CACHE_TIME_LONG = config('CACHE_TIME_LONG')
 RRSM_URL_BASE = config('RRSM_URL_BASE')
+
+# Configuration for outliers filtering
+PGA_MIN = config('PGA_MIN')
+PGA_MAX = config('PGA_MAX')
+PGV_MIN = config('PGV_MIN')
+PGV_MAX = config('PGV_MAX')
+PGV_BROADBAND_MIN = config('PGV_BROADBAND_MIN')
+PGV_BROADBAND_MAX = config('PGV_BROADBAND_MAX')
