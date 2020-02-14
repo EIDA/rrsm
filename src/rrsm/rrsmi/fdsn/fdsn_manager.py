@@ -2,6 +2,7 @@
 import gzip
 import json
 import xml.etree.ElementTree as ET
+import decimal
 from xml.etree.ElementTree import ParseError
 from urllib import error as urllib_error
 from urllib.request import Request, urlopen
@@ -96,6 +97,17 @@ class FdsnMotionManager(FdsnHttpBase):
             stat_lat_min=None, stat_lat_max=None,
             stat_lon_min=None, stat_lon_max=None):
         try:
+            # PGA and PGV values come from the interface in centimeters,
+            # but the web service is designed to work in metres
+            if pga_min:
+                pga_min = pga_min / 100
+            if pga_max:
+                pga_max = pga_max / 100
+            if pgv_min:
+                pgv_min = pgv_min / 100
+            if pgv_max:
+                pgv_max = pgv_max / 100
+
             ws_url = self.node_wrapper.build_url_events(
                 days_back, event_id, date_start, date_end,
                 magnitude_min, network_code, station_code,
@@ -180,22 +192,25 @@ class FdsnMotionManager(FdsnHttpBase):
                 if extract_channels is True:
                     for d in s['sensor-channels']:
 
-                        pga_value_checked = self._check_outlier(
+                        pga_value_invalid = self._is_outlier(
                             'pga',
                             d['channel-code'],
                             d['pga-value']
                         )
 
-                        pgv_value_checked = self._check_outlier(
+                        pgv_value_invalid = self._is_outlier(
                             'pgv',
                             d['channel-code'],
                             d['pga-value']
                         )
 
+                        if (pga_value_invalid or pgv_value_invalid):
+                            continue
+
                         ch = MotionDataStationChannel()
                         ch.channel_code = d['channel-code']
-                        ch.pga_value = pga_value_checked
-                        ch.pgv_value = pgv_value_checked
+                        ch.pga_value = d['pga-value']
+                        ch.pgv_value = d['pga-value']
                         ch.sensor_azimuth = d['sensor-azimuth']
                         ch.sensor_dip = d['sensor-dip']
                         ch.sensor_depth = d['sensor-depth']
@@ -217,32 +232,38 @@ class FdsnMotionManager(FdsnHttpBase):
                                 ch.spectral_amplitudes.append(sa)
 
                         station_data.sensor_channels.append(ch)
+
                 result.stations.append(station_data)
+
+            if extract_channels:
+                result.stations = \
+                    [x for x in result.stations if len(x.sensor_channels) > 0]
+
             return result
         except Exception as e:
             self.log_exception(e)
             return None
 
-    def _check_outlier(self, type, channel, value):
+    def _is_outlier(self, type, channel, value):
         if not OUTLIER_FILTERING_ENABLED:
-            return value
+            return False
 
         if channel.lower().startswith('BH'):
             # It is a broadband sensor
             if type == 'pga' and (value < PGA_MIN or value > PGA_MAX):
-                return 0
+                return True
             if type == 'pgv' and (value < PGV_BROADBAND_MIN or value > PGV_BROADBAND_MAX):
-                return 0
+                return True
         else:
             # It is NOT a broadband sensor
             # It is a broadband sensor
             if type == 'pga' and (value < PGA_MIN or value > PGA_MAX):
-                return 0
+                return True
             if type == 'pgv' and (value < PGV_MIN or value > PGV_MAX):
-                return 0
+                return True
 
-        # Checks passed, return original value
-        return value
+        # Checks passed
+        return False
 
 
 class FdsnDataselectManager(FdsnHttpBase):
