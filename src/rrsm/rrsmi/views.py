@@ -17,6 +17,8 @@ from django.views.generic import ListView, DetailView
 from django.db import transaction
 from django.db.models import Q, Count
 
+from .base_classes import RrsmHelpers
+
 from .fdsn.fdsn_manager import \
     FdsnMotionManager, FdsnShakemapManager, \
     FdsnWaveformManager, FdsnDataselectManager, \
@@ -213,8 +215,8 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
             dump_pga = json.dumps(chart_pga)
             dump_pgv = json.dumps(chart_pgv)
             return dump_pga, dump_pgv
-        except:
-            self.log_exception()
+        except Exception as e:
+            self.log_exception(e)
             return None, None
 
 
@@ -289,7 +291,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             for key in data_psa:
                 _tmp = sorted(data_psa[key].items())
                 chart_data_psa[key] = _tmp
-            
+
             for key in data_sd:
                 _tmp = sorted(data_sd[key].items())
                 chart_data_sd[key] = _tmp
@@ -369,7 +371,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     'name': t,
                     'data': chart_data_psa[t]
                 })
-            
+
             for t in chart_data_sd:
                 chart_sd['series'].append({
                     'name': t,
@@ -401,7 +403,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     # dt = datetime.utcfromtimestamp(int(e[0])/1000)
                     _tmp.append([e[0], e[1]])
                 data_wf[trace['name']] = _tmp
-                    
+
             chart = {
                 'exporting': {
                     'chartOptions': {
@@ -495,11 +497,23 @@ def search_peak_motions(request):
     if request.method == 'POST':
         form = SearchPeakMotionsForm(request.POST)
         if form.is_valid():
+            pga_min = None
+            pga_max = None
+            pgv_min = None
+            pgv_max = None
+
+            pga_min, pga_max, pgv_min, pgv_max = \
+                RrsmHelpers().pga_pgv_centimeters_to_meters(
+                    form.cleaned_data['pga_min'],
+                    form.cleaned_data['pga_max'],
+                    form.cleaned_data['pgv_min'],
+                    form.cleaned_data['pgv_max'])
+
             data, ws_url = FdsnMotionManager().get_stations_list(
-                pga_min=form.cleaned_data['pga_min'],
-                pga_max=form.cleaned_data['pga_max'],
-                pgv_min=form.cleaned_data['pgv_min'],
-                pgv_max=form.cleaned_data['pgv_max']
+                pga_min=pga_min,
+                pga_max=pga_max,
+                pgv_min=pgv_min,
+                pgv_max=pgv_max
             )
 
             return render(
@@ -535,6 +549,33 @@ def search_combined(request):
     if request.method == 'POST':
         form = SearchCombinedForm(request.POST)
         if form.is_valid():
+            pga_min = None
+            pga_max = None
+            pgv_min = None
+            pgv_max = None
+
+            pga_min, pga_max, pgv_min, pgv_max = \
+                RrsmHelpers().pga_pgv_centimeters_to_meters(
+                    form.cleaned_data['pga_min'],
+                    form.cleaned_data['pga_max'],
+                    form.cleaned_data['pgv_min'],
+                    form.cleaned_data['pgv_max'])
+
+            if form.cleaned_data['pga_min']:
+                pga_min = form.cleaned_data['pga_min'] / 100
+            if form.cleaned_data['pga_max']:
+                pga_max = form.cleaned_data['pga_max'] / 100
+            if form.cleaned_data['pgv_min']:
+                pgv_min = form.cleaned_data['pgv_min'] / 100
+            if form.cleaned_data['pgv_max']:
+                pgv_max = form.cleaned_data['pgv_max'] / 100
+            data, ws_url = FdsnMotionManager().get_stations_list(
+                pga_min=pga_min,
+                pga_max=pga_max,
+                pgv_min=pgv_min,
+                pgv_max=pgv_max
+            )
+
             data, ws_url = FdsnMotionManager().get_stations_list(
                 magnitude_min=form.cleaned_data['magnitude_min'],
                 pga_min=form.cleaned_data['pga_min'],
@@ -648,12 +689,10 @@ def download_waveforms(request):
 
 
 def custom_404(request, exception=None):
-    '''HTTP 404 custom handler
-    '''
+    """HTTP 404 custom handler."""
     return render_to_response('404.html', {'exception': exception})
 
 
 def custom_500(request, exception=None):
-    '''HTTP 500 custom handler
-    '''
+    """HTTP 500 custom handler."""
     return render_to_response('500.html', {'exception': exception})
