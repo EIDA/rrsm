@@ -20,9 +20,8 @@ RUN apt-get install -y python3 \
 RUN pip3 install --upgrade pip
 # Install the numpy separate from the bulk requirements
 # install because otherwise ObsPy installation fails
-RUN pip3 install numpy==1.14.2
+RUN pip3 install numpy==1.18.1
 RUN pip3 install -r requirements.txt
 
 # Prepare
 COPY . /data/rrsm/
-RUN python3 manage.py collectstatic
