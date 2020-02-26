@@ -8,7 +8,7 @@ from datetime import datetime
 
 from django.http import Http404, HttpResponse
 from django.shortcuts import \
-    get_object_or_404, redirect, render, render_to_response
+    get_object_or_404, redirect, render, render
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
@@ -687,9 +687,9 @@ def download_waveforms(request):
 
 def custom_404(request, exception=None):
     """HTTP 404 custom handler."""
-    return render_to_response('404.html', {'exception': exception})
+    return render(request, '404.html', {'exception': exception})
 
 
 def custom_500(request, exception=None):
     """HTTP 500 custom handler."""
-    return render_to_response('500.html', {'exception': exception})
+    return render(request, '500.html', {'exception': exception})
