@@ -8,7 +8,7 @@ from datetime import datetime
 
 from django.http import Http404, HttpResponse
 from django.shortcuts import \
-    get_object_or_404, redirect, render, render
+get_object_or_404, redirect, render
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator

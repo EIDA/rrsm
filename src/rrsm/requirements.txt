@@ -27,7 +27,6 @@ nbformat==5.0.4
 numpy==1.18.1
 obspy==1.1.1
 pep8==1.7.1
-psycopg2==2.8.4
 pycodestyle==2.5.0
 pylint==2.4.4
 pyparsing==2.4.6
