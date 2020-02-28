@@ -201,11 +201,8 @@ class FdsnMotionManager(FdsnHttpBase):
                         pgv_value_invalid = self._is_outlier(
                             'pgv',
                             d['channel-code'],
-                            d['pga-value']
+                            d['pgv-value']
                         )
-
-                        # if (pga_value_invalid or pgv_value_invalid):
-                        #     continue
 
                         ch = MotionDataStationChannel()
                         ch.channel_code = d['channel-code']
