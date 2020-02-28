@@ -204,13 +204,15 @@ class FdsnMotionManager(FdsnHttpBase):
                             d['pga-value']
                         )
 
-                        if (pga_value_invalid or pgv_value_invalid):
-                            continue
+                        # if (pga_value_invalid or pgv_value_invalid):
+                        #     continue
 
                         ch = MotionDataStationChannel()
                         ch.channel_code = d['channel-code']
-                        ch.pga_value = d['pga-value']
-                        ch.pgv_value = d['pgv-value']
+                        ch.pga_value = \
+                            d['pga-value'] if not pga_value_invalid else 0
+                        ch.pgv_value = \
+                            d['pgv-value'] if not pgv_value_invalid else 0
                         ch.sensor_azimuth = d['sensor-azimuth']
                         ch.sensor_dip = d['sensor-dip']
                         ch.sensor_depth = d['sensor-depth']
