@@ -22,12 +22,12 @@
     RRSM_URL_BASE=''
     # Configuration for outliers filtering
     OUTLIER_FILTERING_ENABLED=True
-    PGA_MIN=0.001
-    PGA_MAX=980.6
-    PGV_MIN=0.0001
-    PGV_MAX=100
-    PGV_BROADBAND_MIN=0.0001
-    PGV_BROADBAND_MAX=1.3
+    PGA_MIN=0.00001
+    PGA_MAX=9.806
+    PGV_MIN=0.000001
+    PGV_MAX=1
+    PGV_BROADBAND_MIN=0.000001
+    PGV_BROADBAND_MAX=0.013
     ```
     * SECRET_KEY should be a 50-characters long string of random characters from the following set: `abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)`
     * Only `SECRET_KEY`, `DEBUG` and `ALLOWED_HOSTS` settigns are meaningful. Rest of them can be left unchanged, they are here just to satisfy the Django Framework

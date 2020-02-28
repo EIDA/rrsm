@@ -8,7 +8,7 @@ from datetime import datetime
 
 from django.http import Http404, HttpResponse
 from django.shortcuts import \
-    get_object_or_404, redirect, render
+get_object_or_404, redirect, render
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
@@ -16,6 +16,8 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from django.db import transaction
 from django.db.models import Q, Count
+
+from .base_classes import RrsmHelpers
 
 from .fdsn.fdsn_manager import \
     FdsnMotionManager, FdsnShakemapManager, \
@@ -70,7 +72,7 @@ class RecentEventsListView(ListView):
         context = super().get_context_data(**kwargs)
         motion_data, ws_url = FdsnMotionManager().get_event_list(
             days_back=int(self.kwargs.get('days'))
-            )
+        )
         context['breadcrumb'] = 'Recent events'
         context['motion_data'] = motion_data
         context['ws_url'] = ws_url
@@ -143,14 +145,14 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                     'chartOptions': {
                         'plotOptions': {
                             'series': {
-                            'dataLabels': {
-                                'enabled': 'true'
+                                'dataLabels': {
+                                    'enabled': 'true'
+                                }
                             }
                         }
-                    }
+                    },
+                    'fallbackToExportServer': 'false'
                 },
-                'fallbackToExportServer': 'false'
-            },
                 'chart': {'type': 'scatter'},
                 'title': {'text': 'PGA vs Epicentral distance'},
                 'xAxis': {
@@ -158,13 +160,13 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                         'text': 'Epicentral distance [km]'
                     },
                     'type': 'logarithmic',
-                }, 
+                },
                 'yAxis': {
                     'title': {
                         'text': 'PGA [cm/s^2]'
                     },
                     'type': 'logarithmic'
-                }, 
+                },
                 'series': []
             }
 
@@ -173,14 +175,14 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                     'chartOptions': {
                         'plotOptions': {
                             'series': {
-                            'dataLabels': {
-                                'enabled': 'true'
+                                'dataLabels': {
+                                    'enabled': 'true'
+                                }
                             }
                         }
-                    }
+                    },
+                    'fallbackToExportServer': 'false'
                 },
-                'fallbackToExportServer': 'false'
-            },
                 'chart': {'type': 'scatter'},
                 'title': {'text': 'PGV vs Epicentral distance'},
                 'xAxis': {
@@ -203,7 +205,7 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                     'name': t,
                     'data': chart_data_pga[t]
                 })
-            
+
             for t in chart_data_pgv:
                 chart_pgv['series'].append({
                     'name': t,
@@ -213,8 +215,8 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
             dump_pga = json.dumps(chart_pga)
             dump_pgv = json.dumps(chart_pgv)
             return dump_pga, dump_pgv
-        except:
-            self.log_exception()
+        except Exception as e:
+            self.log_exception(e)
             return None, None
 
 
@@ -289,7 +291,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
             for key in data_psa:
                 _tmp = sorted(data_psa[key].items())
                 chart_data_psa[key] = _tmp
-            
+
             for key in data_sd:
                 _tmp = sorted(data_sd[key].items())
                 chart_data_sd[key] = _tmp
@@ -299,17 +301,17 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     'chartOptions': {
                         'plotOptions': {
                             'series': {
-                            'dataLabels': {
-                                'enabled': 'true'
-                            }
-                        },
-                    }
+                                'dataLabels': {
+                                    'enabled': 'true'
+                                }
+                            },
+                        }
+                    },
+                    'fallbackToExportServer': 'false'
                 },
-                'fallbackToExportServer': 'false'
-            },
                 'chart': {'type': 'scatter'},
-                'plotOptions':{
-                    'scatter':{
+                'plotOptions': {
+                    'scatter': {
                         'lineWidth': '1'
                     }
                 },
@@ -319,13 +321,13 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                         'text': 'Time [s]'
                     },
                     'type': 'logarithmic',
-                }, 
+                },
                 'yAxis': {
                     'title': {
                         'text': 'PSA [cm/s*s]'
                     },
                     'type': 'logarithmic'
-                }, 
+                },
                 'series': []
             }
 
@@ -334,17 +336,17 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     'chartOptions': {
                         'plotOptions': {
                             'series': {
-                            'dataLabels': {
-                                'enabled': 'true'
+                                'dataLabels': {
+                                    'enabled': 'true'
+                                }
                             }
                         }
-                    }
+                    },
+                    'fallbackToExportServer': 'false'
                 },
-                'fallbackToExportServer': 'false'
-            },
                 'chart': {'type': 'scatter'},
-                'plotOptions':{
-                    'scatter':{
+                'plotOptions': {
+                    'scatter': {
                         'lineWidth': '1'
                     }
                 },
@@ -354,13 +356,13 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                         'text': 'Time [s]'
                     },
                     'type': 'logarithmic'
-                }, 
+                },
                 'yAxis': {
                     'title': {
                         'text': 'SD [cm]'
                     },
                     'type': 'logarithmic'
-                }, 
+                },
                 'series': []
             }
 
@@ -369,7 +371,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     'name': t,
                     'data': chart_data_psa[t]
                 })
-            
+
             for t in chart_data_sd:
                 chart_sd['series'].append({
                     'name': t,
@@ -401,20 +403,20 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     # dt = datetime.utcfromtimestamp(int(e[0])/1000)
                     _tmp.append([e[0], e[1]])
                 data_wf[trace['name']] = _tmp
-                    
+
             chart = {
                 'exporting': {
                     'chartOptions': {
                         'plotOptions': {
                             'series': {
-                            'dataLabels': {
-                                'enabled': 'true'
+                                'dataLabels': {
+                                    'enabled': 'true'
+                                }
                             }
                         }
-                    }
+                    },
+                    'fallbackToExportServer': 'false'
                 },
-                'fallbackToExportServer': 'false'
-            },
                 'chart': {'type': 'spline'},
                 'title': {'text': 'Waveform'},
                 'plotOptions': {
@@ -427,7 +429,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     'labels': {
                         'format': '{value:%H:%M:%S}'
                     }
-                }, 
+                },
                 'series': []
             }
 
@@ -495,11 +497,18 @@ def search_peak_motions(request):
     if request.method == 'POST':
         form = SearchPeakMotionsForm(request.POST)
         if form.is_valid():
+            pga_min, pga_max, pgv_min, pgv_max = \
+                RrsmHelpers().pga_pgv_centimeters_to_meters(
+                    form.cleaned_data['pga_min'],
+                    form.cleaned_data['pga_max'],
+                    form.cleaned_data['pgv_min'],
+                    form.cleaned_data['pgv_max'])
+
             data, ws_url = FdsnMotionManager().get_stations_list(
-                pga_min=form.cleaned_data['pga_min'],
-                pga_max=form.cleaned_data['pga_max'],
-                pgv_min=form.cleaned_data['pgv_min'],
-                pgv_max=form.cleaned_data['pgv_max']
+                pga_min=pga_min,
+                pga_max=pga_max,
+                pgv_min=pgv_min,
+                pgv_max=pgv_max
             )
 
             return render(
@@ -535,6 +544,28 @@ def search_combined(request):
     if request.method == 'POST':
         form = SearchCombinedForm(request.POST)
         if form.is_valid():
+            pga_min, pga_max, pgv_min, pgv_max = \
+                RrsmHelpers().pga_pgv_centimeters_to_meters(
+                    form.cleaned_data['pga_min'],
+                    form.cleaned_data['pga_max'],
+                    form.cleaned_data['pgv_min'],
+                    form.cleaned_data['pgv_max'])
+
+            if form.cleaned_data['pga_min']:
+                pga_min = form.cleaned_data['pga_min'] / 100
+            if form.cleaned_data['pga_max']:
+                pga_max = form.cleaned_data['pga_max'] / 100
+            if form.cleaned_data['pgv_min']:
+                pgv_min = form.cleaned_data['pgv_min'] / 100
+            if form.cleaned_data['pgv_max']:
+                pgv_max = form.cleaned_data['pgv_max'] / 100
+            data, ws_url = FdsnMotionManager().get_stations_list(
+                pga_min=pga_min,
+                pga_max=pga_max,
+                pgv_min=pgv_min,
+                pgv_max=pgv_max
+            )
+
             data, ws_url = FdsnMotionManager().get_stations_list(
                 magnitude_min=form.cleaned_data['magnitude_min'],
                 pga_min=form.cleaned_data['pga_min'],
@@ -586,6 +617,13 @@ def search_custom(request):
     if request.method == 'POST':
         form = SearchCustomForm(request.POST)
         if form.is_valid():
+            pga_min, pga_max, pgv_min, pgv_max = \
+                RrsmHelpers().pga_pgv_centimeters_to_meters(
+                    form.cleaned_data['pga_min'],
+                    form.cleaned_data['pga_max'],
+                    form.cleaned_data['pgv_min'],
+                    form.cleaned_data['pgv_max'])
+
             data, ws_url = FdsnMotionManager().get_stations_list(
                 event_id=form.cleaned_data['event_id'],
                 date_start=form.cleaned_data['date_start'],
@@ -593,10 +631,10 @@ def search_custom(request):
                 magnitude_min=form.cleaned_data['magnitude_min'],
                 network_code=form.cleaned_data['network_code'],
                 station_code=form.cleaned_data['station_code'],
-                pga_min=form.cleaned_data['pga_min'],
-                pga_max=form.cleaned_data['pga_max'],
-                pgv_min=form.cleaned_data['pgv_min'],
-                pgv_max=form.cleaned_data['pgv_max'],
+                pga_min=pga_min,
+                pga_max=pga_max,
+                pgv_min=pgv_min,
+                pgv_max=pgv_max,
                 stat_lat_min=form.cleaned_data['stat_lat_min'],
                 stat_lat_max=form.cleaned_data['stat_lat_max'],
                 stat_lon_min=form.cleaned_data['stat_lon_min'],
@@ -648,12 +686,10 @@ def download_waveforms(request):
 
 
 def custom_404(request, exception=None):
-    '''HTTP 404 custom handler
-    '''
-    return render('404.html', {'exception': exception})
+    """HTTP 404 custom handler."""
+    return render(request, '404.html', {'exception': exception})
 
 
 def custom_500(request, exception=None):
-    '''HTTP 500 custom handler
-    '''
-    return render('500.html', {'exception': exception})
+    """HTTP 500 custom handler."""
+    return render(request, '500.html', {'exception': exception})
