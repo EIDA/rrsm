@@ -210,7 +210,7 @@ class FdsnMotionManager(FdsnHttpBase):
                         ch = MotionDataStationChannel()
                         ch.channel_code = d['channel-code']
                         ch.pga_value = d['pga-value']
-                        ch.pgv_value = d['pga-value']
+                        ch.pgv_value = d['pgv-value']
                         ch.sensor_azimuth = d['sensor-azimuth']
                         ch.sensor_dip = d['sensor-dip']
                         ch.sensor_depth = d['sensor-depth']
