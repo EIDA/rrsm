@@ -305,6 +305,14 @@ class MotionDataStationChannel(FdsnBaseClass):
         self.spectral_amplitudes = []
         self.dataselect_url = NO_FDSNWS_DATA
 
+    def __str__(self):
+        return 'Channel: {}, PGA: {}, PGV: {}, URL: {}'.format(
+            self.channel_code,
+            self.pga_value,
+            self.pgv_value,
+            self.dataselect_url
+        )
+
     def get_amplitudes_order_by_period(self):
         return sorted(
             self.spectral_amplitudes, key=lambda x: x.period

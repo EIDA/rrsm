@@ -230,7 +230,14 @@ class FdsnMotionManager(FdsnHttpBase):
                                 sa.type = spa['type']
                                 ch.spectral_amplitudes.append(sa)
 
-                        station_data.sensor_channels.append(ch)
+                        # If one of the values is not valid, do not include
+                        # it in the set of sensor channels
+                        if not pga_value_invalid and not pgv_value_invalid:
+                            station_data.sensor_channels.append(ch)
+                        else:
+                            self.log_warning(
+                                f'Channel does not contain valid values: {ch}'
+                            )
 
                 result.stations.append(station_data)
 
