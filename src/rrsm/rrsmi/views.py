@@ -318,7 +318,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 'title': {'text': 'Pseudo-Spectral Acceleration'},
                 'xAxis': {
                     'title': {
-                        'text': 'Time [s]'
+                        'text': 'Spectral Period [s]'
                     },
                     'type': 'logarithmic',
                 },
@@ -353,7 +353,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 'title': {'text': 'Spectral Displacement Data'},
                 'xAxis': {
                     'title': {
-                        'text': 'Time [s]'
+                        'text': 'Spectral Period [s]'
                     },
                     'type': 'logarithmic'
                 },
