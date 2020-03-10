@@ -21,8 +21,7 @@ from .base_classes import RrsmHelpers
 
 from .fdsn.fdsn_manager import \
     FdsnMotionManager, FdsnShakemapManager, \
-    FdsnWaveformManager, FdsnDataselectManager, \
-    OdcApiManager
+    FdsnWaveformManager, FdsnDataselectManager
 
 from .models import \
     SearchEvent, SearchPeakMotions, \
@@ -256,15 +255,10 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         else:
             context['motion_data'] = None
 
-        # waveform_pic = self.get_waveform_pic(motion_data)
-        wafeform_picture = self.get_wafeform_picture(motion_data)
-
         context['chart_psa'] = chart_psa
         context['chart_sd'] = chart_sd
-        # context['waveform_pic'] = waveform_pic
         context['ws_url'] = ws_url
         context['dataselect_url'] = dataselect_url
-        context['wafeform_picture'] = wafeform_picture
 
         return context
 
@@ -384,65 +378,6 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
         except Exception as e:
             self.log_exception(e)
             return None, None
-
-    def get_wafeform_picture(self, station_data):
-        try:
-            data_wf = {}
-            oam = OdcApiManager(station_data.stations[0])
-            data = oam.get_waveform_data()
-
-            if not data:
-                return None
-
-            for trace in data['payload'][0]['traces']:
-                _tmp = []
-                for e in trace['data']:
-                    if not e[1]:
-                        continue
-                    # Mo need to convert the UNIX timestamp
-                    # dt = datetime.utcfromtimestamp(int(e[0])/1000)
-                    _tmp.append([e[0], e[1]])
-                data_wf[trace['name']] = _tmp
-
-            chart = {
-                'exporting': {
-                    'chartOptions': {
-                        'plotOptions': {
-                            'series': {
-                                'dataLabels': {
-                                    'enabled': 'true'
-                                }
-                            }
-                        }
-                    },
-                    'fallbackToExportServer': 'false'
-                },
-                'chart': {'type': 'spline'},
-                'title': {'text': 'Waveform'},
-                'plotOptions': {
-                    'series': {
-                        'lineWidth': 1
-                    }
-                },
-                'xAxis': {
-                    'type': 'datetime',
-                    'labels': {
-                        'format': '{value:%H:%M:%S}'
-                    }
-                },
-                'series': []
-            }
-
-            for t in data_wf:
-                chart['series'].append({
-                    'name': t,
-                    'data': data_wf[t]
-                })
-
-            dump = json.dumps(chart)
-            return dump
-        except Exception as e:
-            raise e
 
 
 def search_events(request):

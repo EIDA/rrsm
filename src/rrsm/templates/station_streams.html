@@ -118,8 +118,6 @@
         </div>
     </div>
 
-    <div id="wafeform_picture"></div>
-
     <h5 class="bg-dark text-white pl-2">List of streams</h5>
     <div class="table-responsive">
         <table id="stations_table" class="table" cellspacing="0" width="100%">
@@ -170,10 +168,6 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            if ('{{ wafeform_picture }}'.toLowerCase() != 'none') {
-                Highcharts.chart('wafeform_picture', {{ wafeform_picture|safe }});
-            }
-
             if ('{{ chart_psa }}'.toLowerCase() != 'none') {
                 Highcharts.chart('chart_psa', {{ chart_psa|safe }});
             }
