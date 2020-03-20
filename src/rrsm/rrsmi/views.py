@@ -119,25 +119,23 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
             if not motion_data:
                 return None, None
 
-            data_pga = defaultdict(dict)
-            data_pgv = defaultdict(dict)
-            chart_data_pga = {}
-            chart_data_pgv = {}
+            data_pga = list()
+            data_pgv = list()
 
             for s in motion_data.stations:
                 for sc in s.sensor_channels:
-                    data_pga[sc.channel_code][s.epicentral_distance] = \
-                        sc.pga_value * 100
-                    data_pgv[sc.channel_code][s.epicentral_distance] = \
-                        sc.pgv_value * 100
-
-            for key in data_pga:
-                _tmp = sorted(data_pga[key].items())
-                chart_data_pga[key] = _tmp
-
-            for key in data_pgv:
-                _tmp = sorted(data_pgv[key].items())
-                chart_data_pgv[key] = _tmp
+                    data_pga.append({
+                        'name': f'{s.network_code}.{s.station_code}.{sc.channel_code}',
+                        'x': s.epicentral_distance,
+                        'y': sc.pga_value * 100,
+                        'channel': sc.channel_code
+                    })
+                    data_pgv.append({
+                        'name': f'{s.network_code}.{s.station_code}.{sc.channel_code}',
+                        'x': s.epicentral_distance,
+                        'y': sc.pgv_value * 100,
+                        'channel': sc.channel_code
+                    })
 
             chart_pga = {
                 'exporting': {
@@ -151,6 +149,9 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                         }
                     },
                     'fallbackToExportServer': 'false'
+                },
+                'tooltip': {
+                    'pointFormat': '<b>{point.name}</b><br><b>Epicentral distance [km]:</b> {point.x}<br><b>PGA [cm/s^2]:</b> {point.y}'
                 },
                 'chart': {'type': 'scatter'},
                 'title': {'text': 'PGA vs Epicentral distance'},
@@ -182,6 +183,9 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                     },
                     'fallbackToExportServer': 'false'
                 },
+                'tooltip': {
+                    'pointFormat': '<b>{point.name}</b><br><b>Epicentral distance [km]:</b> {point.x}<br><b>PGV [cm/s]:</b> {point.y}'
+                },
                 'chart': {'type': 'scatter'},
                 'title': {'text': 'PGV vs Epicentral distance'},
                 'xAxis': {
@@ -199,16 +203,19 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                 'series': []
             }
 
-            for t in chart_data_pga:
+            channels_pga = {c['channel'] for c in data_pga}
+            channels_pgv = {c['channel'] for c in data_pgv}
+
+            for c in channels_pga:
                 chart_pga['series'].append({
-                    'name': t,
-                    'data': chart_data_pga[t]
+                    'name': c,
+                    'data': [x for x in data_pga if x['channel'] == c]
                 })
 
-            for t in chart_data_pgv:
+            for c in channels_pgv:
                 chart_pgv['series'].append({
-                    'name': t,
-                    'data': chart_data_pgv[t]
+                    'name': c,
+                    'data': [x for x in data_pgv if x['channel'] == c]
                 })
 
             dump_pga = json.dumps(chart_pga)
@@ -303,6 +310,10 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     },
                     'fallbackToExportServer': 'false'
                 },
+                'tooltip': {
+                    'headerFormat': '<b>{series.name}</b><br>',
+                    'pointFormat': '<b>Spectral period [s]:</b> {point.x}<br><b>PSA [cm/s^2]:</b> {point.y}'
+                },
                 'chart': {'type': 'scatter'},
                 'plotOptions': {
                     'scatter': {
@@ -312,13 +323,13 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 'title': {'text': 'Pseudo-Spectral Acceleration'},
                 'xAxis': {
                     'title': {
-                        'text': 'Spectral Period [s]'
+                        'text': 'Spectral period [s]'
                     },
                     'type': 'logarithmic',
                 },
                 'yAxis': {
                     'title': {
-                        'text': 'PSA [cm/s*s]'
+                        'text': 'PSA [cm/s^2]'
                     },
                     'type': 'logarithmic'
                 },
@@ -338,6 +349,10 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                     },
                     'fallbackToExportServer': 'false'
                 },
+                'tooltip': {
+                    'headerFormat': '<b>{series.name}</b><br>',
+                    'pointFormat': '<b>Spectral period [s]:</b> {point.x}<br><b>SD [cm]:</b> {point.y}'
+                },
                 'chart': {'type': 'scatter'},
                 'plotOptions': {
                     'scatter': {
@@ -347,7 +362,7 @@ class StationStreamsListView(ListView, RrsmLoggerMixin):
                 'title': {'text': 'Spectral Displacement Data'},
                 'xAxis': {
                     'title': {
-                        'text': 'Spectral Period [s]'
+                        'text': 'Spectral period [s]'
                     },
                     'type': 'logarithmic'
                 },
