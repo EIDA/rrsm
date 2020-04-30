@@ -138,11 +138,11 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static_rrsm2')
-STATIC_URL = '/static_rrsm2/'
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static_rrsm')
+STATIC_URL = '/static_rrsm/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static_rrsm2'),
+    os.path.join(BASE_DIR, 'static_rrsm'),
 ]
 
 LOGOUT_REDIRECT_URL = 'home'
