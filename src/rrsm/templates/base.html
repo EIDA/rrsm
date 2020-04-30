@@ -9,7 +9,18 @@
   <link rel="stylesheet" href="{% static 'css/app/app.css' %}">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Bangers'>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
-    crossorigin="anonymous"> {% block stylesheet %} {% endblock %}
+    crossorigin="anonymous">
+  {% block stylesheet %}
+  {% endblock %}
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-83806732-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-83806732-3');
+  </script>
 </head>
 
 <body>

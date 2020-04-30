@@ -22,7 +22,9 @@ class FdsnBaseClass(object):
     def string_to_decimal(self, string, multiplier=1, decimals=2):
         try:
             tmp = float(string) * multiplier
-            return decimal.Decimal(tmp).quantize(decimal.Decimal(10) ** -decimals)
+            casted = decimal.Decimal(tmp)
+            result = casted.quantize(decimal.Decimal(10) ** -decimals)
+            return result
         except Exception as e:
             raise e
 
@@ -260,7 +262,7 @@ class MotionDataStation(FdsnBaseClass):
 
     def get_max_pga(self):
         try:
-            self.sensor_channels.sort(key=lambda x: x.pga_value, reverse=True)
+            self.sensor_channels.sort(key=lambda x: x.pga_value or 0, reverse=True)
             cha = self.sensor_channels[0].channel_code
             val = self.sensor_channels[0].pga_value
             return self.string_to_decimal(val, 100), cha
@@ -269,7 +271,7 @@ class MotionDataStation(FdsnBaseClass):
 
     def get_max_pgv(self):
         try:
-            self.sensor_channels.sort(key=lambda x: x.pgv_value, reverse=True)
+            self.sensor_channels.sort(key=lambda x: x.pgv_value or 0, reverse=True)
             cha = self.sensor_channels[0].channel_code
             val = self.sensor_channels[0].pgv_value
             return self.string_to_decimal(val, 100), cha
@@ -309,9 +311,13 @@ class MotionDataStationChannel(FdsnBaseClass):
         )
 
     def get_pga(self):
+        if not self.pga_value:
+            return None
         return self.string_to_decimal(self.pga_value, 100)
 
     def get_pgv(self):
+        if not self.pgv_value:
+            return None
         return self.string_to_decimal(self.pgv_value, 100)
 
     def get_pga_int(self):
@@ -321,10 +327,12 @@ class MotionDataStationChannel(FdsnBaseClass):
         return int(self.pgv_value)
 
     def get_low_cut_corner(self):
-        return self.string_to_decimal(self.low_cut_corner)
+        return self.low_cut_corner
+        # return self.string_to_decimal(self.low_cut_corner)
 
     def get_high_cut_corner(self):
-        return self.string_to_decimal(self.high_cut_corner)
+        return self.high_cut_corner
+        # return self.string_to_decimal(self.high_cut_corner)
 
 
 class SpectralAmplitude(object):
