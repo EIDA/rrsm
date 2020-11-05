@@ -22,7 +22,7 @@ urlpatterns = [
     ),
     path(
         '{}about/'.format(RRSM_URL_BASE),
-        cache_page(CACHE_TIME_LONG)(rrsmi_view.AboutListView.as_view()),
+        rrsmi_view.AboutListView.as_view(),
         name='about'
     ),
     re_path(
@@ -32,12 +32,12 @@ urlpatterns = [
     ),
     re_path(
         r'^{}event/(?P<event_public_id>\w+)/$'.format(RRSM_URL_BASE),
-        cache_page(CACHE_TIME_LONG)(rrsmi_view.EventDetailsListView.as_view()),
+        rrsmi_view.EventDetailsListView.as_view(),
         name='event_details'
     ),
     re_path(
         r'^{}event/(?P<event_public_id>\w+)/(?P<network_code>\w+)/(?P<station_code>\w+)/$'.format(RRSM_URL_BASE),
-        cache_page(CACHE_TIME_LONG)(rrsmi_view.StationStreamsListView.as_view()),
+        rrsmi_view.StationStreamsListView.as_view(),
         name='station_streams'
     ),
     path(
