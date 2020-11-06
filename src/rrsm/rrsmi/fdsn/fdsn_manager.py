@@ -57,6 +57,26 @@ class FdsnMotionManager(FdsnHttpBase):
         super(FdsnMotionManager, self).__init__()
         self.node_wrapper = NodeWrapper()
 
+    def get_simple_event_list(self, days_back=None):
+        """Get simple, top level event list.
+        """
+        try:
+            ws_url = self.node_wrapper.build_url_simple_events(
+                days_back)
+
+            response = self.fdsn_request(ws_url)
+
+            if not response:
+                return None, ws_url
+
+            data = json.loads(response.decode('utf-8'))
+            extracted = self._extract_data(data, False, True)
+
+            return extracted, ws_url
+        except Exception as e:
+            self.log_exception(e)
+            return None, ws_url
+
     def get_event_list(
         self, days_back=None, event_id=None, date_start=None, date_end=None,
             magnitude_min=None, network_code=None, station_code=None,
@@ -65,6 +85,8 @@ class FdsnMotionManager(FdsnHttpBase):
             event_lon_min=None, event_lon_max=None,
             stat_lat_min=None, stat_lat_max=None,
             stat_lon_min=None, stat_lon_max=None):
+        """Get list of events including all parameters.
+            """
         try:
             ws_url = self.node_wrapper.build_url_events(
                 days_back, event_id, date_start, date_end,
@@ -165,29 +187,48 @@ class FdsnMotionManager(FdsnHttpBase):
                         continue
 
                 station_data = MotionDataStation()
-                station_data.event_id = s['event-id']
-                station_data.event_time = s['event-time']
-                station_data.event_magnitude = s['event-magnitude']
-                station_data.magnitude_type = s['magnitude-type']
-                station_data.event_depth = s['event-depth']
-                station_data.event_latitude = s['event-latitude']
-                station_data.event_longitude = s['event-longitude']
-                station_data.network_code = s['network-code']
-                station_data.station_code = s['station-code']
-                station_data.location_code = s['location-code']
-                station_data.station_latitude = s['station-latitude']
-                station_data.station_longitude = s['station-longitude']
-                station_data.station_elevation = s['station-elevation']
-                station_data.epicentral_distance = s['epicentral-distance']
-                station_data.event_location_reference = \
-                    s['event-location-reference']
-                station_data.event_magnitude_reference = \
-                    s['event-magnitude-reference']
-                station_data.dataselect_url = FdsnDataselectManager(
-                    s['network-code'],
-                    s['station-code'],
-                    s['event-time']
-                ).get_dataselect_url()
+                if 'event-id' in s:
+                    station_data.event_id = s['event-id']
+                if 'event-time' in s:
+                    station_data.event_time = s['event-time']
+                if 'event-magnitude' in s:
+                    station_data.event_magnitude = s['event-magnitude']
+                if 'magnitude-type' in s:
+                    station_data.magnitude_type = s['magnitude-type']
+                if 'event-depth' in s:
+                    station_data.event_depth = s['event-depth']
+                if 'event-latitude' in s:
+                    station_data.event_latitude = s['event-latitude']
+                if 'event-longitude' in s:
+                    station_data.event_longitude = s['event-longitude']
+                if 'network-code' in s:
+                    station_data.network_code = s['network-code']
+                if 'station-code' in s:
+                    station_data.station_code = s['station-code']
+                if 'location-code' in s:
+                    station_data.location_code = s['location-code']
+                if 'station-latitude' in s:
+                    station_data.station_latitude = s['station-latitude']
+                if 'station-longitude' in s:
+                    station_data.station_longitude = s['station-longitude']
+                if 'station-elevation' in s:
+                    station_data.station_elevation = s['station-elevation']
+                if 'epicentral-distance' in s:
+                    station_data.epicentral_distance = s['epicentral-distance']
+
+                if 'event-location-reference' in s:
+                    station_data.event_location_reference = \
+                        s['event-location-reference']
+                if 'event-magnitude-reference' in s:
+                    station_data.event_magnitude_reference = \
+                        s['event-magnitude-reference']
+
+                if 'network-code' in s and 'station-code' in s and 'event-time' in s:
+                    station_data.dataselect_url = FdsnDataselectManager(
+                        s['network-code'],
+                        s['station-code'],
+                        s['event-time']
+                    ).get_dataselect_url()
 
                 if extract_channels is True:
                     for d in s['sensor-channels']:

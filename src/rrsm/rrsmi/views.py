@@ -43,7 +43,7 @@ class HomeListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        motion_data, ws_url = FdsnMotionManager().get_event_list(days_back=31)
+        motion_data, ws_url = FdsnMotionManager().get_simple_event_list(days_back=31)
         context['breadcrumb'] = 'Home (events from last 31 days)'
         context['motion_data'] = motion_data
         context['ws_url'] = ws_url
@@ -69,7 +69,7 @@ class RecentEventsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        motion_data, ws_url = FdsnMotionManager().get_event_list(
+        motion_data, ws_url = FdsnMotionManager().get_simple_event_list(
             days_back=int(self.kwargs.get('days'))
         )
         context['breadcrumb'] = 'Recent events'

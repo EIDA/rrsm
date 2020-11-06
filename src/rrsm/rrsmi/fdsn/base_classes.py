@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from obspy.geodetics.flinnengdahl import FlinnEngdahl
 
 URL_EVENT = getattr(settings, 'URL_EVENT', '')
+URL_RRSM_EVENT = getattr(settings, 'URL_RRSM_EVENT', '')
 URL_MOTION = getattr(settings, 'URL_MOTION', '')
 URL_SHAKEMAP = getattr(settings, 'URL_SHAKEMAP', '')
 URL_WAVEFORM = getattr(settings, 'URL_WAVEFORM', '')
@@ -65,16 +66,53 @@ class DataselectWrapper(object):
 class NodeWrapper(object):
     def __init__(self):
         self.url_event = URL_EVENT
+        self.url_rrsm_event = URL_RRSM_EVENT
         self.url_motion = URL_MOTION
         self.url_shakemap = URL_SHAKEMAP
         self.url_waveform = URL_WAVEFORM
 
+    def build_url_simple_events(self, days_back=None):
+        """Build URL to get list of events from RRSM
+        """
+
+        payload = {}
+        if days_back is not None and len(str(days_back)) > 0:
+            date_then = datetime.now() - timedelta(days=days_back)
+            payload['starttime'] = '{}-{}-{}'.format(
+                date_then.year,
+                date_then.month,
+                date_then.day
+                )
+
+        # This is to prevent the encoding of special
+        # characters by the requests module
+        payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
+        return '{}?{}'.format(self.url_rrsm_event, payload_str)
+
     def build_url_events(
-        self, days_back, event_id, date_start, date_end,
-            magnitude_min, network_code, station_code,
-            pga_min, pga_max, pgv_min, pgv_max,
-            event_lat_min, event_lat_max, event_lon_min, event_lon_max,
-            stat_lat_min, stat_lat_max, stat_lon_min, stat_lon_max):
+        self,
+        days_back=None,
+        event_id=None,
+        date_start=None,
+        date_end=None,
+        magnitude_min=None,
+        network_code=None,
+        station_code=None,
+        pga_min=None,
+        pga_max=None,
+        pgv_min=None,
+        pgv_max=None,
+        event_lat_min=None,
+        event_lat_max=None,
+        event_lon_min=None,
+        event_lon_max=None,
+        stat_lat_min=None,
+        stat_lat_max=None,
+        stat_lon_min=None,
+        stat_lon_max=None):
+        """Build URL to get list of events including stations, channels, streams
+        and peak motion values.
+        """
 
         payload = {}
         if days_back is not None and len(str(days_back)) > 0:
