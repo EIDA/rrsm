@@ -300,18 +300,22 @@ class MotionDataStation(FdsnBaseClass):
 
     def get_max_pga(self):
         try:
-            self.sensor_channels.sort(key=lambda x: x.pga_value or 0, reverse=True)
-            cha = self.sensor_channels[0].channel_code
-            val = self.sensor_channels[0].pga_value
+            s = sorted(
+                self.sensor_channels, key=lambda x: x.pga_value or 0, reverse=True
+            )
+            cha = s[0].channel_code
+            val = s[0].pga_value
             return self.string_to_decimal(val), cha
         except:
             return '', 0.0
 
     def get_max_pgv(self):
         try:
-            self.sensor_channels.sort(key=lambda x: x.pgv_value or 0, reverse=True)
-            cha = self.sensor_channels[0].channel_code
-            val = self.sensor_channels[0].pgv_value
+            s = sorted(
+                self.sensor_channels, key=lambda x: x.pgv_value or 0, reverse=True
+            )
+            cha = s[0].channel_code
+            val = s[0].pgv_value
             return self.string_to_decimal(val), cha
         except:
             return '', 0.0
