@@ -127,13 +127,13 @@ class EventDetailsListView(ListView, RrsmLoggerMixin):
                     data_pga.append({
                         'name': f'{s.network_code}.{s.station_code}.{sc.channel_code}',
                         'x': s.epicentral_distance,
-                        'y': sc.pga_value * 100,
+                        'y': sc.pga_value,
                         'channel': sc.channel_code
                     })
                     data_pgv.append({
                         'name': f'{s.network_code}.{s.station_code}.{sc.channel_code}',
                         'x': s.epicentral_distance,
-                        'y': sc.pgv_value * 100,
+                        'y': sc.pgv_value,
                         'channel': sc.channel_code
                     })
 

@@ -303,7 +303,7 @@ class MotionDataStation(FdsnBaseClass):
             self.sensor_channels.sort(key=lambda x: x.pga_value or 0, reverse=True)
             cha = self.sensor_channels[0].channel_code
             val = self.sensor_channels[0].pga_value
-            return self.string_to_decimal(val, 100), cha
+            return self.string_to_decimal(val), cha
         except:
             return '', 0.0
 
@@ -312,7 +312,7 @@ class MotionDataStation(FdsnBaseClass):
             self.sensor_channels.sort(key=lambda x: x.pgv_value or 0, reverse=True)
             cha = self.sensor_channels[0].channel_code
             val = self.sensor_channels[0].pgv_value
-            return self.string_to_decimal(val, 100), cha
+            return self.string_to_decimal(val), cha
         except:
             return '', 0.0
 
@@ -359,12 +359,12 @@ class MotionDataStationChannel(FdsnBaseClass):
     def get_pga(self):
         if not self.pga_value:
             return None
-        return self.string_to_decimal(self.pga_value, 100)
+        return self.string_to_decimal(self.pga_value)
 
     def get_pgv(self):
         if not self.pgv_value:
             return None
-        return self.string_to_decimal(self.pgv_value, 100)
+        return self.string_to_decimal(self.pgv_value)
 
     def get_pga_int(self):
         return int(self.pga_value)

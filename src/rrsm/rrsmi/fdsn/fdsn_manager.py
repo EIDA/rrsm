@@ -295,7 +295,7 @@ class FdsnMotionManager(FdsnHttpBase):
         if not OUTLIER_FILTERING_ENABLED:
             return False
 
-        if channel.lower().startswith('BH'):
+        if channel.lower().startswith('bh'):
             # It is a broadband sensor
             if type == 'pga' and (value < PGA_MIN or value > PGA_MAX):
                 return True
