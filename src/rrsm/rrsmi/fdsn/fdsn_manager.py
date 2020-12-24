@@ -119,17 +119,6 @@ class FdsnMotionManager(FdsnHttpBase):
             stat_lat_min=None, stat_lat_max=None,
             stat_lon_min=None, stat_lon_max=None):
         try:
-            # PGA and PGV values come from the interface in centimeters,
-            # but the web service is designed to work in metres
-            if pga_min:
-                pga_min = pga_min / 100
-            if pga_max:
-                pga_max = pga_max / 100
-            if pgv_min:
-                pgv_min = pgv_min / 100
-            if pgv_max:
-                pgv_max = pgv_max / 100
-
             ws_url = self.node_wrapper.build_url_events(
                 days_back, event_id, date_start, date_end,
                 magnitude_min, network_code, station_code,

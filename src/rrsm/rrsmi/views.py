@@ -447,12 +447,19 @@ def search_peak_motions(request):
     if request.method == 'POST':
         form = SearchPeakMotionsForm(request.POST)
         if form.is_valid():
-            pga_min, pga_max, pgv_min, pgv_max = \
-                RrsmHelpers().pga_pgv_centimeters_to_meters(
-                    form.cleaned_data['pga_min'],
-                    form.cleaned_data['pga_max'],
-                    form.cleaned_data['pgv_min'],
-                    form.cleaned_data['pgv_max'])
+            pga_min = None
+            pga_max = None
+            pgv_min = None
+            pgv_max = None
+
+            if form.cleaned_data['pga_min']:
+                pga_min = form.cleaned_data['pga_min']
+            if form.cleaned_data['pga_max']:
+                pga_max = form.cleaned_data['pga_max']
+            if form.cleaned_data['pgv_min']:
+                pgv_min = form.cleaned_data['pgv_min']
+            if form.cleaned_data['pgv_max']:
+                pgv_max = form.cleaned_data['pgv_max']
 
             data, ws_url = FdsnMotionManager().get_stations_list(
                 pga_min=pga_min,
@@ -494,21 +501,20 @@ def search_combined(request):
     if request.method == 'POST':
         form = SearchCombinedForm(request.POST)
         if form.is_valid():
-            pga_min, pga_max, pgv_min, pgv_max = \
-                RrsmHelpers().pga_pgv_centimeters_to_meters(
-                    form.cleaned_data['pga_min'],
-                    form.cleaned_data['pga_max'],
-                    form.cleaned_data['pgv_min'],
-                    form.cleaned_data['pgv_max'])
+            pga_min = None
+            pga_max = None
+            pgv_min = None
+            pgv_max = None
 
             if form.cleaned_data['pga_min']:
-                pga_min = form.cleaned_data['pga_min'] / 100
+                pga_min = form.cleaned_data['pga_min']
             if form.cleaned_data['pga_max']:
-                pga_max = form.cleaned_data['pga_max'] / 100
+                pga_max = form.cleaned_data['pga_max']
             if form.cleaned_data['pgv_min']:
-                pgv_min = form.cleaned_data['pgv_min'] / 100
+                pgv_min = form.cleaned_data['pgv_min']
             if form.cleaned_data['pgv_max']:
-                pgv_max = form.cleaned_data['pgv_max'] / 100
+                pgv_max = form.cleaned_data['pgv_max']
+
             data, ws_url = FdsnMotionManager().get_stations_list(
                 pga_min=pga_min,
                 pga_max=pga_max,
@@ -518,10 +524,10 @@ def search_combined(request):
 
             data, ws_url = FdsnMotionManager().get_stations_list(
                 magnitude_min=form.cleaned_data['magnitude_min'],
-                pga_min=form.cleaned_data['pga_min'],
-                pga_max=form.cleaned_data['pga_max'],
-                pgv_min=form.cleaned_data['pgv_min'],
-                pgv_max=form.cleaned_data['pgv_max'],
+                pga_min=pga_min,
+                pga_max=pga_max,
+                pgv_min=pgv_min,
+                pgv_max=pgv_max,
                 stat_lat_min=form.cleaned_data['stat_lat_min'],
                 stat_lat_max=form.cleaned_data['stat_lat_max'],
                 stat_lon_min=form.cleaned_data['stat_lon_min'],
@@ -567,12 +573,19 @@ def search_custom(request):
     if request.method == 'POST':
         form = SearchCustomForm(request.POST)
         if form.is_valid():
-            pga_min, pga_max, pgv_min, pgv_max = \
-                RrsmHelpers().pga_pgv_centimeters_to_meters(
-                    form.cleaned_data['pga_min'],
-                    form.cleaned_data['pga_max'],
-                    form.cleaned_data['pgv_min'],
-                    form.cleaned_data['pgv_max'])
+            pga_min = None
+            pga_max = None
+            pgv_min = None
+            pgv_max = None
+
+            if form.cleaned_data['pga_min']:
+                pga_min = form.cleaned_data['pga_min']
+            if form.cleaned_data['pga_max']:
+                pga_max = form.cleaned_data['pga_max']
+            if form.cleaned_data['pgv_min']:
+                pgv_min = form.cleaned_data['pgv_min']
+            if form.cleaned_data['pgv_max']:
+                pgv_max = form.cleaned_data['pgv_max']
 
             data, ws_url = FdsnMotionManager().get_stations_list(
                 event_id=form.cleaned_data['event_id'],
