@@ -303,7 +303,6 @@ class FdsnMotionManager(FdsnHttpBase):
                 return True
         else:
             # It is NOT a broadband sensor
-            # It is a broadband sensor
             if type == 'pga' and (value < PGA_MIN or value > PGA_MAX):
                 return True
             if type == 'pgv' and (value < PGV_MIN or value > PGV_MAX):
