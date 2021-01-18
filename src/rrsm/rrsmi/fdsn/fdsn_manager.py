@@ -256,7 +256,7 @@ class FdsnMotionManager(FdsnHttpBase):
                             for spa in d['spectral-amplitudes']:
                                 sa = SpectralAmplitude()
                                 sa.period = spa['period']
-                                sa.amplitude = spa['amplitude']
+                                sa.amplitude = spa['amplitude'] / 100
                                 sa.type = spa['type']
                                 ch.spectral_amplitudes.append(sa)
 
