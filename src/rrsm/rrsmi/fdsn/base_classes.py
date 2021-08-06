@@ -239,6 +239,8 @@ class MotionDataStation(FdsnBaseClass):
         self.event_magnitude_reference = NO_FDSNWS_DATA
         self.sensor_channels = []
         self.dataselect_url = NO_FDSNWS_DATA
+        self.peak_motion_params_invalid = False  # Ratios of peak motion params (issue #29)
+        self.components_incomplete = False # Not all components present
 
     def build_url_odc_api(self, event_start, event_end):
         payload = {}

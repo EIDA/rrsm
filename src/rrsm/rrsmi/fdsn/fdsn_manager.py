@@ -32,6 +32,12 @@ PGV_MIN = float(getattr(settings, "PGV_MIN", 0))
 PGV_MAX = float(getattr(settings, "PGV_MAX", 0))
 PGV_BROADBAND_MIN = float(getattr(settings, "PGV_BROADBAND_MIN", 0))
 PGV_BROADBAND_MAX = float(getattr(settings, "PGV_BROADBAND_MAX", 0))
+RATIO_PGAX_PGAY_MIN = float(getattr(settings, "RATIO_PGAX_PGAY_MIN", 0))
+RATIO_PGAX_PGAY_MAX = float(getattr(settings, "RATIO_PGAX_PGAY_MAX", 0))
+RATIO_PGAX_PGAZ_MIN = float(getattr(settings, "RATIO_PGAX_PGAZ_MIN", 0))
+RATIO_PGAX_PGAZ_MAX = float(getattr(settings, "RATIO_PGAX_PGAZ_MAX", 0))
+RATIO_PGAY_PGAZ_MIN = float(getattr(settings, "RATIO_PGAY_PGAZ_MIN", 0))
+RATIO_PGAY_PGAZ_MAX = float(getattr(settings, "RATIO_PGAY_PGAZ_MAX", 0))
 
 
 class FdsnHttpBase(RrsmLoggerMixin):
@@ -276,11 +282,11 @@ class FdsnMotionManager(FdsnHttpBase):
                 if extract_channels is True:
                     for d in s["sensor-channels"]:
 
-                        pga_value_invalid = self._is_outlier(
+                        pga_value_invalid = self._is_channel_outlier(
                             "pga", d["channel-code"], d["pga-value"]
                         )
 
-                        pgv_value_invalid = self._is_outlier(
+                        pgv_value_invalid = self._is_channel_outlier(
                             "pgv", d["channel-code"], d["pgv-value"]
                         )
 
@@ -317,6 +323,14 @@ class FdsnMotionManager(FdsnHttpBase):
                                 f"Channel does not contain valid values: {ch}"
                             )
 
+                    comps = self._get_station_components(station_data)
+                    if comps:
+                        station_data.peak_motion_params_invalid = (
+                            self._components_invalid(comps)
+                        )
+                    else:
+                        station_data.components_incomplete = True
+
                 result.stations.append(station_data)
 
             if extract_channels:
@@ -329,7 +343,7 @@ class FdsnMotionManager(FdsnHttpBase):
             self.log_exception(e)
             return None
 
-    def _is_outlier(self, type, channel, value):
+    def _is_channel_outlier(self, type, channel, value):
         if not OUTLIER_FILTERING_ENABLED:
             return False
 
@@ -349,6 +363,44 @@ class FdsnMotionManager(FdsnHttpBase):
                 return True
 
         # Checks passed
+        return False
+
+    def _get_station_components(self, station_data: MotionDataStation):
+        X = list(
+            filter(lambda x: x.channel_code.endswith("Z"), station_data.sensor_channels)
+        )
+        Y = list(
+            filter(lambda x: x.channel_code.endswith("N"), station_data.sensor_channels)
+        )
+        Z = list(
+            filter(lambda x: x.channel_code.endswith("E"), station_data.sensor_channels)
+        )
+
+        if len(X) and len(Y) and len(Z):
+            return {"X": X[0], "Y": Y[0], "Z": Z[0]}
+        else:
+            return None
+
+    def _components_invalid(self, components):
+        """Check ratios of peak motion parameters to determine if station is an outlier.
+
+        Args:
+            components (tuple): Station components
+        """
+        xy = components["X"].pga_value / components["Y"].pga_value
+        xz = components["X"].pga_value / components["Z"].pga_value
+        yz   = components["Y"].pga_value / components["Z"].pga_value
+
+        if (
+            not (RATIO_PGAX_PGAY_MIN < xy < RATIO_PGAX_PGAY_MAX)
+            or not (RATIO_PGAX_PGAZ_MIN < xz < RATIO_PGAX_PGAZ_MAX)
+            or not (RATIO_PGAY_PGAZ_MIN < yz < RATIO_PGAY_PGAZ_MAX)
+        ):
+            self.log_warning(
+                f"Ratio of peak motion parameters ratio incorrect: {components=}"
+            )
+            return True
+
         return False
 
 
