@@ -9,7 +9,7 @@
       "type": "python",
       "request": "launch",
       "stopOnEntry": true,
-      "pythonPath": "${workspaceFolder}/env/bin/python3",
+      "python": "${workspaceFolder}/env/bin/python3",
       "program": "${workspaceFolder}/src/rrsm/manage.py",
       "cwd": "${workspaceFolder}/src/rrsm",
       "env": {
