@@ -63,12 +63,20 @@ This repository is deployed at [orfeus-eu.org/rrsm](https://orfeus-eu.org/rrsm/)
    docker exec -it <CONTAINER ID> sh
    ```
 
+## Tests
+
+Tests can be executed using following command:
+
+```bash
+python3 src/rrsm/manage.py test rrsmi
+```
+
 ## Logs
 
 Tail can be used to follow the app logs:
 
 ```bash
-    tail -f src/rrsm/logs/rrsm.log
+tail -f src/rrsm/logs/rrsm.log
 ```
 
 ## Remarks
