@@ -123,18 +123,16 @@
                 <tr>
                     <th hidden>Dataselect</th>
                     <th>
-                        Network / Station
+                        Network / Station / Location
                         <small class="text-muted d-block">(click for streams)</small>
                     </th>
-                    <th>Location code</th>
                     <th>Max. PGA [cm/s<sup>2</sup>]</th>
                     <th>Max. PGA channel</th>
                     <th>Max. PGV [cm/s]</th>
                     <th>Max. PGV channel</th>
                     <th>Epicentral distance [km]</th>
                     <th>Elevation [m]</th>
-                    <th>Raw waveforms</th>
-                    <th>Flags</th>
+                    <th>Waveforms</th>
                 </tr>
             </thead>
             <tbody>
@@ -142,12 +140,17 @@
                 <tr>
                     <td hidden>{{ s.dataselect_url }}</td>
                     <td>
+                        {% if s.peak_motion_params_invalid %}
+                            <span title="Possible outlier" class="badge badge-warning">O</span>
+                        {% endif %}
+                        {% if s.components_incomplete %}
+                            <span title="Missing components" class="badge badge-danger">C</span>
+                        {% endif %}
                         <a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">
-                            {{ s.network_code }} / {{ s.station_code }}
+                            {{ s.network_code }} / {{ s.station_code }} {% if s.location_code %} / {{ s.location_code }}{% endif %}
                         </a>
                         <small class="text-muted d-block">Lat: {{ s.get_latitude }}, Lon: {{ s.get_longitude }}</small>
                     </td>
-                    <td>{{ s.location_code }}</td>
                     <td>
                         {{ s.get_max_pga.0 }}
                     </td>
@@ -159,14 +162,6 @@
                     <td>{{ s.get_epicentral_distance }}</td>
                     <td>{{ s.station_elevation }}</td>
                     <td><a href="{{ s.dataselect_url }}">Download</a></td>
-                    <td>
-                        {% if s.peak_motion_params_invalid %}
-                            <span title="Possible outlier" class="badge badge-warning">OTL</span>
-                        {% endif %}
-                        {% if s.components_incomplete %}
-                            <span title="Missing components" class="badge badge-danger">CMP</span>
-                        {% endif %}
-                    </td>
                 </tr>
                 <script type="text/javascript">
                     var latitude = parseFloat("{{ s.station_latitude }}"), longitude = parseFloat("{{ s.station_longitude }}"), stationCode = "{{ s.station_code }}", networkCode = "{{ s.network_code }}", markerPath = "{% static s.get_map_marker_path %}"; if (!isNaN(latitude) && !isNaN(longitude)) { var point = new ol.Feature({ geometry: new ol.geom.Point(ol.proj.fromLonLat([longitude, latitude])), name: `<b>Network code: </b>${networkCode}<br><b>Station code: </b>${stationCode}\n<br><b>Latitude: </b>${latitude}\n<br><b>Longitude: </b>${longitude}\n<br><a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">Go to station streams</a>` }); point.setStyle(new ol.style.Style({ image: new ol.style.Icon({ anchor: [0.5, 1], anchorXUnits: "fraction", anchorYUnits: "fraction", src: markerPath }) })), vectorSource.addFeature(point) }
