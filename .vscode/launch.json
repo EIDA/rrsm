@@ -9,7 +9,7 @@
       "type": "python",
       "request": "launch",
       "stopOnEntry": true,
-      "pythonPath": "${workspaceFolder}/env/bin/python3",
+      "python": "${workspaceFolder}/env/bin/python3",
       "program": "${workspaceFolder}/src/rrsm/manage.py",
       "cwd": "${workspaceFolder}/src/rrsm",
       "env": {
@@ -31,6 +31,15 @@
       },
       "args": ["runserver", "--noreload", "0.0.0.0:8000"],
       "django": true
+    },
+    {
+      "name": "Django Tests",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/rrsm/manage.py",
+      "args": ["test", "--noinput", "--keepdb", "rrsmi"],
+      "django": true
     }
+
   ]
 }

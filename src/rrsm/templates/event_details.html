@@ -123,17 +123,16 @@
                 <tr>
                     <th hidden>Dataselect</th>
                     <th>
-                        Network / Station
+                        Network / Station / Location
                         <small class="text-muted d-block">(click for streams)</small>
                     </th>
-                    <th>Location code</th>
                     <th>Max. PGA [cm/s<sup>2</sup>]</th>
                     <th>Max. PGA channel</th>
                     <th>Max. PGV [cm/s]</th>
                     <th>Max. PGV channel</th>
                     <th>Epicentral distance [km]</th>
                     <th>Elevation [m]</th>
-                    <th>Raw waveforms</th>
+                    <th>Waveforms</th>
                 </tr>
             </thead>
             <tbody>
@@ -141,12 +140,17 @@
                 <tr>
                     <td hidden>{{ s.dataselect_url }}</td>
                     <td>
+                        {% if s.peak_motion_params_invalid %}
+                            <span title="Possible outlier" class="badge badge-warning">O</span>
+                        {% endif %}
+                        {% if s.components_incomplete %}
+                            <span title="Missing components" class="badge badge-danger">C</span>
+                        {% endif %}
                         <a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">
-                            {{ s.network_code }} / {{ s.station_code }}
+                            {{ s.network_code }} / {{ s.station_code }} {% if s.location_code %} / {{ s.location_code }}{% endif %}
                         </a>
                         <small class="text-muted d-block">Lat: {{ s.get_latitude }}, Lon: {{ s.get_longitude }}</small>
                     </td>
-                    <td>{{ s.location_code }}</td>
                     <td>
                         {{ s.get_max_pga.0 }}
                     </td>
