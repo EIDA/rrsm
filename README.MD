@@ -4,7 +4,7 @@ This repository is deployed at [orfeus-eu.org/rrsm](https://orfeus-eu.org/rrsm/)
 
 ## Quickstart
 
-1. Create the .env configuration file from `/src/rrsm/.env.sample` and adjust its values. Example test server configuration:
+1. Create the .env configuration file from `/src/rrsm/.env.sample` and adjust its values.
 
    ```bash
    cp src/rrsm/.env.sample src/rrsm/.env
