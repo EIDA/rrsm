@@ -48,7 +48,13 @@
             Max PGA [cm/s<sup>2</sup>]
           </th>
           <th>
+            Max PGA channel
+          </th>
+          <th>
             Max PGV [cm/s]
+          </th>
+          <th>
+            Max PGV channel
           </th>
         </tr>
       </thead>
@@ -67,8 +73,10 @@
             <small class="text-muted d-block">Lat: {{ s.get_latitude }}, Lon: {{ s.get_longitude }}</small>
           </td>
           <td>{{ s.epicentral_distance }}</td>
-          <td>{{ s.get_max_pga.0 }} ({{ s.get_max_pga.1 }})</td>
-          <td>{{ s.get_max_pgv.0 }} ({{ s.get_max_pgv.1 }})</td>
+          <td>{{ s.get_max_pga.0 }}</td>
+          <td>{{ s.get_max_pga.1 }}</td>
+          <td>{{ s.get_max_pgv.0 }}</td>
+          <td>{{ s.get_max_pgv.1 }}</td>
         </tr>
         {% endfor %}
       </tbody>
