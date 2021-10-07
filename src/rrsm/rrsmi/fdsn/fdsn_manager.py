@@ -367,13 +367,13 @@ class FdsnMotionManager(FdsnHttpBase):
 
     def _get_station_components(self, station_data: MotionDataStation):
         X = list(
-            filter(lambda x: x.channel_code.endswith("Z"), station_data.sensor_channels)
+            filter(lambda x: x.channel_code.endswith(("Z", "1")), station_data.sensor_channels)
         )
         Y = list(
-            filter(lambda x: x.channel_code.endswith("N"), station_data.sensor_channels)
+            filter(lambda x: x.channel_code.endswith(("N", "2")), station_data.sensor_channels)
         )
         Z = list(
-            filter(lambda x: x.channel_code.endswith("E"), station_data.sensor_channels)
+            filter(lambda x: x.channel_code.endswith(("E", "3")), station_data.sensor_channels)
         )
 
         if len(X) and len(Y) and len(Z):
