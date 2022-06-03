@@ -110,8 +110,8 @@
                 <p><b>Event depth [km]: </b>{{ motion_data.stations.0.event_depth }}</p>
             </div>
             <div class="col">
-                <p><b>Event latitude [°]: </b>{{ motion_data.stations.0.get_latitude }}</p>
-                <p><b>Event longitude [°]: </b>{{ motion_data.stations.0.get_longitude }}</p>
+                <p><b>Event latitude [°]: </b>{{ motion_data.stations.0.get_event_latitude }}</p>
+                <p><b>Event longitude [°]: </b>{{ motion_data.stations.0.get_event_longitude }}</p>
             </div>
         </div>
     </div>
@@ -149,7 +149,7 @@
                         <a href="{% url 'station_streams' motion_data.stations.0.event_id s.network_code s.station_code %}">
                             {{ s.network_code }} / {{ s.station_code }} {% if s.location_code %} / {{ s.location_code }}{% endif %}
                         </a>
-                        <small class="text-muted d-block">Lat: {{ s.get_latitude }}, Lon: {{ s.get_longitude }}</small>
+                        <small class="text-muted d-block">Lat: {{ s.get_station_latitude }}, Lon: {{ s.get_station_longitude }}</small>
                     </td>
                     <td>
                         {{ s.get_max_pga.0 }}
