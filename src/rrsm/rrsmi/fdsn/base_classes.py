@@ -286,11 +286,17 @@ class MotionDataStation(FdsnBaseClass):
     def get_magnitude(self):
         return self.string_to_decimal(self.event_magnitude, decimals=1)
 
-    def get_latitude(self):
+    def get_event_latitude(self):
         return self.string_to_decimal(self.event_latitude)
 
-    def get_longitude(self):
+    def get_event_longitude(self):
         return self.string_to_decimal(self.event_longitude)
+
+    def get_station_latitude(self):
+        return self.string_to_decimal(self.station_latitude)
+
+    def get_station_longitude(self):
+        return self.string_to_decimal(self.station_longitude)
 
     def get_epicentral_distance(self):
         return self.string_to_decimal(self.epicentral_distance)
