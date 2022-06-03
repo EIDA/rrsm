@@ -8,7 +8,6 @@
       "name": "Django",
       "type": "python",
       "request": "launch",
-      "stopOnEntry": true,
       "python": "${workspaceFolder}/env/bin/python3",
       "program": "${workspaceFolder}/src/rrsm/manage.py",
       "cwd": "${workspaceFolder}/src/rrsm",
