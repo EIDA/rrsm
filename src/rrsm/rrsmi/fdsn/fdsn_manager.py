@@ -378,6 +378,12 @@ class FdsnMotionManager(FdsnHttpBase):
 
         if len(X) and len(Y) and len(Z):
             return {"X": X[0], "Y": Y[0], "Z": Z[0]}
+        if len(station_data.sensor_channels) == 3:
+            return {
+                "X": station_data.sensor_channels[0],
+                "Y": station_data.sensor_channels[1],
+                "Z": station_data.sensor_channels[2]
+            }
         else:
             return None
 
